@@ -293,12 +293,12 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   isShowing: 0
-  width: 5
-  depth: 5
+  width: 10
+  depth: 10
   cellSize: 1
   cellPref: {fileID: 9006327065110896051, guid: 168772dfb5b0f3844bb17ac3c25d8607,
     type: 3}
-  origin: {x: 0, y: 0, z: 0}
+  origin: {x: -5, y: 0, z: -5}
 --- !u!64 &334007921
 MeshCollider:
   m_ObjectHideFlags: 0

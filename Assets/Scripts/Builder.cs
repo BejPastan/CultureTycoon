@@ -2,7 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class BuildingControl : MonoBehaviour
+public class Builder : MonoBehaviour
 {
     public bool isBuilding = false;
     public bool isRightClick = false;
@@ -13,7 +13,7 @@ public class BuildingControl : MonoBehaviour
     Vector2Int endPos;
 
     [SerializeField]
-    Room room;
+    RoomBlueprint newRoom;
 
     [SerializeField]
     Transform floorPref;
@@ -27,26 +27,31 @@ public class BuildingControl : MonoBehaviour
             //on Right click
             if (Input.GetMouseButtonDown(1))
             {
-                startPos = GetPosition();
+                startPos = GetMousePosition();
                 isRightClick = true;
             }
             if(isRightClick)
             {
-                if(endPos != GetPosition())
+                if(endPos != GetMousePosition())
                 {
-                    endPos = GetPosition();
-                    room.VisualiseBlueprint(grid.GetWorldPosition(startPos), grid.GetWorldPosition(endPos));
+                    endPos = GetMousePosition();
+                    newRoom.VisualiseBlueprint(grid.GetWorldPosition(startPos), grid.GetWorldPosition(endPos));
                 }
             }
             if(Input.GetMouseButtonUp(1))
             {
+                newRoom.ConfirmBlueprint();
                 isRightClick = false;
             }
             
         }
     }
 
-    public Vector2Int GetPosition()
+    /// <summary>
+    /// Get position of mouse on grid
+    /// </summary>
+    /// <returns></returns>
+    public Vector2Int GetMousePosition()
     {
         //make ray from camera to mouse position
         Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
@@ -67,10 +72,8 @@ public class BuildingControl : MonoBehaviour
     {
         isBuilding = true;
         grid.ToggleGrid();
-        room = new GameObject("Room").AddComponent<Room>();
-        room.floorPref = floorPref.transform;
-        room.wallPref = wallPref.transform;
+        newRoom = new GameObject("Room").AddComponent<RoomBlueprint>();
+        newRoom.floorPref = floorPref.transform;
+        newRoom.wallPref = wallPref.transform;
     }
-
-
 }
