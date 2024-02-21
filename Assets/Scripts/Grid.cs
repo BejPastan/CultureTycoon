@@ -9,7 +9,7 @@ public class Grid : MonoBehaviour
     [SerializeField]
     int depth = 10;
     [SerializeField]
-    GridState[,] gridStates;
+    public GridState[,] gridStates;
     [SerializeField]
     float cellSize = 1;
     [SerializeField]
@@ -70,7 +70,7 @@ public class Grid : MonoBehaviour
         {
             for (int j = 0; j < depth; j++)
             {
-                if (gridStates[i, j] == GridState.free)
+                if (cellsVisual[i, j] != null)
                     Destroy(cellsVisual[i, j]);
             }
         }
@@ -98,11 +98,25 @@ public class Grid : MonoBehaviour
         Vector3 pos = new Vector3(id.x * cellSize, 0, id.y * cellSize)+origin;
         return pos;
     }
+
+    public void ConfirmRoom()
+    {
+        //change all blueprint to room
+        for (int i = 0; i < width; i++)
+        {
+            for (int j = 0; j < depth; j++)
+            {
+                if (gridStates[i, j] == GridState.blueprint)
+                    gridStates[i, j] = GridState.room;
+            }
+        }
+    }
 }
 
-enum GridState
+public enum GridState
 {
     free,
     room,
+    blueprint,
     outside
 }

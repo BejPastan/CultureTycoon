@@ -656,8 +656,8 @@ MonoBehaviour:
     m_PersistentCalls:
       m_Calls:
       - m_Target: {fileID: 1606837068}
-        m_TargetAssemblyTypeName: BuildingControl, Assembly-CSharp
-        m_MethodName: StartBuilding
+        m_TargetAssemblyTypeName: Builder, Assembly-CSharp
+        m_MethodName: ToggleBuilding
         m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
@@ -1038,9 +1038,9 @@ MonoBehaviour:
   isRightClick: 0
   grid: {fileID: 334007920}
   room: {fileID: 0}
-  floorPref: {fileID: -8679921383154817045, guid: 84285c4af5f63b748a07e944886ad727,
+  floorPref: {fileID: 1129830018858127135, guid: 53759107c64718f4c948356f90f79980,
     type: 3}
-  wallPref: {fileID: -8679921383154817045, guid: 2692ee71b2d6c3c4dbebd075a256a6a3,
+  wallPref: {fileID: 3023362912714016702, guid: 2e7d3d0f181222241b1f05bb38f79ab8,
     type: 3}
 --- !u!1660057539 &9223372036854775807
 SceneRoots:

@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -13,12 +14,12 @@ public class Builder : MonoBehaviour
     Vector2Int endPos;
 
     [SerializeField]
-    RoomBlueprint newRoom;
+    RoomBlueprint room;
 
     [SerializeField]
-    Transform floorPref;
+    GameObject floorPref;
     [SerializeField]
-    Transform wallPref;
+    GameObject wallPref;
 
     private void Update()
     {
@@ -35,13 +36,13 @@ public class Builder : MonoBehaviour
                 if(endPos != GetMousePosition())
                 {
                     endPos = GetMousePosition();
-                    newRoom.VisualiseBlueprint(grid.GetWorldPosition(startPos), grid.GetWorldPosition(endPos));
+                    room.VisualiseBlueprint(grid.GetWorldPosition(startPos), grid.GetWorldPosition(endPos));
                 }
             }
             if(Input.GetMouseButtonUp(1))
             {
-                newRoom.ConfirmBlueprint();
                 isRightClick = false;
+                room.ConfirmPart();
             }
             
         }
@@ -68,12 +69,28 @@ public class Builder : MonoBehaviour
         return new Vector2Int(-1, -1);
     }
 
-    public void StartBuilding()
+    public void CreateNewRoomPart()
     {
-        isBuilding = true;
+        room = new GameObject("Room").AddComponent<RoomBlueprint>();
+        room.InitializeRoom(ref grid);
+        //this is temporary
+        room.floorPref = floorPref;
+        room.wallPref = wallPref;
+    }
+
+    public void ToggleBuilding()
+    {
+        if(isBuilding)
+        {
+            isBuilding = false;
+            room.InstanceRoom();
+            room = null;
+        }
+        else
+        {
+            isBuilding = true;
+            CreateNewRoomPart();
+        }
         grid.ToggleGrid();
-        newRoom = new GameObject("Room").AddComponent<RoomBlueprint>();
-        newRoom.floorPref = floorPref.transform;
-        newRoom.wallPref = wallPref.transform;
     }
 }

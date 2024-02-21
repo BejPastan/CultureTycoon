@@ -1,29 +1,42 @@
+using System;
+using UnityEditor;
 using UnityEngine;
 
 public class RoomBlueprint : MonoBehaviour
 {
-    Transform[,] tempParts = new Transform[0,0];
-    Transform[,] tempFloors = new Transform[0,0];
-
-    Transform[,] parts;
+    Transform[,] newParts = new Transform[0,0];
+    Transform[,] parts = new Transform[0,0];
 
     [SerializeField]
-    public Transform wallPref;
+    public GameObject wallPref;
     [SerializeField]
-    public Transform floorPref;
+    public GameObject floorPref;
+
+    Grid grid;
+
+    Vector2Int partsShift;
+    Vector2Int tempShift;
+
+    public void InitializeRoom(ref Grid grid)
+    {
+        this.grid = grid;
+    }
+    
+    public void InstanceRoom()
+    {
+        grid.ConfirmRoom();
+    }
 
     public void VisualiseBlueprint(Vector3 startPos, Vector3 endPos)
     {
         ClearBlueprint();
 
         int width = (int)Mathf.Abs(startPos.x - endPos.x)+1;
-        int depth = (int)Mathf.Abs(startPos.z - endPos.z)+1;
-        
-        tempParts = new Transform[width+2, depth+2];
-        //tempFloors = new Transform[width, depth];
-        Debug.Log("Width: " + width + " Depth: " + depth);
+        int depth = (int)Mathf.Abs(startPos.z - endPos.z)+1;        
+        newParts = new Transform[width+2, depth+2];
 
 
+        //swich start and end pos if needed
         if(startPos.x > endPos.x)
         {
             float temp = startPos.x;
@@ -38,60 +51,103 @@ public class RoomBlueprint : MonoBehaviour
             endPos.z = temp;
         }
 
+        tempShift = CalcShift(startPos-Vector3.one);
+
         for (int x = 1; x <= width; x++)
         {
             for (int z = 1; z <= depth; z++)
             {
-                tempParts[x, z] = Instantiate(floorPref, new Vector3(startPos.x + x-1, 0, startPos.z + z-1), Quaternion.identity);
+                //check if in this position is empty
+                if(grid.gridStates[tempShift.x + x, tempShift.y + z] == GridState.free)
+                {
+                    newParts[x, z] = CreateFloor(new Vector3(startPos.x + x-1, 0, startPos.z + z-1));
+                    //debug
+                }               
             }
         }
-
-        for(int x = 1; x <= width; x++)
-        {
-            tempParts[x, 0] = Instantiate(wallPref, new Vector3(startPos.x + x - 1, 0, startPos.z), Quaternion.Euler(0, 90, 0));
-            tempParts[x, tempParts.GetLength(1)-1] = Instantiate(wallPref, new Vector3(startPos.x + x - 1, 0, endPos.z), Quaternion.Euler(0, -90, 0));
-        }
-        for (int z = 1; z <= depth; z++)
-        {
-            tempParts[0, z] = Instantiate(wallPref, new Vector3(startPos.x, 0, startPos.z + z - 1), Quaternion.Euler(0, 180, 0));
-            Debug.Log("Z: " + z + " Walls: " + (tempParts.GetLength(1) - 1));
-            tempParts[tempParts.GetLength(0) - 1, z] = Instantiate(wallPref, new Vector3(endPos.x, 0, startPos.z + z - 1), Quaternion.Euler(0, 0, 0));
-        }
+        SetWalls();
     }
 
-    public void ConfirmBlueprint()
+    //this is only temporary, this shit need any logic
+    public void ConfirmPart()
     {
-        
+        parts = newParts;
+        partsShift = tempShift;
     }
 
-    public void ClearBlueprint()
+    private Transform CreateFloor(Vector3 pos)
+    {
+        Vector2Int gridID = grid.GetGridId(pos);
+        grid.gridStates[gridID.x, gridID.y] = GridState.blueprint;
+        return Instantiate(floorPref, pos, Quaternion.identity).transform;
+    }
+
+    //this must also handle walls in part array
+    private void SetWalls()
+    {
+        //iterate through parts array
+        for (int i = 0; i < newParts.GetLength(0); i++)
+        {
+            for (int j = 0; j < newParts.GetLength(1); j++)
+            {
+                Vector2Int gridId = grid.GetGridId(new Vector3(i + tempShift.x + grid.origin.x, 0, j + tempShift.y + grid.origin.z));
+
+                if (grid.gridStates[gridId.x, gridId.y] == GridState.blueprint)
+                {
+                    Vector2Int floorPos = new Vector2Int(Mathf.RoundToInt(newParts[i,j].position.x), Mathf.RoundToInt(newParts[i, j].position.z));
+                    if (newParts[i, j + 1] == null)
+                    {
+                        newParts[i, j + 1] = CreateWall(floorPos, new Vector2Int(0, -1));
+                    }
+                    if (newParts[i, j - 1] == null)
+                    {
+                        newParts[i, j - 1] = CreateWall(floorPos, new Vector2Int(0, 1));
+                    }
+                    if (newParts[i + 1, j] == null)
+                    {
+                        newParts[i + 1, j] = CreateWall(floorPos, new Vector2Int(-1, 0));
+                    }
+                    if (newParts[i - 1, j] == null)
+                    {
+                        newParts[i - 1, j] = CreateWall(floorPos, new Vector2Int(1, 0));
+                    }
+                }
+            }
+        }
+    }
+
+    private Transform CreateWall(Vector2Int wallPos, Vector2Int faceDir)
+    {
+        //calc rotation in direction of faceDir
+        Quaternion rotation = Quaternion.Euler(0, faceDir.x * 90+Mathf.Abs(faceDir.x*90) + faceDir.y * 90, 0);
+        /*
+         * so this is simplifyied we can have only 4 possibel rotations, and only X or Z can be 1 or -1. 
+         * So we can just multiply the X and Z to get the rotation, +90 in x is to make suer that rotation is 0 or 180
+         */
+        //instantiate the wall
+        //Debug.Log("Wall at: " + wallPos);
+        return Instantiate(wallPref, new Vector3(wallPos.x, 0, wallPos.y), rotation).transform;
+    }
+
+    private void ClearBlueprint()
     {
         //destroy walls
-        for (int i = 0; i < tempParts.GetLength(0); i++)
+        for (int i = 0; i < newParts.GetLength(0); i++)
         {
-            for (int j = 0; j < tempParts.GetLength(1); j++)
+            for (int j = 0; j < newParts.GetLength(1); j++)
             {
-                Debug.Log("i: " + i + " j: " + j);
-                if (tempParts[i,j] != null)
+                if (newParts[i,j] != null)
                 {
-                    Destroy(tempParts[i,j].gameObject);
-                }
-                else
-                {
-                    Debug.Log("Not destroyed");
+                    Vector2Int gridID = grid.GetGridId(newParts[i, j].position);
+                    grid.gridStates[gridID.x, gridID.y] = GridState.free;
+                    Destroy(newParts[i,j].gameObject);
                 }
             }
         }
-        //destroy floors
-        /*for (int i = 0; i < tempFloors.GetLength(0); i++)
-        {
-            for (int j = 0; j < tempFloors.GetLength(1); j++)
-            {
-                if (tempFloors[i,j] != null)
-                {
-                    Destroy(tempFloors[i,j].gameObject);
-                }
-            }
-        }*/
+    }
+
+    private Vector2Int CalcShift(Vector3 pos)
+    {
+        return new Vector2Int(Mathf.RoundToInt(pos.x - grid.origin.x), Mathf.RoundToInt(pos.z - grid.origin.z));
     }
 }
