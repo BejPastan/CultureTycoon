@@ -60,7 +60,7 @@ public class Builder : MonoBehaviour
         //if ray hit something
         if (Physics.Raycast(ray, out hit))
         {
-            if(hit.transform.CompareTag("Grid"))
+            if(hit.transform.CompareTag("Ground"))
             {
                 Vector3 hitPoint = hit.point;
                 return grid.GetGridId(hitPoint);

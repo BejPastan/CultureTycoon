@@ -58,6 +58,8 @@ public class RoomBlueprint : MonoBehaviour
             for (int z = 1; z <= depth; z++)
             {
                 //check if in this position is empty
+                Debug.Log("Checking: " + (tempShift.x + x) + " " + (tempShift.y + z));
+                Debug.Log("tempShift: " + tempShift.x + " " + tempShift.y);
                 if(grid.gridStates[tempShift.x + x, tempShift.y + z] == GridState.free)
                 {
                     newParts[x, z] = CreateFloor(new Vector3(startPos.x + x-1, 0, startPos.z + z-1));
@@ -148,6 +150,8 @@ public class RoomBlueprint : MonoBehaviour
 
     private Vector2Int CalcShift(Vector3 pos)
     {
+        Debug.Log("CalcShift: " + pos);
+        Debug.Log("grid.origin: " + grid.origin);
         return new Vector2Int(Mathf.RoundToInt(pos.x - grid.origin.x), Mathf.RoundToInt(pos.z - grid.origin.z));
     }
 }
