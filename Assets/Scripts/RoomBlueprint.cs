@@ -1,6 +1,7 @@
 using System;
 using UnityEditor;
 using UnityEngine;
+using UnityEngine.Rendering;
 
 public class RoomBlueprint : MonoBehaviour
 {
@@ -15,7 +16,7 @@ public class RoomBlueprint : MonoBehaviour
     Grid grid;
 
     Vector2Int partsShift;
-    Vector2Int tempShift;
+    Vector2Int newShift;
 
     public void InitializeRoom(ref Grid grid)
     {
@@ -30,6 +31,11 @@ public class RoomBlueprint : MonoBehaviour
     public void VisualiseBlueprint(Vector3 startPos, Vector3 endPos)
     {
         ClearBlueprint();
+        if (parts.GetLength(0) == 0)
+        {
+            parts = newParts;
+            partsShift = newShift;
+        }
 
         int width = (int)Mathf.Abs(startPos.x - endPos.x)+1;
         int depth = (int)Mathf.Abs(startPos.z - endPos.z)+1;        
@@ -51,16 +57,16 @@ public class RoomBlueprint : MonoBehaviour
             endPos.z = temp;
         }
 
-        tempShift = CalcShift(startPos-Vector3.one);
+        newShift = CalcShift(startPos-Vector3.one);
 
         for (int x = 1; x <= width; x++)
         {
             for (int z = 1; z <= depth; z++)
             {
                 //check if in this position is empty
-                Debug.Log("Checking: " + (tempShift.x + x) + " " + (tempShift.y + z));
-                Debug.Log("tempShift: " + tempShift.x + " " + tempShift.y);
-                if(grid.gridStates[tempShift.x + x, tempShift.y + z] == GridState.free)
+                //Debug.Log("Checking: " + (newShift.x + x) + " " + (newShift.y + z));
+                //Debug.Log("tempShift: " + newShift.x + " " + newShift.y);
+                if(grid.gridStates[newShift.x + x, newShift.y + z] == GridState.free)
                 {
                     newParts[x, z] = CreateFloor(new Vector3(startPos.x + x-1, 0, startPos.z + z-1));
                     //debug
@@ -73,8 +79,34 @@ public class RoomBlueprint : MonoBehaviour
     //this is only temporary, this shit need any logic
     public void ConfirmPart()
     {
-        parts = newParts;
-        partsShift = tempShift;
+            Vector2Int maxShift = newShift;
+            if(maxShift.x < partsShift.x)
+                maxShift.x = partsShift.x;
+            if( maxShift.y < partsShift.y)
+                maxShift.y = partsShift.y;
+
+            Transform[,] temp = new Transform[parts.GetLength(0) + newParts.GetLength(0) - (partsShift.x - newShift.x), parts.GetLength(1) + newParts.GetLength(1) - (partsShift.y - newShift.y)];
+            Vector2Int id;
+            for(int x = 0; x < temp.GetLength(0); x++)
+            {
+                for(int z = 0; z < temp.GetLength(1); z++)
+                {
+                    id = new Vector2Int((partsShift.x - maxShift.x) + x, (partsShift.y - maxShift.y) + z);
+                    if (id.x >= 0 && id.y >= 0 && id.x <parts.GetLength(0) && id.y<parts.GetLength(1))
+                    {
+                        temp[x, z] = parts[id.x, id.y];
+                    }
+
+                    id = new Vector2Int((newShift.x - maxShift.x) + x, (newShift.y - maxShift.y) + z);
+                    if (id.x >= 0 && id.y >= 0 && id.x < newParts.GetLength(0) && id.y < newParts.GetLength(1))
+                    {
+                        temp[x, z] = newParts[id.x, id.y];
+                    }
+                }
+            }
+
+            parts = temp;
+        newParts = new Transform[0, 0];
     }
 
     private Transform CreateFloor(Vector3 pos)
@@ -85,37 +117,67 @@ public class RoomBlueprint : MonoBehaviour
     }
 
     //this must also handle walls in part array
+
+    /* soooooo
+     * this shit below must be remake to
+     * 1. create walls around floors in newPart array
+     * 2. NOT create walls if in this place is already room from part array
+     * 3. create walls around part array
+     */
     private void SetWalls()
     {
-        //iterate through parts array
-        for (int i = 0; i < newParts.GetLength(0); i++)
-        {
-            for (int j = 0; j < newParts.GetLength(1); j++)
-            {
-                Vector2Int gridId = grid.GetGridId(new Vector3(i + tempShift.x + grid.origin.x, 0, j + tempShift.y + grid.origin.z));
+        ////iterate through newParts array
+        //for (int i = 0; i < newParts.GetLength(0); i++)
+        //{
+        //    for (int j = 0; j < newParts.GetLength(1); j++)
+        //    {
+        //        Vector2Int gridId = grid.GetGridId(new Vector3(i + newShift.x + grid.origin.x, 0, j + newShift.y + grid.origin.z));
 
-                if (grid.gridStates[gridId.x, gridId.y] == GridState.blueprint)
-                {
-                    Vector2Int floorPos = new Vector2Int(Mathf.RoundToInt(newParts[i,j].position.x), Mathf.RoundToInt(newParts[i, j].position.z));
-                    if (newParts[i, j + 1] == null)
-                    {
-                        newParts[i, j + 1] = CreateWall(floorPos, new Vector2Int(0, -1));
-                    }
-                    if (newParts[i, j - 1] == null)
-                    {
-                        newParts[i, j - 1] = CreateWall(floorPos, new Vector2Int(0, 1));
-                    }
-                    if (newParts[i + 1, j] == null)
-                    {
-                        newParts[i + 1, j] = CreateWall(floorPos, new Vector2Int(-1, 0));
-                    }
-                    if (newParts[i - 1, j] == null)
-                    {
-                        newParts[i - 1, j] = CreateWall(floorPos, new Vector2Int(1, 0));
-                    }
-                }
+        //        if (grid.gridStates[gridId.x, gridId.y] == GridState.blueprint)
+        //        {
+        //            //debug i and j
+        //            Debug.Log("i: " + i + " j: " + j + " grid id: " + gridId);
+
+        //            Vector2Int floorPos = new Vector2Int(i, j) - newShift;
+
+        //            //Vector2Int floorPos = new Vector2Int(Mathf.RoundToInt(newParts[i,j].position.x), Mathf.RoundToInt(newParts[i, j].position.z));
+        //            if (newParts[i, j + 1] == null)
+        //            {
+        //                newParts[i, j + 1] = CreateWall(floorPos, new Vector2Int(0, -1));
+        //            }
+        //            if (newParts[i, j - 1] == null)
+        //            {
+        //                newParts[i, j - 1] = CreateWall(floorPos, new Vector2Int(0, 1));
+        //            }
+        //            if (newParts[i + 1, j] == null)
+        //            {
+        //                newParts[i + 1, j] = CreateWall(floorPos, new Vector2Int(-1, 0));
+        //            }
+        //            if (newParts[i - 1, j] == null)
+        //            {
+        //                newParts[i - 1, j] = CreateWall(floorPos, new Vector2Int(1, 0));
+        //            }
+        //        }
+        //    }
+        //}
+
+        Vector2Int maxShift = newShift;
+        if (maxShift.x < partsShift.x)
+            maxShift.x = partsShift.x;
+        if (maxShift.y < partsShift.y)
+            maxShift.y = partsShift.y;
+
+        int width = parts.GetLength(0) + newParts.GetLength(0) - (partsShift.x - newShift.x);
+        int depth = parts.GetLength(1) + newParts.GetLength(1) - (partsShift.y - newShift.y);
+
+        for (int x = 0; x < width; x++)
+        {
+            for(int z = 0; z<depth; z++)
+            {
+                //here comes magic stuff, i will think  about it later
             }
         }
+
     }
 
     private Transform CreateWall(Vector2Int wallPos, Vector2Int faceDir)
@@ -150,8 +212,8 @@ public class RoomBlueprint : MonoBehaviour
 
     private Vector2Int CalcShift(Vector3 pos)
     {
-        Debug.Log("CalcShift: " + pos);
-        Debug.Log("grid.origin: " + grid.origin);
+        //Debug.Log("CalcShift: " + pos);
+        //Debug.Log("grid.origin: " + grid.origin);
         return new Vector2Int(Mathf.RoundToInt(pos.x - grid.origin.x), Mathf.RoundToInt(pos.z - grid.origin.z));
     }
 }
