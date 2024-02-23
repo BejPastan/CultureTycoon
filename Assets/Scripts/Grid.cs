@@ -93,6 +93,18 @@ public class Grid : MonoBehaviour
         return gridId;
     }
 
+    public Vector2Int GetGridId(Vector2Int shift, Vector2Int cellPos)
+    {
+        Vector3 pos = new Vector3(cellPos.x + shift.x + origin.x, 0, cellPos.y + shift.y + origin.z);
+        return GetGridId(pos);
+    }
+
+    public Vector2Int GetGridId(Vector2Int shift, int x, int z)
+    {
+        Vector3 pos = new Vector3(x + shift.x + origin.x, 0, z + shift.y + origin.z);
+        return GetGridId(pos);
+    }
+
     public Vector3 GetWorldPosition(Vector2Int id)
     {
         Vector3 pos = new Vector3(id.x * cellSize, 0, id.y * cellSize)+origin;

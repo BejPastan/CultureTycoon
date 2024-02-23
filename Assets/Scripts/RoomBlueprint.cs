@@ -31,11 +31,6 @@ public class RoomBlueprint : MonoBehaviour
     public void VisualiseBlueprint(Vector3 startPos, Vector3 endPos)
     {
         ClearBlueprint();
-        if (parts.GetLength(0) == 0)
-        {
-            parts = newParts;
-            partsShift = newShift;
-        }
 
         int width = (int)Mathf.Abs(startPos.x - endPos.x)+1;
         int depth = (int)Mathf.Abs(startPos.z - endPos.z)+1;        
@@ -70,11 +65,18 @@ public class RoomBlueprint : MonoBehaviour
             }
         }
         SetWalls(ref newParts, ref newShift);
+        Debug.Log(parts.GetLength(0) + " " + parts.GetLength(1));
+        SetWalls(ref parts, ref partsShift);
     }
 
     //this is only temporary, this shit need any logic
     public void ConfirmPart()
     {
+        if (parts.GetLength(0) == 0)
+        {
+            parts = newParts;
+            partsShift = newShift;
+        }
         Vector2Int maxShift = newShift;
         if (maxShift.x < partsShift.x)
             maxShift.x = partsShift.x;
@@ -164,34 +166,41 @@ public class RoomBlueprint : MonoBehaviour
             for(int z = 1; z<depth-1; z++)
             {
                 //get grid id
-                Vector3 gridPos = new Vector3(x + shift.x + grid.origin.x, 0, z + shift.y + grid.origin.z);
-                Vector2Int gridId = grid.GetGridId(gridPos);
+                //Vector3 gridPos = new Vector3(x + shift.x + grid.origin.x, 0, z + shift.y + grid.origin.z);
+                //Vector2Int gridId = grid.GetGridId(gridPos);
+                Vector2Int gridId = grid.GetGridId(shift, x, z);
+                Vector3 gridPos = grid.GetWorldPosition(gridId);
                 
-                if (grid.gridStates[gridId.x, gridId.y] == GridState.blueprint )
+                if (grid.gridStates[gridId.x, gridId.y] == GridState.blueprint)
                 {
-                    Debug.Log("gridId: " + gridId + "parts Array: "+x+", "+z);
-                    
+                    //Debug.Log("grid pos: " + gridPos);
                     //check if there is a wall
                     Vector2Int floorPos = new Vector2Int(Mathf.RoundToInt(gridPos.x), Mathf.RoundToInt(gridPos.z));
-                    if ( /*refParts[x, z + 1] == null &&*/ grid.gridStates[gridId.x, gridId.y+1] == GridState.free)
+                    if ( refParts[x, z + 1] == null && grid.gridStates[gridId.x, gridId.y+1] == GridState.free)
                     {
                         refParts[x, z + 1] = CreateWall(floorPos, new Vector2Int(0, -1));
+                        //Debug.Log("Wall at: " + new Vector2Int(0, -1));
                     }
-                    if ( /*refParts[x, z - 1] == null &&*/ grid.gridStates[gridId.x, gridId.y-1] == GridState.free)
+                    if ( refParts[x, z - 1] == null && grid.gridStates[gridId.x, gridId.y-1] == GridState.free)
                     {
                         refParts[x, z - 1] = CreateWall(floorPos, new Vector2Int(0, 1));
+                        //Debug.Log("Wall at: " + new Vector2Int(0, 1));
                     }
-                    if ( /*refParts[x + 1, z] == null &&*/ grid.gridStates[gridId.x+1, gridId.y] == GridState.free)
+                    if ( refParts[x + 1, z] == null && grid.gridStates[gridId.x+1, gridId.y] == GridState.free)
                     {
                         refParts[x + 1, z] = CreateWall(floorPos, new Vector2Int(-1, 0));
+                        //Debug.Log("Wall at: " + new Vector2Int(-1, 0));
                     }
-                    if ( /*refParts[x - 1, z] == null &&*/ grid.gridStates[gridId.x-1, gridId.y] == GridState.free)
+                    if ( refParts[x - 1, z] == null && grid.gridStates[gridId.x-1, gridId.y] == GridState.free)
                     {
                         refParts[x - 1, z] = CreateWall(floorPos, new Vector2Int(1, 0));
+                        //Debug.Log("Wall at: " + new Vector2Int(1, 0));
                     }
+                    //Debug.Log("Setting walls End");
                 }
             }
         }
+        //Debug.LogWarning("Setting walls");
     }
 
     private Transform CreateWall(Vector2Int wallPos, Vector2Int faceDir)
@@ -210,22 +219,35 @@ public class RoomBlueprint : MonoBehaviour
     private void ClearBlueprint()
     {
         //destroy walls
-        for (int i = 0; i < newParts.GetLength(0); i++)
+        for (int x = 0; x < newParts.GetLength(0); x++)
         {
-            for (int j = 0; j < newParts.GetLength(1); j++)
+            for (int z = 0; z < newParts.GetLength(1); z++)
             {
-                if (newParts[i,j] != null)
+                Vector2Int gridID = grid.GetGridId(newShift, x, z);
+                if (newParts[x,z] != null)
                 {
-                    Debug.Log("Destroying: " + newParts[i, j].position + " name: " + newParts[i,j]);
-                    Vector2Int gridID = grid.GetGridId(newParts[i, j].position);
-                    if (newParts[i, j].gameObject.CompareTag("Floor"))
+                    if (newParts[x, z].gameObject.CompareTag("Floor"))
                     {
                         grid.gridStates[gridID.x, gridID.y] = GridState.free;
                     }
-                    Destroy(newParts[i,j].gameObject);
+                    Debug.Log("Destroying: " + newParts[x, z].gameObject);
+                    Destroy(newParts[x,z].gameObject);
+                    newParts[x, z] = null;
+
+                    Vector2Int id = gridID - newShift;
+                    if (id.x >= 0 && id.y >= 0 && id.x < parts.GetLength(0) && id.y < parts.GetLength(1))
+                    {
+                        if (parts[id.x, id.y] != null)
+                            if (parts[id.x, id.y].CompareTag("Wall"))
+                            {
+                                Destroy(parts[id.x, id.y].gameObject);
+                                parts[id.x, id.y] = null;
+                            }
+                    }
                 }
             }
         }
+        Debug.LogWarning("Clearing blueprint");
     }
 
     private Vector2Int CalcShift(Vector3 pos)
