@@ -174,7 +174,21 @@ public class RoomBlueprint : MonoBehaviour
         {
             for(int z = 0; z<depth; z++)
             {
-                //here comes magic stuff, i will think  about it later
+                //chack if in this position is floor(by checking if this position is marked as blueprint in grid)
+                Vector2Int gridId = grid.GetGridId(new Vector3(x + maxShift.x + grid.origin.x, 0, z + maxShift.y + grid.origin.z));
+                if (grid.gridStates[gridId.x, gridId.y] == GridState.blueprint)
+                {
+                    //now we need to check if around this position is floor
+                    Vector2Int floorPos = new Vector2Int(x, z) - newShift;
+                    Vector2Int id1 = new Vector2Int((partsShift.x - maxShift.x) + x, (partsShift.y - maxShift.y) + z);
+                    Vector2Int id2 = new Vector2Int((newShift.x - maxShift.x) + x, (newShift.y - maxShift.y) + z);
+
+
+                    if (newParts[id1.x, id1.y + 1] == null )
+                    {
+                        newParts[id1.x, id1.y + 1] = CreateWall(floorPos, new Vector2Int(0, -1));
+                    }
+                }
             }
         }
 
