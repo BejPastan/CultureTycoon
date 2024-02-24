@@ -83,11 +83,11 @@ public class Grid : MonoBehaviour
         Vector2Int gridId = new Vector2Int(Mathf.RoundToInt(position.x / cellSize), Mathf.RoundToInt(position.z / cellSize));
 
         if (gridId.x < 0)
-            gridId.x = 0;
+            gridId.x = 1;
         if (gridId.x >= width)
             gridId.x = width - 1;
         if(gridId.y < 0)
-            gridId.y = 0;
+            gridId.y = 1;
         if(gridId.y >= depth)
             gridId.y = depth - 1;
         return gridId;
@@ -111,18 +111,23 @@ public class Grid : MonoBehaviour
         return pos;
     }
 
-    public void ConfirmRoom()
+    public void ChangeGridState(GridState changeThisState, GridState toThisState, Vector2Int rangeStart, Vector2Int rangeEnd)
     {
         //change all blueprint to room
-        for (int i = 0; i < width; i++)
+        for (int x = rangeStart.x; x < rangeEnd.x; x++)
         {
-            for (int j = 0; j < depth; j++)
+            for (int z = rangeStart.y; z < rangeEnd.y; z++)
             {
-                if (gridStates[i, j] == GridState.blueprint)
-                    gridStates[i, j] = GridState.room;
+                if (gridStates[x, z] == changeThisState)
+                    gridStates[x, z] = toThisState;
             }
         }
     }
+
+    public void ChangeGridState(GridState changeThisState, GridState toThisState)
+    {
+        ChangeGridState(changeThisState, toThisState, new Vector2Int(0, 0), new Vector2Int(width, depth));
+    }    
 }
 
 public enum GridState

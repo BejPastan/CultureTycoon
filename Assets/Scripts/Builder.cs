@@ -36,13 +36,13 @@ public class Builder : MonoBehaviour
                 if(endPos != GetMousePosition())
                 {
                     endPos = GetMousePosition();
-                    room.VisualiseBlueprint(grid.GetWorldPosition(startPos), grid.GetWorldPosition(endPos));
+                    
                 }
             }
             if(Input.GetMouseButtonUp(1))
             {
                 isRightClick = false;
-                room.ConfirmPart();
+                
             }
             
         }
@@ -71,11 +71,7 @@ public class Builder : MonoBehaviour
 
     public void CreateNewRoomPart()
     {
-        room = new GameObject("Room").AddComponent<RoomBlueprint>();
-        room.InitializeRoom(ref grid);
-        //this is temporary
-        room.floorPref = floorPref;
-        room.wallPref = wallPref;
+
     }
 
     public void ToggleBuilding()
@@ -83,8 +79,6 @@ public class Builder : MonoBehaviour
         if(isBuilding)
         {
             isBuilding = false;
-            room.InstanceRoom();
-            room = null;
         }
         else
         {
