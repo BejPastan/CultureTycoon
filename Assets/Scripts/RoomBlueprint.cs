@@ -26,7 +26,7 @@ public class RoomBlueprint : MonoBehaviour
     public void CreateNewPart()
     {
         Array.Resize(ref parts, parts.Length + 1);
-        parts[parts.Length - 1] = new RoomPart();
+        parts[parts.Length - 1] = new RoomPart(ref grid);
     }
 
     /// <summary>
@@ -116,10 +116,10 @@ public struct RoomPart
     public Vector2Int gridEnd;
     public Grid grid;
 
-    public RoomPart(Vector2Int gridShift, Vector2Int gridEnd, ref Grid grid)
+    public RoomPart(ref Grid grid)
     {
-        this.gridShift = gridShift;
-        this.gridEnd = gridEnd;
+        this.gridShift = Vector2Int.zero;
+        this.gridEnd = Vector2Int.zero;
         elements = new Transform[0, 0];
         this.grid = grid;
     }
@@ -159,6 +159,7 @@ public struct RoomPart
             }
         }
         elements = newElements;
+        Debug.Log("elements size "+elements.GetLength(0));
     }
 
     public void CreateElement(Vector2Int id, ref GameObject pref)
