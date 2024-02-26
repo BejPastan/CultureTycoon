@@ -1,4 +1,5 @@
 using System;
+using System.Drawing;
 using UnityEngine;
 
 public class RoomBlueprint : MonoBehaviour
@@ -108,16 +109,8 @@ public struct RoomPart
         Vector2Int deltaShift = startPos - gridShift;
 
         Transform[,] newElements = new Transform[size.x, size.y];
-        for (int x = 0; x < size.x; x++)
-        {
-            for (int y = 0; y < size.y; y++)
-            {
-                if(x+deltaShift.x >= 0 && x+deltaShift.x < x && y+deltaShift.y >= 0 && y+deltaShift.y < y)
-                {
-                    newElements[x, y] = elements[x + deltaShift.x, y + deltaShift.y];
-                }
-            }
-        }
+
+        elements = newElements;
     }
 
     public Transform GetObjectFromId(int x, int y)
@@ -144,5 +137,20 @@ public struct RoomPart
     {
         Vector2Int size = new Vector2Int(gridEnd.x - gridShift.x, gridEnd.y - gridShift.y);
         return size;
+    }
+
+    private void CombineElements(ref Transform[,] newElements, Vector2Int deltaShift)
+    {
+        Vector2Int size = new Vector2Int(newElements.GetLength(0), newElements.GetLength(1));
+        for (int x = 0; x < size.x; x++)
+        {
+            for (int y = 0; y < size.y; y++)
+            {
+                if (x + deltaShift.x >= 0 && x + deltaShift.x < size.x - 1 && y + deltaShift.y >= 0 && y + deltaShift.y < size.y - 1)
+                {
+                    newElements[x, y] = this.elements[x + deltaShift.x, y + deltaShift.y];
+                }
+            }
+        }
     }
 }
