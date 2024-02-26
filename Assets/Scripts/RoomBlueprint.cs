@@ -59,14 +59,15 @@ public class RoomBlueprint : MonoBehaviour
                 bool isFloor = false;
                 foreach (RoomPart room in parts)
                 {
-                    if(room.GetObjectByGridId(gridId).CompareTag("Floor"))
-                    {
-                        isFloor = true;
-                    }
-                    else
-                    {
-                        RemoveElement(ref part, gridId);
-                    }
+                    if(room.GetObjectByGridId(gridId)!= null)
+                        if(room.GetObjectByGridId(gridId).CompareTag("Floor"))
+                        {
+                            isFloor = true;
+                        }
+                        else
+                        {
+                            RemoveElement(ref part, gridId);
+                        }
                 }
                 if(!isFloor)
                 {
