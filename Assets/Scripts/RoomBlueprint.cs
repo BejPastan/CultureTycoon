@@ -35,10 +35,16 @@ public class RoomBlueprint : MonoBehaviour
     /// </summary>
     public void ChangeSize(Vector2Int startPos, Vector2Int endPos)
     {
-
+        ChangeSize(startPos, endPos, ref parts[parts.Length - 1]);
     }
 
-    private void SetFloors(ref RoomPart part, int id)
+    private void ChangeSize(Vector2Int startPos, Vector2Int endPos, ref RoomPart part)
+    {
+        part.Resize(startPos, endPos);
+        SetFloors(ref part);
+    }
+
+    private void SetFloors(ref RoomPart part)
     {
         Vector2Int size = part.GetSize();
         Vector2Int gridId;
@@ -120,6 +126,15 @@ public struct RoomPart
             }
         }
         elements = newElements;
+    }
+
+    private void CreateElement(Vector2Int id, ref GameObject pref)
+    {
+        Vector2Int gridId = GetGridId(id);
+        Vector3 pos = grid.GetWorldPosition(id);
+
+        //create element
+        elements[id.x, id.y] = GameObject.Instantiate(pref, pos, Quaternion.identity).transform;
     }
 
     public Transform GetObjectFromId(int x, int y)
