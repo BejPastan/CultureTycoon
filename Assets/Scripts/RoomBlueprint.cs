@@ -56,20 +56,15 @@ public class RoomBlueprint : MonoBehaviour
                 bool isFloor = false;
                 foreach (RoomPart room in parts)
                 {
+                    if(room.GetObjectByGridId(gridId).CompareTag("Floor"))
+                    {
 
+                    }
                 }
 
-                part.elements[x, z] = CreateFloor(gridId);
+                part.elements[x, z] = CreateFloor(gridId, ref part, ref floorPref);
             }
         }
-    }
-
-    private Transform CreateFloor(Vector3 pos)
-    {
-        Vector2Int gridId = grid.GetGridId(pos);
-        grid.gridStates[gridId.x, gridId.y] = GridState.blueprint;
-
-        return Instantiate(floorPref, pos, Quaternion.identity).transform;
     }
 
     private Transform CreateFloor(Vector2Int gridId, ref RoomPart room, ref GameObject pref)
@@ -146,6 +141,11 @@ public struct RoomPart
     public Transform GetObjectByGridId(int x, int y)
     {
         return elements[x - gridShift.x, y - gridShift.y];
+    }
+
+    public Transform GetObjectByGridId(Vector2Int gridId)
+    {
+        return elements[gridId.x - gridShift.x, gridId.y - gridShift.y];
     }
 
     public Vector2Int GetIdByGridId(int x, int y)
