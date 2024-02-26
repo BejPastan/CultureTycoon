@@ -76,7 +76,7 @@ public class RoomBlueprint : MonoBehaviour
     {
         Vector3 pos = grid.GetWorldPosition(gridId);
         grid.gridStates[gridId.x, gridId.y] = GridState.blueprint;
-        room.CreateElement(room.GetIdByGridId(), ref pref);
+        room.CreateElement(room.GetIdByGridId(gridId), ref pref);
         return Instantiate(floorPref, pos, Quaternion.identity).transform;
     }
 }
@@ -133,9 +133,7 @@ public struct RoomPart
 
     public void CreateElement(Vector2Int id, ref GameObject pref)
     {
-        Vector2Int gridId = GetGridId(id);
         Vector3 pos = grid.GetWorldPosition(id);
-
         //create element
         elements[id.x, id.y] = GameObject.Instantiate(pref, pos, Quaternion.identity).transform;
     }
