@@ -128,6 +128,22 @@ public class Grid : MonoBehaviour
     {
         ChangeGridState(changeThisState, toThisState, new Vector2Int(0, 0), new Vector2Int(width, depth));
     }    
+
+    public void ChangeGridState(GridState toThisState, Vector2Int rangeStart, Vector2Int rangeEnd)
+    {
+        for (int x = rangeStart.x; x < rangeEnd.x; x++)
+        {
+            for (int z = rangeStart.y; z < rangeEnd.y; z++)
+            {
+                gridStates[x, z] = toThisState;
+            }
+        }
+    }
+
+    public void ChangeGridState(GridState toThisState, Vector2Int id)
+    {
+        gridStates[id.x, id.y] = toThisState;
+    }
 }
 
 public enum GridState

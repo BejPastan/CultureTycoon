@@ -30,19 +30,19 @@ public class Builder : MonoBehaviour
             {
                 startPos = GetMousePosition();
                 isRightClick = true;
+                room.CreateNewPart();
             }
             if(isRightClick)
             {
                 if(endPos != GetMousePosition())
                 {
                     endPos = GetMousePosition();
-                    
+                    room.ChangeSize(startPos, endPos);
                 }
             }
             if(Input.GetMouseButtonUp(1))
             {
                 isRightClick = false;
-                
             }
             
         }
@@ -69,9 +69,11 @@ public class Builder : MonoBehaviour
         return new Vector2Int(-1, -1);
     }
 
-    public void CreateNewRoomPart()
+    private void CreateNewRoomPart()
     {
-
+        //create ne game object for room part
+        room = new GameObject("Room").AddComponent<RoomBlueprint>();
+        room.createNewBlueprint(ref grid, wallPref, floorPref);
     }
 
     public void ToggleBuilding()

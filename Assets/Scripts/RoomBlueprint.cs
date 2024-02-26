@@ -13,9 +13,11 @@ public class RoomBlueprint : MonoBehaviour
     /// <summary>
     /// Creating New Blueprint
     /// </summary> 
-    public void createNewBlueprint(ref Grid grid)
+    public void createNewBlueprint(ref Grid grid, GameObject wallPref, GameObject floorPref)
     {
         this.grid = grid;
+        this.wallPref = wallPref;
+        this.floorPref = floorPref;
     }
 
     /// <summary>
@@ -46,7 +48,7 @@ public class RoomBlueprint : MonoBehaviour
                 gridId = grid.GetGridId(part.gridShift, new Vector2Int(x, z));
                 foreach (RoomPart room in parts)
                 {
-                    Vector2Int id = room.GetIdByGridId(gridId);
+                    Vector2Int id = room.GetIdByGridId(gridId.x, gridId.y);
                 }
                 part.elements[x, z] = CreateFloor(gridId);
             }
@@ -74,13 +76,17 @@ public struct RoomPart
     public Transform[,] elements;
     public Vector2Int gridShift;
     public Vector2Int gridEnd;
+    public Grid grid;
 
-    public RoomPart(Vector2Int gridShift, Vector2Int gridEnd)
+    public RoomPart(Vector2Int gridShift, Vector2Int gridEnd, ref Grid grid)
     {
         this.gridShift = gridShift;
         this.gridEnd = gridEnd;
         elements = new Transform[0, 0];
+        this.grid = grid;
     }
+
+
 
     public Transform GetObjectFromId(int x, int y)
     {
@@ -99,11 +105,12 @@ public struct RoomPart
 
     public Vector2Int GetGridId(Vector2Int id)
     {
-        return id-gridShift;
+        return id+gridShift;
     }
 
     public Vector2Int GetSize()
     {
-        return gridEnd - gridShift;
+        Vector2Int size = new Vector2Int(gridEnd.x - gridShift.x, gridEnd.y - gridShift.y);
+        return size;
     }
 }
