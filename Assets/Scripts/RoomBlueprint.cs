@@ -79,12 +79,11 @@ public class RoomBlueprint : MonoBehaviour
 
     private void CreateElement(Vector2Int gridId, ref RoomPart room, ref GameObject pref)
     {
-        Vector3 pos = grid.GetWorldPosition(gridId);
         //test if prefab hase tag floor
         if(pref.CompareTag("Floor"))
         {
             grid.ChangeGridState(GridState.blueprint, gridId, gridId);
-        }       
+        }
         room.CreateElement(room.GetIdByGridId(gridId), ref pref);
     }
 
@@ -166,7 +165,7 @@ public struct RoomPart
 
     public void CreateElement(Vector2Int id, ref GameObject pref)
     {
-        Vector3 pos = grid.GetWorldPosition(id);
+        Vector3 pos = grid.GetWorldPosition(GetGridId(id));
         //create element
         elements[id.x, id.y] = GameObject.Instantiate(pref, pos, Quaternion.identity).transform;
     }
