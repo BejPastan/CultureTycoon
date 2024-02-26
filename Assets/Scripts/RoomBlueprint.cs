@@ -1,5 +1,4 @@
 using System;
-using System.Drawing;
 using UnityEngine;
 
 public class RoomBlueprint : MonoBehaviour
@@ -58,21 +57,30 @@ public class RoomBlueprint : MonoBehaviour
                 {
                     if(room.GetObjectByGridId(gridId).CompareTag("Floor"))
                     {
-
+                        isFloor = true;
+                    }
+                    else
+                    {
+                        //removing other objects i will do it later
                     }
                 }
-
-                part.elements[x, z] = CreateFloor(gridId, ref part, ref floorPref);
+                if(!isFloor)
+                {
+                    CreateElement(gridId, ref part, ref floorPref);
+                }
             }
         }
     }
 
-    private Transform CreateFloor(Vector2Int gridId, ref RoomPart room, ref GameObject pref)
+    private void CreateElement(Vector2Int gridId, ref RoomPart room, ref GameObject pref)
     {
         Vector3 pos = grid.GetWorldPosition(gridId);
-        grid.gridStates[gridId.x, gridId.y] = GridState.blueprint;
+        //test if prefab hase tag floor
+        if(pref.CompareTag("Floor"))
+        {
+            grid.ChangeGridState(GridState.blueprint, gridId, gridId);
+        }       
         room.CreateElement(room.GetIdByGridId(gridId), ref pref);
-        return Instantiate(floorPref, pos, Quaternion.identity).transform;
     }
 }
 
