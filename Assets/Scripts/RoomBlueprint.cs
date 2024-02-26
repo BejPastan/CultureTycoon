@@ -86,7 +86,39 @@ public struct RoomPart
         this.grid = grid;
     }
 
+    public void Resize(Vector2Int startPos, Vector2Int endPos)
+    {
+        //set start as smaller value
+        if(startPos.x > endPos.x)
+        {
+            int temp = startPos.x;
+            startPos.x = endPos.x;
+            endPos.x = temp;
+        }
+        if(startPos.y > endPos.y)
+        {
+            int temp = startPos.y;
+            startPos.y = endPos.y;
+            endPos.y = temp;
+        }
+        startPos-= Vector2Int.one;
+        endPos+= Vector2Int.one;
+        Vector2Int size = endPos - startPos+Vector2Int.one;
 
+        Vector2Int deltaShift = startPos - gridShift;
+
+        Transform[,] newElements = new Transform[size.x, size.y];
+        for (int x = 0; x < size.x; x++)
+        {
+            for (int y = 0; y < size.y; y++)
+            {
+                if(x+deltaShift.x >= 0 && x+deltaShift.x < x && y+deltaShift.y >= 0 && y+deltaShift.y < y)
+                {
+                    newElements[x, y] = elements[x + deltaShift.x, y + deltaShift.y];
+                }
+            }
+        }
+    }
 
     public Transform GetObjectFromId(int x, int y)
     {
