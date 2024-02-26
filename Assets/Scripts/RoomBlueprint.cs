@@ -146,13 +146,14 @@ public struct RoomPart
         Vector2Int size = endPos - startPos+Vector2Int.one;
 
         Vector2Int deltaShift = startPos - gridShift;
+        Debug.Log("size: " + size);
 
         Transform[,] newElements = new Transform[size.x, size.y];
         for (int x = 0; x < size.x; x++)
         {
             for (int y = 0; y < size.y; y++)
             {
-                if (x + deltaShift.x >= 0 && x + deltaShift.x < size.x - 1 && y + deltaShift.y >= 0 && y + deltaShift.y < size.y - 1)
+                if (x + deltaShift.x >= 0 && x + deltaShift.x < elements.GetLength(0) - 1 && y + deltaShift.y >= 0 && y + deltaShift.y < elements.GetLength(1) - 1)
                 {
                     newElements[x, y] = this.elements[x + deltaShift.x, y + deltaShift.y];
                 }
