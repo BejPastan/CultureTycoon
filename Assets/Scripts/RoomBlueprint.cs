@@ -39,7 +39,7 @@ public class RoomBlueprint : MonoBehaviour
 
     private void ChangeSize(Vector2Int startPos, Vector2Int endPos, ref RoomPart part)
     {
-        part.RemoveAllElements();
+        
         part.Resize(startPos, endPos);
         SetFloors(ref part);
     }
@@ -82,6 +82,21 @@ public class RoomBlueprint : MonoBehaviour
             grid.ChangeGridState(GridState.blueprint, gridId, gridId);
         }       
         room.CreateElement(room.GetIdByGridId(gridId), ref pref);
+    }
+
+    private void ClearPart(ref RoomPart part)
+    {
+        Vector2Int size = part.GetSize();
+        Vector2Int gridId;
+        for (int x = 0; x < size.x; x++)
+        {
+            for (int z = 0; z < size.y; z++)
+            {
+                gridId = part.GetGridId(new Vector2Int(x, z));
+                part.RemoveElement(part.GetGridId(new Vector2Int(x, z)));
+                grid.ChangeGridState(GridState.free, gridId);
+            }
+        }
     }
 }
 
@@ -148,17 +163,6 @@ public struct RoomPart
         {
             GameObject.Destroy(elements[id.x, id.y].gameObject);
             elements[id.x, id.y] = null;
-        }
-    }
-
-    public void RemoveAllElements()
-    {
-        for (int x = 0; x < elements.GetLength(0); x++)
-        {
-            for (int y = 0; y < elements.GetLength(1); y++)
-            {
-                RemoveElement(new Vector2Int(x, y));
-            }
         }
     }
 
