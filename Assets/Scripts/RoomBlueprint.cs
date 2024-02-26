@@ -39,6 +39,7 @@ public class RoomBlueprint : MonoBehaviour
 
     private void ChangeSize(Vector2Int startPos, Vector2Int endPos, ref RoomPart part)
     {
+        part.RemoveAllElements();
         part.Resize(startPos, endPos);
         SetFloors(ref part);
     }
@@ -139,6 +140,26 @@ public struct RoomPart
         Vector3 pos = grid.GetWorldPosition(id);
         //create element
         elements[id.x, id.y] = GameObject.Instantiate(pref, pos, Quaternion.identity).transform;
+    }
+
+    public void RemoveElement(Vector2Int id)
+    {
+        if (elements[id.x, id.y] != null)
+        {
+            GameObject.Destroy(elements[id.x, id.y].gameObject);
+            elements[id.x, id.y] = null;
+        }
+    }
+
+    public void RemoveAllElements()
+    {
+        for (int x = 0; x < elements.GetLength(0); x++)
+        {
+            for (int y = 0; y < elements.GetLength(1); y++)
+            {
+                RemoveElement(new Vector2Int(x, y));
+            }
+        }
     }
 
     public Transform GetObjectFromId(int x, int y)
