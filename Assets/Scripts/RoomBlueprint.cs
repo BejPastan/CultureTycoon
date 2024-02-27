@@ -232,8 +232,9 @@ public struct RoomPart
     {
         Vector3 pos = grid.GetWorldPosition(GetGridId(id));
         //here goes magic stuff with direction
+        Quaternion rotation = Quaternion.Euler(0, (90*face.y*(face.y-1)) + ((face.x*90)-90), 0);
         //create element
-        elements[id.x, id.y] = GameObject.Instantiate(pref, pos, Quaternion.identity).transform;
+        elements[id.x, id.y] = GameObject.Instantiate(pref, pos, rotation).transform;
     }
 
     public void CreateFloor(Vector2Int id, ref GameObject pref)
