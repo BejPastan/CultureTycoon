@@ -42,7 +42,7 @@ public class RoomBlueprint : MonoBehaviour
         ClearPart(ref part);
         part.Resize(startPos, endPos);
         SetFloors(ref part);
-        //SetWalls(ref part);
+        SetWalls(ref part);
     }
 
     private void SetFloors(ref RoomPart part)
@@ -81,9 +81,9 @@ public class RoomBlueprint : MonoBehaviour
         Debug.Log("SetWalls");
         Vector2Int gridId;
         Vector2Int size = part.GetSize();
-        for (int x = 1; x < size.x-2; x++)
+        for (int x = 1; x < size.x-1; x++)
         {
-            for (int z = 1; z < size.y-2; z++)
+            for (int z = 1; z < size.y-1; z++)
             {
                 if (part.GetObjectFromId(x, z) != null)
                 {
@@ -137,8 +137,8 @@ public class RoomBlueprint : MonoBehaviour
 
     private void CreateWall(ref RoomPart part, Vector2Int id, Vector2Int centerId)
     {
+        id = part.GetIdByGridId(id);
         centerId -= id;
-
         part.CreateWall(id, ref wallPref, centerId);
     }
 
