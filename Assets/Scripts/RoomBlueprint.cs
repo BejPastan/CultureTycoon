@@ -55,7 +55,7 @@ public class RoomBlueprint : MonoBehaviour
             for (int z =1; z < size.y-1; z++)
             {
                 Debug.Log("SetFloors at "+ x + ", "+z);
-                gridId = grid.GetGridId(part.gridShift, new Vector2Int(x, z));
+                gridId = part.GetGridId(new Vector2Int(x, z));
                 bool isFloor = false;
                 foreach (RoomPart room in parts)
                 {
@@ -103,7 +103,9 @@ public class RoomBlueprint : MonoBehaviour
             {
                 gridId = part.GetGridId(new Vector2Int(x, z));
                 part.RemoveElement(new Vector2Int(x,z));
-                grid.ChangeGridState(GridState.free, gridId);
+                if(part.GetObjectFromId(x, z) != null)
+                    if(part.GetObjectFromId(x, z).CompareTag("Floor"))
+                        grid.ChangeGridState(GridState.free, gridId);
             }
         }
     }

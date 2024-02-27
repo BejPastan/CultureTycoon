@@ -82,27 +82,19 @@ public class Grid : MonoBehaviour
         position -= origin;
         Vector2Int gridId = new Vector2Int(Mathf.RoundToInt(position.x / cellSize), Mathf.RoundToInt(position.z / cellSize));
 
+        Debug.LogWarning("before check GridId: " + gridId);
+
         if (gridId.x < 0)
-            gridId.x = 1;
+            gridId.x = 0;
         if (gridId.x >= width)
             gridId.x = width - 1;
         if(gridId.y < 0)
-            gridId.y = 1;
+            gridId.y = 0;
         if(gridId.y >= depth)
             gridId.y = depth - 1;
+
+        Debug.LogWarning("after check GridId: " + gridId);
         return gridId;
-    }
-
-    public Vector2Int GetGridId(Vector2Int shift, Vector2Int cellPos)
-    {
-        Vector3 pos = new Vector3(cellPos.x + shift.x + origin.x, 0, cellPos.y + shift.y + origin.z);
-        return GetGridId(pos);
-    }
-
-    public Vector2Int GetGridId(Vector2Int shift, int x, int z)
-    {
-        Vector3 pos = new Vector3(x + shift.x + origin.x, 0, z + shift.y + origin.z);
-        return GetGridId(pos);
     }
 
     public Vector3 GetWorldPosition(Vector2Int id)
