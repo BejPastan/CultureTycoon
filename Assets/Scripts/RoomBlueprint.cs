@@ -49,11 +49,18 @@ public class RoomBlueprint : MonoBehaviour
         }
     }
 
+    public void ConfirmBlueprint()
+    {
+        foreach(RoomPart part in parts)
+        {
+            grid.ChangeGridState(GridState.blueprint, GridState.room, part.gridShift, part.gridEnd);
+        }
+    }
+
     private void SetFloors(ref RoomPart part)
     {
         Vector2Int size = part.GetSize();
         Vector2Int gridId;
-        Debug.Log("SetFloors");
         for (int x = 1; x < size.x-1; x++)
         {
             for (int z =1; z < size.y-1; z++)
@@ -76,7 +83,7 @@ public class RoomBlueprint : MonoBehaviour
                 }
                 if(!isFloor)
                 {
-                    CreateElement(gridId, ref part, ref floorPref);
+                    CreateFloor(gridId, ref part, ref floorPref);
                 }
             }
         }
@@ -84,7 +91,6 @@ public class RoomBlueprint : MonoBehaviour
 
     private void SetWalls(ref RoomPart part, int roomPart)
     {
-        Debug.Log("SetWalls");
         Vector2Int gridId;
         Vector2Int size = part.GetSize();
         for (int x = 1; x < size.x-1; x++)
@@ -154,12 +160,13 @@ public class RoomBlueprint : MonoBehaviour
         part.CreateWall(id, ref wallPref, centerId);
     }
 
-    private void CreateElement(Vector2Int gridId, ref RoomPart room, ref GameObject pref)
+    private void CreateFloor(Vector2Int gridId, ref RoomPart room, ref GameObject pref)
     {
         //test if prefab hase tag floor
         if(pref.CompareTag("Floor"))
         {
-            grid.ChangeGridState(GridState.blueprint, gridId, gridId);
+            Debug.Log("CreateFloor at "+ gridId);
+            grid.ChangeGridState(GridState.blueprint, gridId);
         }
         room.CreateFloor(room.GetIdByGridId(gridId), ref pref);
     }
@@ -246,11 +253,11 @@ public struct RoomPart
         elements = newElements;
     }
 
-    public void CreateWall(Vector2Int id, ref GameObject pref, Vector2Int face)
+    public void CreateWall(Vector2Int id, ref GameObject pref, Vector2Int centerShift)
     {
-        Vector3 pos = grid.GetWorldPosition(GetGridId(id));
+        Vector3 pos = grid.GetWorldPosition(GetGridId(id + centerShift));
         //here goes magic stuff with direction
-        Quaternion rotation = Quaternion.Euler(0, (90*face.y*(face.y-1)) + ((face.x*90)-90), 0);
+        Quaternion rotation = Quaternion.Euler(0, (90*centerShift.y*(centerShift.y+1)) + ((centerShift.x*-90)-90), 0);
         //create element
         elements[id.x, id.y] = GameObject.Instantiate(pref, pos, rotation).transform;
     }

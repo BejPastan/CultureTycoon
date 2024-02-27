@@ -69,11 +69,17 @@ public class Builder : MonoBehaviour
         return new Vector2Int(-1, -1);
     }
 
-    private void CreateNewRoomPart()
+    private void StartEditing()
     {
         //create ne game object for room part
         room = new GameObject("Room").AddComponent<RoomBlueprint>();
         room.createNewBlueprint(ref grid, wallPref, floorPref);
+    }
+
+    private void EndEditing()
+    {
+        room.ConfirmBlueprint();
+        room = null;
     }
 
     public void ToggleBuilding()
@@ -81,11 +87,12 @@ public class Builder : MonoBehaviour
         if(isBuilding)
         {
             isBuilding = false;
+            EndEditing();
         }
         else
         {
             isBuilding = true;
-            CreateNewRoomPart();
+            StartEditing();
         }
         grid.ToggleGrid();
     }

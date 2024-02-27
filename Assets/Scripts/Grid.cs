@@ -105,8 +105,13 @@ public class Grid : MonoBehaviour
         {
             for (int z = rangeStart.y; z < rangeEnd.y; z++)
             {
-                if (gridStates[x, z] == changeThisState)
-                    gridStates[x, z] = toThisState;
+                if (x >= 0 && x < width && z >= 0 && z < depth)
+                    Debug.Log("Grid state at " + x + " " + z + " is " + gridStates[x, z]);
+                    if (gridStates[x, z] == changeThisState)
+                    {
+                        gridStates[x, z] = toThisState;
+                        Debug.Log("Changed grid state at " + x + " " + z + " to " + toThisState);
+                    }  
             }
         }
     }
