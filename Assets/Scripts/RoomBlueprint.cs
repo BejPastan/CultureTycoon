@@ -102,7 +102,7 @@ public class RoomBlueprint : MonoBehaviour
             for (int z = 0; z < size.y; z++)
             {
                 gridId = part.GetGridId(new Vector2Int(x, z));
-                part.RemoveElement(part.GetGridId(new Vector2Int(x, z)));
+                part.RemoveElement(new Vector2Int(x,z));
                 grid.ChangeGridState(GridState.free, gridId);
             }
         }
