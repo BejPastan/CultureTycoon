@@ -81,9 +81,6 @@ public class Grid : MonoBehaviour
     {
         position -= origin;
         Vector2Int gridId = new Vector2Int(Mathf.RoundToInt(position.x / cellSize), Mathf.RoundToInt(position.z / cellSize));
-
-        Debug.LogWarning("before check GridId: " + gridId);
-
         if (gridId.x < 0)
             gridId.x = 0;
         if (gridId.x >= width)
@@ -92,8 +89,6 @@ public class Grid : MonoBehaviour
             gridId.y = 0;
         if(gridId.y >= depth)
             gridId.y = depth - 1;
-
-        Debug.LogWarning("after check GridId: " + gridId);
         return gridId;
     }
 

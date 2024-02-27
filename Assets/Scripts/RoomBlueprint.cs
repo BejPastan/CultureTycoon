@@ -34,7 +34,6 @@ public class RoomBlueprint : MonoBehaviour
     /// </summary>
     public void ChangeSize(Vector2Int startPos, Vector2Int endPos)
     {
-        Debug.Log("ChangeSize");
         ChangeSize(startPos, endPos, ref parts[parts.Length - 1]);
     }
 
@@ -43,6 +42,7 @@ public class RoomBlueprint : MonoBehaviour
         ClearPart(ref part);
         part.Resize(startPos, endPos);
         SetFloors(ref part);
+        //SetWalls(ref part);
     }
 
     private void SetFloors(ref RoomPart part)
@@ -54,7 +54,6 @@ public class RoomBlueprint : MonoBehaviour
         {
             for (int z =1; z < size.y-1; z++)
             {
-                Debug.Log("SetFloors at "+ x + ", "+z);
                 gridId = part.GetGridId(new Vector2Int(x, z));
                 bool isFloor = false;
                 foreach (RoomPart room in parts)
@@ -79,11 +78,12 @@ public class RoomBlueprint : MonoBehaviour
 
     private void SetWalls(ref RoomPart part)
     {
+        Debug.Log("SetWalls");
         Vector2Int gridId;
         Vector2Int size = part.GetSize();
-        for (int x = 1; x < size.x-1; x++)
+        for (int x = 1; x < size.x-2; x++)
         {
-            for (int z = 1; z < size.y-1; z++)
+            for (int z = 1; z < size.y-2; z++)
             {
                 if (part.GetObjectFromId(x, z) != null)
                 {
@@ -97,17 +97,17 @@ public class RoomBlueprint : MonoBehaviour
                         gridId = part.GetGridId(new Vector2Int(x+1, z));
                         if(CanBuildWall(gridId))
                         {
-
+                            CreateWall(ref part, gridId, new Vector2Int(x, z));
                         }
                         gridId = part.GetGridId(new Vector2Int(x, z-1));
                         if(CanBuildWall(gridId))
                         {
-
+                            CreateWall(ref part, gridId, new Vector2Int(x, z));
                         }
                         gridId = part.GetGridId(new Vector2Int(x, z+1));
                         if(CanBuildWall(gridId))
                         {
-
+                            CreateWall(ref part, gridId, new Vector2Int(x, z));
                         }
                     }
                 }
@@ -132,7 +132,7 @@ public class RoomBlueprint : MonoBehaviour
                 return false;
             }
         }
-        return true
+        return true;
     }
 
     private void CreateWall(ref RoomPart part, Vector2Int id, Vector2Int centerId)
@@ -213,7 +213,6 @@ public struct RoomPart
         Vector2Int size = endPos - startPos+Vector2Int.one;
 
         Vector2Int deltaShift = startPos - gridShift;
-        Debug.Log("size: " + size);
 
         Transform[,] newElements = new Transform[size.x, size.y];
         for (int x = 0; x < size.x; x++)
@@ -227,7 +226,6 @@ public struct RoomPart
             }
         }
         elements = newElements;
-        Debug.Log("elements size "+elements.GetLength(0));
     }
 
     public void CreateWall(Vector2Int id, ref GameObject pref, Vector2Int face)
@@ -308,7 +306,6 @@ public struct RoomPart
     public Vector2Int GetSize()
     {
         Vector2Int size = new Vector2Int(elements.GetLength(0), elements.GetLength(1));
-        Debug.Log("Size: " + size);
         return size;
     }
 }
