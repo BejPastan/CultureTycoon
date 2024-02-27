@@ -44,6 +44,7 @@ public class RoomBlueprint : MonoBehaviour
         SetFloors(ref part);
         for(int roomIndex = 0; roomIndex < parts.Length; roomIndex++)
         {
+            
             SetWalls(ref parts[roomIndex], roomIndex);
         }
     }
@@ -97,23 +98,26 @@ public class RoomBlueprint : MonoBehaviour
                         gridId = part.GetGridId(new Vector2Int(x-1, z));
                         if(CanBuildWall(gridId))
                         {
-                            CreateWall(ref part, gridId, new Vector2Int(x, z));
-                            Debug.Log("CreateWall at " + gridId + " for part " + roomPart);
+                            if(part.GetObjectByGridId(gridId) == null)
+                                CreateWall(ref part, gridId, new Vector2Int(x, z));
                         }
                         gridId = part.GetGridId(new Vector2Int(x+1, z));
                         if(CanBuildWall(gridId))
                         {
-                            CreateWall(ref part, gridId, new Vector2Int(x, z));
+                            if(part.GetObjectByGridId(gridId) == null)
+                                CreateWall(ref part, gridId, new Vector2Int(x, z));
                         }
                         gridId = part.GetGridId(new Vector2Int(x, z-1));
                         if(CanBuildWall(gridId))
                         {
-                            CreateWall(ref part, gridId, new Vector2Int(x, z));
+                            if(part.GetObjectByGridId(gridId) == null)
+                                CreateWall(ref part, gridId, new Vector2Int(x, z));
                         }
                         gridId = part.GetGridId(new Vector2Int(x, z+1));
                         if(CanBuildWall(gridId))
                         {
-                            CreateWall(ref part, gridId, new Vector2Int(x, z));
+                            if(part.GetObjectByGridId(gridId) == null)
+                                CreateWall(ref part, gridId, new Vector2Int(x, z));
                         }
                     }
                 }
@@ -121,24 +125,25 @@ public class RoomBlueprint : MonoBehaviour
         }
     }
 
+
+    /// <summary>
+    /// return true if wall can be build
+    /// </summary>
+    /// <param name="gridId"></param>
+    /// <returns></returns>
     private bool CanBuildWall(Vector2Int gridId)
     {
         foreach (var room in parts)
         {
-            if (room.GetObjectByGridId(gridId) == null)
+            //wall cannot be build if in this place is floor, but can be build if in this position is other wall
+            if(room.GetObjectByGridId(gridId) != null)
             {
-
-            }
-            else if (room.GetObjectByGridId(gridId).CompareTag("Wall"))
-            {
-
-            }
-            else
-            {
-                return false;
+                if(room.GetObjectByGridId(gridId).CompareTag("Floor"))
+                {
+                    return false;
+                }
             }
         }
-
         return true;
     }
 
@@ -167,6 +172,7 @@ public class RoomBlueprint : MonoBehaviour
 
     private void RemoveElement(int roomIndex, Vector2Int gridId)
     {
+        Debug.Log("RemoveElement at "+ gridId + " from "+roomIndex);
         RemoveElement(ref parts[roomIndex], gridId);
     }
 
