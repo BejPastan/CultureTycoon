@@ -89,27 +89,57 @@ public class RoomBlueprint : MonoBehaviour
                 {
                     if (part.GetObjectFromId(x, z).CompareTag("Floor"))
                     {
-                        bool canBuild = true;
-
-                        foreach (var room in parts)
+                        gridId = part.GetGridId(new Vector2Int(x-1, z));
+                        if(CanBuildWall(gridId))
                         {
-                            if (room.GetObjectByGridId(gridId) == null)
-                            {
+                            CreateWall(ref part, gridId, new Vector2Int(x, z));
+                        }
+                        gridId = part.GetGridId(new Vector2Int(x+1, z));
+                        if(CanBuildWall(gridId))
+                        {
 
-                            }
-                            else if (room.GetObjectByGridId(gridId).CompareTag("Wall"))
-                            {
+                        }
+                        gridId = part.GetGridId(new Vector2Int(x, z-1));
+                        if(CanBuildWall(gridId))
+                        {
 
-                            }
-                            else
-                            {
-                                canBuild = false;
-                            }
+                        }
+                        gridId = part.GetGridId(new Vector2Int(x, z+1));
+                        if(CanBuildWall(gridId))
+                        {
+
                         }
                     }
                 }
             }
         }
+    }
+
+    private bool CanBuildWall(Vector2Int gridId)
+    {
+        foreach (var room in parts)
+        {
+            if (room.GetObjectByGridId(gridId) == null)
+            {
+
+            }
+            else if (room.GetObjectByGridId(gridId).CompareTag("Wall"))
+            {
+
+            }
+            else
+            {
+                return false;
+            }
+        }
+        return true
+    }
+
+    private void CreateWall(ref RoomPart part, Vector2Int id, Vector2Int centerId)
+    {
+        centerId -= id;
+
+        part.CreateWall(id, ref wallPref, centerId);
     }
 
     private void CreateElement(Vector2Int gridId, ref RoomPart room, ref GameObject pref)
@@ -119,7 +149,7 @@ public class RoomBlueprint : MonoBehaviour
         {
             grid.ChangeGridState(GridState.blueprint, gridId, gridId);
         }
-        room.CreateElement(room.GetIdByGridId(gridId), ref pref);
+        room.CreateFloor(room.GetIdByGridId(gridId), ref pref);
     }
 
     private void RemoveElement(ref RoomPart part, Vector2Int gridId)
@@ -200,7 +230,15 @@ public struct RoomPart
         Debug.Log("elements size "+elements.GetLength(0));
     }
 
-    public void CreateElement(Vector2Int id, ref GameObject pref)
+    public void CreateWall(Vector2Int id, ref GameObject pref, Vector2Int face)
+    {
+        Vector3 pos = grid.GetWorldPosition(GetGridId(id));
+        //here goes magic stuff with direction
+        //create element
+        elements[id.x, id.y] = GameObject.Instantiate(pref, pos, Quaternion.identity).transform;
+    }
+
+    public void CreateFloor(Vector2Int id, ref GameObject pref)
     {
         Vector3 pos = grid.GetWorldPosition(GetGridId(id));
         //create element
