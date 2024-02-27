@@ -42,7 +42,10 @@ public class RoomBlueprint : MonoBehaviour
         ClearPart(ref part);
         part.Resize(startPos, endPos);
         SetFloors(ref part);
-        SetWalls(ref part);
+        for(int roomIndex = 0; roomIndex < parts.Length; roomIndex++)
+        {
+            SetWalls(ref parts[roomIndex], roomIndex);
+        }
     }
 
     private void SetFloors(ref RoomPart part)
@@ -56,6 +59,7 @@ public class RoomBlueprint : MonoBehaviour
             {
                 gridId = part.GetGridId(new Vector2Int(x, z));
                 bool isFloor = false;
+                int roomIndex = 0;
                 foreach (RoomPart room in parts)
                 {
                     if(room.GetObjectByGridId(gridId)!= null)
@@ -65,8 +69,9 @@ public class RoomBlueprint : MonoBehaviour
                         }
                         else
                         {
-                            RemoveElement(ref part, gridId);
+                            RemoveElement(roomIndex, gridId);
                         }
+                    roomIndex++;
                 }
                 if(!isFloor)
                 {
@@ -76,7 +81,7 @@ public class RoomBlueprint : MonoBehaviour
         }
     }
 
-    private void SetWalls(ref RoomPart part)
+    private void SetWalls(ref RoomPart part, int roomPart)
     {
         Debug.Log("SetWalls");
         Vector2Int gridId;
@@ -93,6 +98,7 @@ public class RoomBlueprint : MonoBehaviour
                         if(CanBuildWall(gridId))
                         {
                             CreateWall(ref part, gridId, new Vector2Int(x, z));
+                            Debug.Log("CreateWall at " + gridId + " for part " + roomPart);
                         }
                         gridId = part.GetGridId(new Vector2Int(x+1, z));
                         if(CanBuildWall(gridId))
@@ -132,6 +138,7 @@ public class RoomBlueprint : MonoBehaviour
                 return false;
             }
         }
+
         return true;
     }
 
@@ -156,6 +163,11 @@ public class RoomBlueprint : MonoBehaviour
     {
         part.RemoveElement(part.GetIdByGridId(gridId));
         grid.ChangeGridState(GridState.free, gridId);
+    }
+
+    private void RemoveElement(int roomIndex, Vector2Int gridId)
+    {
+        RemoveElement(ref parts[roomIndex], gridId);
     }
 
     private void ClearPart(ref RoomPart part)
