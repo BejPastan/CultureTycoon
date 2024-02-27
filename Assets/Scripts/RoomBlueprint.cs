@@ -181,17 +181,38 @@ public struct RoomPart
 
     public Transform GetObjectFromId(int x, int y)
     {
-        return elements[x, y];
+        try
+        {
+            return elements[x, y];
+        }
+        catch
+        {
+            return null;
+        }
     }
 
     public Transform GetObjectByGridId(int x, int y)
     {
-        return elements[x - gridShift.x, y - gridShift.y];
+        try
+        {
+            return elements[x - gridShift.x, y - gridShift.y];
+        }
+        catch
+        {
+            return null;
+        }
     }
 
     public Transform GetObjectByGridId(Vector2Int gridId)
     {
-        return elements[gridId.x - gridShift.x, gridId.y - gridShift.y];
+        try
+        {
+            return elements[gridId.x - gridShift.x, gridId.y - gridShift.y];
+        }
+        catch
+        {
+            return null;
+        }
     }
 
     public Vector2Int GetIdByGridId(int x, int y)
