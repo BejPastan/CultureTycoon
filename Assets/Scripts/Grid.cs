@@ -88,7 +88,7 @@ public class Grid : MonoBehaviour
             gridId.x = 0;
         if (gridId.x >= width)
             gridId.x = width - 1;
-        if(gridId.y < 0)
+        if (gridId.y < 0)
             gridId.y = 0;
         if(gridId.y >= depth)
             gridId.y = depth - 1;

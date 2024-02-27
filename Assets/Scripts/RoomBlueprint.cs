@@ -77,6 +77,41 @@ public class RoomBlueprint : MonoBehaviour
         }
     }
 
+    private void SetWalls(ref RoomPart part)
+    {
+        Vector2Int gridId;
+        Vector2Int size = part.GetSize();
+        for (int x = 1; x < size.x-1; x++)
+        {
+            for (int z = 1; z < size.y-1; z++)
+            {
+                if (part.GetObjectFromId(x, z) != null)
+                {
+                    if (part.GetObjectFromId(x, z).CompareTag("Floor"))
+                    {
+                        bool canBuild = true;
+
+                        foreach (var room in parts)
+                        {
+                            if (room.GetObjectByGridId(gridId) == null)
+                            {
+
+                            }
+                            else if (room.GetObjectByGridId(gridId).CompareTag("Wall"))
+                            {
+
+                            }
+                            else
+                            {
+                                canBuild = false;
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
+
     private void CreateElement(Vector2Int gridId, ref RoomPart room, ref GameObject pref)
     {
         //test if prefab hase tag floor
