@@ -1,4 +1,5 @@
 using System;
+using Unity.VisualScripting;
 using UnityEngine;
 
 public class RoomBlueprint : MonoBehaviour
@@ -131,7 +132,6 @@ public class RoomBlueprint : MonoBehaviour
         }
     }
 
-
     /// <summary>
     /// return true if wall can be build
     /// </summary>
@@ -203,16 +203,16 @@ public class RoomBlueprint : MonoBehaviour
 
 public struct RoomPart
 {
-    public Transform[,] elements;
     public Vector2Int gridShift;
     public Vector2Int gridEnd;
     public Grid grid;
+    public RoomCell[,] elements;
 
     public RoomPart(ref Grid grid)
     {
         this.gridShift = Vector2Int.zero;
         this.gridEnd = Vector2Int.zero;
-        elements = new Transform[0, 0];
+        elements = new RoomCell[0, 0];
         this.grid = grid;
     }
 
@@ -269,15 +269,25 @@ public struct RoomPart
         elements[id.x, id.y] = GameObject.Instantiate(pref, pos, Quaternion.identity).transform;
     }
 
+    /// <summary>
+    /// This is fore removing whole cell, removing only one element is not implemented yet
+    /// </summary>
+    /// <param name="id"></param>
     public void RemoveElement(Vector2Int id)
     {
-        if (elements[id.x, id.y] != null)
-        {
-            GameObject.Destroy(elements[id.x, id.y].gameObject);
-            elements[id.x, id.y] = null;
-        }
+        elements[id.x, id.y].RemoveElement();
     }
 
+    /// <summary>
+    /// 
+    /// </summary>
+    /// <param name="id">position of wall like it was on the grid</param>
+    public void RemoveWall(Vector2Int id)
+    {
+        //here i need to make some magic with direction(the same as in CreateWall) but in reverse
+    }
+
+    //git
     public Transform GetObjectFromId(int x, int y)
     {
         try
@@ -290,6 +300,7 @@ public struct RoomPart
         }
     }
 
+    //git
     public Transform GetObjectByGridId(int x, int y)
     {
         try
@@ -302,6 +313,7 @@ public struct RoomPart
         }
     }
 
+    //git
     public Transform GetObjectByGridId(Vector2Int gridId)
     {
         try
@@ -314,24 +326,81 @@ public struct RoomPart
         }
     }
 
+    //git
     public Vector2Int GetIdByGridId(int x, int y)
     {
         return new Vector2Int(x - gridShift.x, y - gridShift.y);
     }
 
+    //git
     public Vector2Int GetIdByGridId(Vector2Int gridId)
     {
         return gridId - gridShift;
     }
 
+    //git
     public Vector2Int GetGridId(Vector2Int id)
     {
         return id+gridShift;
     }
 
+    //git
     public Vector2Int GetSize()
     {
         Vector2Int size = new Vector2Int(elements.GetLength(0), elements.GetLength(1));
         return size;
+    }
+}
+
+public struct RoomCell
+{
+    Transform tile;
+    Transform[,] walls;
+
+    RoomCell(Transform tile)
+    {
+        this.tile = tile;
+        this.walls = new Transform[3,3];
+    }
+
+    public void CreateWall(Vector2Int id, ref GameObject pref, Vector2Int centerShift)
+    {
+        Vector3 pos = tile.position;
+        //here goes magic stuff with direction
+        Quaternion rotation = Quaternion.Euler(0, (90*centerShift.y*(centerShift.y+1)) + ((centerShift.x*-90)-90), 0);
+        //create element
+        walls[id.x, id.y] = GameObject.Instantiate(pref, pos, rotation).transform;
+    }
+
+    /// <summary>
+    /// removing whole RoomCell, if you wato remove only floor u just can't
+    /// </summary>
+    public void RemoveElement()
+    {
+        if(tile != null)
+        {
+            GameObject.Destroy(tile.gameObject);
+            tile = null;
+        }
+        for(int x = 0; x<walls.GetLength(0); x++)
+        {
+            for(int z = 0; z<walls.GetLength(1); z++)
+            {
+                if (walls[x,z] != null)
+                {
+                    GameObject.Destroy(walls[x,z].gameObject);
+                    walls[x,z] = null;
+                }
+            }
+        }
+    }
+
+    public void RemoveWall(Vector2Int id)
+    {
+        if (walls[id.x, id.y] != null)
+        {
+            GameObject.Destroy(walls[id.x, id.y].gameObject);
+            walls[id.x, id.y] = null;
+        }
     }
 }

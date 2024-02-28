@@ -26,7 +26,7 @@ public class Builder : MonoBehaviour
         if(isBuilding)
         {
             //on Right click
-            if (Input.GetMouseButtonDown(1))
+            if (Input.GetMouseButtonDown(0))
             {
                 startPos = GetMousePosition();
                 isRightClick = true;
@@ -40,7 +40,7 @@ public class Builder : MonoBehaviour
                     room.ChangeSize(startPos, endPos);
                 }
             }
-            if(Input.GetMouseButtonUp(1))
+            if(Input.GetMouseButtonUp(0))
             {
                 isRightClick = false;
             }
