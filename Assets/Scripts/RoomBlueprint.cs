@@ -71,8 +71,8 @@ public class RoomBlueprint : MonoBehaviour
                 int roomIndex = 0;
                 foreach (RoomPart room in parts)
                 {
-                    if(room.GetObjectByGridId(gridId)!= null)
-                        if(room.GetObjectByGridId(gridId).CompareTag("Floor"))
+                    if(room.GetFloorByGridId(gridId)!= null)
+                        if(room.GetFloorByGridId(gridId).CompareTag("Floor"))
                         {
                             isFloor = true;
                         }
@@ -98,34 +98,11 @@ public class RoomBlueprint : MonoBehaviour
         {
             for (int z = 1; z < size.y-1; z++)
             {
-                if (part.GetObjectFromId(x, z) != null)
+                if (part.GetFloorById(x, z) != null)
                 {
-                    if (part.GetObjectFromId(x, z).CompareTag("Floor"))
+                    if (part.GetFloorById(x, z).CompareTag("Floor"))
                     {
-                        gridId = part.GetGridId(new Vector2Int(x-1, z));
-                        if(CanBuildWall(gridId))
-                        {
-                            if(part.GetObjectByGridId(gridId) == null)
-                                CreateWall(ref part, gridId, new Vector2Int(x, z));
-                        }
-                        gridId = part.GetGridId(new Vector2Int(x+1, z));
-                        if(CanBuildWall(gridId))
-                        {
-                            if(part.GetObjectByGridId(gridId) == null)
-                                CreateWall(ref part, gridId, new Vector2Int(x, z));
-                        }
-                        gridId = part.GetGridId(new Vector2Int(x, z-1));
-                        if(CanBuildWall(gridId))
-                        {
-                            if(part.GetObjectByGridId(gridId) == null)
-                                CreateWall(ref part, gridId, new Vector2Int(x, z));
-                        }
-                        gridId = part.GetGridId(new Vector2Int(x, z+1));
-                        if(CanBuildWall(gridId))
-                        {
-                            if(part.GetObjectByGridId(gridId) == null)
-                                CreateWall(ref part, gridId, new Vector2Int(x, z));
-                        }
+                        //here i need to check where around this tiles are floors
                     }
                 }
             }
@@ -142,9 +119,9 @@ public class RoomBlueprint : MonoBehaviour
         foreach (var room in parts)
         {
             //wall cannot be build if in this place is floor, but can be build if in this position is other wall
-            if(room.GetObjectByGridId(gridId) != null)
+            if(room.GetFloorByGridId(gridId) != null)
             {
-                if(room.GetObjectByGridId(gridId).CompareTag("Floor"))
+                if(room.GetFloorByGridId(gridId).CompareTag("Floor"))
                 {
                     return false;
                 }
@@ -193,8 +170,8 @@ public class RoomBlueprint : MonoBehaviour
             {
                 gridId = part.GetGridId(new Vector2Int(x, z));
                 part.RemoveElement(new Vector2Int(x,z));
-                if(part.GetObjectFromId(x, z) != null)
-                    if(part.GetObjectFromId(x, z).CompareTag("Floor"))
+                if(part.GetFloorById(x, z) != null)
+                    if(part.GetFloorById(x, z).CompareTag("Floor"))
                         grid.ChangeGridState(GridState.free, gridId);
             }
         }
@@ -278,52 +255,32 @@ public struct RoomPart
         elements[id.x, id.y].RemoveElement();
     }
 
-    /// <summary>
-    /// 
-    /// </summary>
-    /// <param name="id">position of wall like it was on the grid</param>
-    public void RemoveWall(Vector2Int id)
+    public Transform GetFloorById(int x, int y)
     {
-        //here i need to make some magic with direction(the same as in CreateWall) but in reverse
+        return elements[x, y].GetFloor();
     }
 
-    //git
-    public Transform GetObjectFromId(int x, int y)
+    public Transform GetFloorByGridId(Vector2Int gridId)
+    {
+        return elements[gridId.x - gridShift.x, gridId.y - gridShift.y].GetFloor();
+    }
+
+    public RoomCell GetCellFromId(int x, int y)
     {
         try
         {
             return elements[x, y];
-        }
-        catch
-        {
-            return null;
-        }
+        } catch { }
+        return null;
     }
 
-    //git
-    public Transform GetObjectByGridId(int x, int y)
-    {
-        try
-        {
-            return elements[x - gridShift.x, y - gridShift.y];
-        }
-        catch
-        {
-            return null;
-        }
-    }
-
-    //git
-    public Transform GetObjectByGridId(Vector2Int gridId)
+    public RoomCell GetCellByGridId(Vector2Int gridId)
     {
         try
         {
             return elements[gridId.x - gridShift.x, gridId.y - gridShift.y];
-        }
-        catch
-        {
-            return null;
-        }
+        } catch { }
+        return null;
     }
 
     //git
@@ -352,24 +309,15 @@ public struct RoomPart
     }
 }
 
-public struct RoomCell
+public partial class RoomCell
 {
-    Transform tile;
+    public Transform tile;
     Transform[,] walls;
 
     RoomCell(Transform tile)
     {
         this.tile = tile;
         this.walls = new Transform[3,3];
-    }
-
-    public void CreateWall(Vector2Int id, ref GameObject pref, Vector2Int centerShift)
-    {
-        Vector3 pos = tile.position;
-        //here goes magic stuff with direction
-        Quaternion rotation = Quaternion.Euler(0, (90*centerShift.y*(centerShift.y+1)) + ((centerShift.x*-90)-90), 0);
-        //create element
-        walls[id.x, id.y] = GameObject.Instantiate(pref, pos, rotation).transform;
     }
 
     /// <summary>
@@ -395,12 +343,39 @@ public struct RoomCell
         }
     }
 
-    public void RemoveWall(Vector2Int id)
+    private void RemoveWall(Vector2Int id)
     {
+        
         if (walls[id.x, id.y] != null)
         {
             GameObject.Destroy(walls[id.x, id.y].gameObject);
             walls[id.x, id.y] = null;
         }
+    }
+
+    public Transform GetFloor()
+    {
+        return tile;
+    }
+
+    private Vector2Int CalcWallId(Quaternion rotation)
+    {
+        if(rotation.eulerAngles.y < 0)
+        {
+            rotation.eulerAngles += new Vector3(0, 360, 0);
+        }
+        //here goes magic stuff with direction
+        switch(rotation.eulerAngles.y)
+        {
+            case 0:
+                return new Vector2Int(2, 1);
+            case 90:
+                return new Vector2Int(1, 0);
+            case 180:
+                return new Vector2Int(0, 1);
+            case 270:
+                return new Vector2Int(1, 2);
+        }
+        return new Vector2Int(1, 1);
     }
 }
