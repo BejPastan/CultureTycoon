@@ -42,12 +42,11 @@ public class RoomBlueprint : MonoBehaviour
 
     private void ChangeSize(Vector2Int startPos, Vector2Int endPos, ref RoomPart part)
     {
-        ClearPart(ref part);
+        ClearPart(ref part);//kinda git
         part.Resize(startPos, endPos);//kinda git
         SetFloors(ref part);//kinda git
         for(int roomIndex = 0; roomIndex < parts.Length; roomIndex++)
         {
-            
             SetWalls(ref parts[roomIndex], roomIndex);
         }
     }
@@ -60,6 +59,7 @@ public class RoomBlueprint : MonoBehaviour
         }
     }
 
+    //probably git
     private void SetFloors(ref RoomPart part)
     {
         Vector2Int size = part.GetSize();
@@ -97,40 +97,14 @@ public class RoomBlueprint : MonoBehaviour
     {
         Vector2Int gridId;
         Vector2Int size = part.GetSize();
-        for (int x = 1; x < size.x-1; x++)
+        for (int x = 0; x < size.x; x++)
         {
-            for (int z = 1; z < size.y-1; z++)
+            for (int z = 0; z < size.y; z++)
             {
-                if (part.GetFloorById(x, z) != null)
-                {
-                    if (part.GetFloorById(x, z).CompareTag("Floor"))
-                    {
-                        //here i need to check where around this tiles are floors
-                    }
-                }
+                //I need to check where around this cell is floor
+                    
             }
         }
-    }
-
-    /// <summary>
-    /// return true if wall can be build
-    /// </summary>
-    /// <param name="gridId"></param>
-    /// <returns></returns>
-    private bool CanBuildWall(Vector2Int gridId)
-    {
-        foreach (var room in parts)
-        {
-            //wall cannot be build if in this place is floor, but can be build if in this position is other wall
-            if(room.GetFloorByGridId(gridId) != null)
-            {
-                if(room.GetFloorByGridId(gridId).CompareTag("Floor"))
-                {
-                    return false;
-                }
-            }
-        }
-        return true;
     }
 
     private void CreateWall(ref RoomPart part, Vector2Int id, Vector2Int centerId)
@@ -139,6 +113,7 @@ public class RoomBlueprint : MonoBehaviour
         part.CreateWall(id, ref wallPref, centerId);
     }
 
+    //probably git
     private void CreateFloor(Vector2Int gridId, ref RoomPart room, ref GameObject pref)
     {
         //test if prefab hase tag floor
@@ -150,21 +125,7 @@ public class RoomBlueprint : MonoBehaviour
         room.CreateFloor(room.GetIdByGridId(gridId), ref pref);
     }
 
-    /// <summary>
-    /// Remove all walls that are on this grid cell
-    /// </summary>
-    /// <param name="roomIndex"></param>
-    /// <param name="gridId"></param>
-    private void RemoveWallsOnCell(Vector2Int gridId)
-    {
-        //Debug.Log("RemoveElement at "+ gridId + " from "+roomIndex);
-        foreach (var room in parts)
-        {
-            //remove walls in position
-        }
-        
-    }
-
+    //probably git
     private void ClearPart(ref RoomPart part)
     {
         Vector2Int size = part.GetSize();
@@ -175,9 +136,7 @@ public class RoomBlueprint : MonoBehaviour
             {
                 gridId = part.GetGridId(new Vector2Int(x, z));
                 part.RemoveElement(new Vector2Int(x,z));
-                if(part.GetFloorById(x, z) != null)
-                    if(part.GetFloorById(x, z).CompareTag("Floor"))
-                        grid.ChangeGridState(GridState.free, gridId);
+                grid.ChangeGridState(GridState.free, gridId);
             }
         }
     }
@@ -198,6 +157,7 @@ public struct RoomPart
         this.grid = grid;
     }
 
+    //I guess this is git
     public void Resize(Vector2Int startPos, Vector2Int endPos)
     {
         //set start as smaller value
@@ -234,6 +194,7 @@ public struct RoomPart
         elements = newElements;
     }
 
+    //this is NOT COMPLETE
     public void CreateWall(Vector2Int id, ref GameObject pref, Vector2Int cellId)
     {
         Vector3 pos = grid.GetWorldPosition(GetGridId(id + cellId));
@@ -243,6 +204,7 @@ public struct RoomPart
 
     }
 
+    //probably git
     public void CreateFloor(Vector2Int id, ref GameObject pref)
     {
         Vector3 pos = grid.GetWorldPosition(GetGridId(id));
@@ -255,21 +217,25 @@ public struct RoomPart
     /// This is fore removing whole cell
     /// </summary>
     /// <param name="id"></param>
+    //git
     public void RemoveElement(Vector2Int id)
     {
         elements[id.x, id.y].RemoveElement();
     }
 
+    //git
     public Transform GetFloorById(int x, int y)
     {
         return elements[x, y].GetFloor();
     }
 
+    //git
     public Transform GetFloorByGridId(Vector2Int gridId)
     {
         return elements[gridId.x - gridShift.x, gridId.y - gridShift.y].GetFloor();
     }
 
+    //git
     public RoomCell[] GetWallCellsFromGridId(Vector2Int gridId)
     {
         RoomCell[] wallsCells = new RoomCell[0];
@@ -307,6 +273,7 @@ public struct RoomPart
         return wallsCells;
     }
 
+    //git
     public RoomCell GetCellFromId(int x, int y)
     {
         try
@@ -316,6 +283,7 @@ public struct RoomPart
         return null;
     }
 
+    //git
     public RoomCell GetCellByGridId(Vector2Int gridId)
     {
         try
