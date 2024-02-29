@@ -57,9 +57,8 @@ public class RoomPart
     //this is NOT COMPLETE
     public void CreateWall(Vector2Int gridId, ref GameObject pref, Vector2Int orientation)
     {
-        Vector3 pos = grid.GetWorldPosition(gridId);
-        //create element
         Vector2Int id = GetIdByGridId(gridId);
+        Debug.Log("Creating wall at " + gridId + " at local "+ id);
         elements[id.x, id.y].CreateWall(gridId, ref pref, orientation);
     }
 
@@ -75,13 +74,19 @@ public class RoomPart
     }
 
     /// <summary>
-    /// This is fore removing whole cell
+    /// This is for removing whole cell
     /// </summary>
-    /// <param name="id"></param>
+    /// <param name="id">elementId</param>
     //git
     public void RemoveElement(Vector2Int id)
     {
-        elements[id.x, id.y].RemoveElement();
+        try
+        {
+            elements[id.x, id.y].RemoveElement();
+            elements[id.x, id.y] = null;
+            grid.ChangeGridState(GridState.free, GetGridId(id));
+        }
+        catch { }
     }
 
     //git
@@ -106,47 +111,38 @@ public class RoomPart
 
     //git
     /// <summary>
-    /// Get cells that have wall with cell on gridId directly behind
+    /// Get cells that have wall with back to this cell
     /// </summary>
     /// <param name="gridId">cell position</param>
     /// <returns></returns>
-    public RoomCell[] GetWallCellsAroundGridId(Vector2Int gridId)
+    public RoomCell[] GetWallCellsOutsideGridId(Vector2Int gridId)
     {
         RoomCell[] wallsCells = new RoomCell[0];
         Vector2Int startSearch;
         Vector2Int endSearch;
-        startSearch = new Vector2Int(gridId.x - 1, gridId.y - 1);
-        endSearch = new Vector2Int(gridId.x + 1, gridId.y + 1);
+        startSearch = gridId - gridShift -Vector2Int.one;
+        endSearch = gridId - gridShift + Vector2Int.one;
 
-        if (startSearch.x < 0)
+        for (int x = startSearch.x; x <= endSearch.x; x++)
         {
-            startSearch.x = 0;
-        }
-        if (startSearch.y < 0)
-        {
-            startSearch.y = 0;
-        }
-        if (endSearch.x > elements.GetLength(0))
-        {
-            endSearch.x = elements.GetLength(0);
-        }
-        if (endSearch.y > elements.GetLength(1))
-        {
-            endSearch.y = elements.GetLength(1);
-        }
-
-        for (int x = startSearch.x; x < endSearch.x; x++)
-        {
-            for (int y = startSearch.y; y < endSearch.y; y++)
+            for (int z = startSearch.y; z <= endSearch.y; z++)
             {
-                if (elements[x, y] != null)
-                    if (elements[x, y].GetWall(gridId) != null)
+                if (x >= 0 && x < elements.GetLength(0) && z >= 0 && z < elements.GetLength(1))
+                {
+                    if (elements[x, z] != null)
                     {
-                        Array.Resize(ref wallsCells, wallsCells.Length + 1);
-                        wallsCells[wallsCells.Length-1] = elements[x, y];
+                        Transform wall = elements[x, z].GetWall(gridId);
+                        Debug.Log("Wall at " + (x + gridShift.x) + " " + (z + gridShift.y) + " " + wall);
+                        if (wall != null)
+                        {
+                            Array.Resize(ref wallsCells, wallsCells.Length + 1);
+                            wallsCells[wallsCells.Length - 1] = elements[x, z];
+                        }
                     }
+                }
             }
         }
+
         return wallsCells;
     }
 

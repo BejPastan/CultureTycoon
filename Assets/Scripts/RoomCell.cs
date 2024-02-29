@@ -38,11 +38,12 @@ public partial class RoomCell
         }
     }
 
+    //git
     public void CreateWall(Vector2Int gridId, ref GameObject pref, Vector2Int orientation)
     {
         Vector3 pos = roomPart.grid.GetWorldPosition(gridPos);
         //here goes magic stuff with direction
-        Quaternion rotation = Quaternion.Euler(0, (90 * orientation.y * (orientation.y - 1)) + ((orientation.x * +90) - 90), 0);
+        Quaternion rotation = Quaternion.Euler(0, (90 * orientation.y * (orientation.y + 1)) + ((orientation.x * - 90) + 90), 0);
         //create element
         orientation += Vector2Int.one;
         walls[orientation.x, orientation.y] = GameObject.Instantiate(pref, pos, rotation).transform;
@@ -91,12 +92,18 @@ public partial class RoomCell
         //+1 because from the center of the cell is 1 unit to the edge to -1 x and -1 z
         try
         {
-            return walls[gridId.x - gridPos.x + 1, gridId.y - gridPos.x + 1];
+            Debug.Log("GetWall at " + gridId + " from cell at " + gridPos);
+            return walls[gridId.x - gridPos.x + 1, gridId.y - gridPos.y + 1];
         }
         catch
         {
             return null;
         }
+    }
+
+    public Transform GetWallByLocalPos(Vector2Int localPos)
+    {
+        return walls[localPos.x, localPos.y];
     }
 
     private Vector2Int CalcWallId(Quaternion rotation)

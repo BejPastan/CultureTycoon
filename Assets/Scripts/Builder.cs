@@ -2,10 +2,12 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.EventSystems;
 
 public class Builder : MonoBehaviour
 {
     public bool isBuilding = false;
+    public bool isLeftClick = false;
     public bool isRightClick = false;
     
     [SerializeField]
@@ -26,25 +28,54 @@ public class Builder : MonoBehaviour
         if(isBuilding)
         {
             //on Right click
-            if (Input.GetMouseButtonDown(0))
+            //check if mouse is not above UI
+            if(!EventSystem.current.IsPointerOverGameObject())
             {
-                startPos = GetMousePosition();
-                isRightClick = true;
-                room.CreateNewPart();
-            }
-            if(isRightClick)
-            {
-                if(endPos != GetMousePosition())
+                //building
+                if (Input.GetMouseButtonDown(0))
                 {
-                    endPos = GetMousePosition();
-                    room.ChangeSize(startPos, endPos);
+                    startPos = GetMousePosition();
+                    isLeftClick = true;
+                    room.CreateNewPart();
+                }
+                if (isLeftClick)
+                {
+                    if (endPos != GetMousePosition())
+                    {
+                        endPos = GetMousePosition();
+                        room.PaintPart(startPos, endPos);
+                    }
+                }
+
+                //removing
+                if(!isLeftClick)
+                {
+                    if (Input.GetMouseButtonDown(1))
+                    {
+                        startPos = GetMousePosition();
+                        isRightClick = true;
+                    }
+                    if (isRightClick)
+                    {
+                        if (endPos != GetMousePosition())
+                        {
+                            endPos = GetMousePosition();
+                            room.EraseArea(startPos, endPos);
+                        }
+                    }
                 }
             }
-            if(Input.GetMouseButtonUp(0))
+            if (isBuilding)
             {
-                isRightClick = false;
+                if (Input.GetMouseButtonUp(0))
+                {
+                    isLeftClick = false;
+                }
+                if(Input.GetMouseButtonUp(1))
+                {
+                    isRightClick = false;
+                }
             }
-            
         }
     }
 
@@ -66,9 +97,10 @@ public class Builder : MonoBehaviour
                 return grid.GetGridId(hitPoint);
             }
         }
-        return new Vector2Int(-1, -1);
+        return new Vector2Int(0, 0);
     }
 
+    //this must have also option to edit existing part
     private void StartEditing()
     {
         //create ne game object for room part

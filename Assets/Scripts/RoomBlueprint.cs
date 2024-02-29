@@ -36,21 +36,48 @@ public class RoomBlueprint : MonoBehaviour
     /// <summary>
     /// this change bounds of one room part
     /// </summary>
-    public void ChangeSize(Vector2Int startPos, Vector2Int endPos)
+    public void PaintPart(Vector2Int startPos, Vector2Int endPos)
     {
         ChangeSize(startPos, endPos, ref parts[parts.Length - 1]);
     }
 
+    public void EraseArea(Vector2Int startPos, Vector2Int endPos)
+    {
+        //set startPos as smaller value
+        if (startPos.x > endPos.x)
+        {
+            int temp = startPos.x;
+            startPos.x = endPos.x;
+            endPos.x = temp;
+        }
+        if (startPos.y > endPos.y)
+        {
+            int temp = startPos.y;
+            startPos.y = endPos.y;
+            endPos.y = temp;
+        }
+        //Remove all Cells from area
+        ClearArea(startPos, endPos);
+        //Set again walls //i guess this should work
+        for (int roomIndex = 0; roomIndex < parts.Length; roomIndex++)
+        {
+            SetWalls(ref parts[roomIndex], roomIndex);
+        }
+        //optionaly check if there are any parts that are empty and remove them
+    }
+
     private void ChangeSize(Vector2Int startPos, Vector2Int endPos, ref RoomPart part)
     {
-        ClearPart(ref part);//kinda git
-        part.Resize(startPos, endPos);//kinda git
-        SetFloors(ref part);//kinda git
+        ClearPart(ref part);
+        part.Resize(startPos, endPos);
+        SetFloors(ref part);
         for (int roomIndex = 0; roomIndex < parts.Length; roomIndex++)
         {
             SetWalls(ref parts[roomIndex], roomIndex);
         }
     }
+
+
 
     public void ConfirmBlueprint()
     {
@@ -63,9 +90,7 @@ public class RoomBlueprint : MonoBehaviour
     //probably git
     private void SetFloors(ref RoomPart part)
     {
-        Debug.Log("Setting floors");
         Vector2Int size = part.GetSize();
-        Debug.Log("Size: " + size);
         Vector2Int gridId;
         for (int x = 0; x < size.x; x++)
         {
@@ -81,9 +106,10 @@ public class RoomBlueprint : MonoBehaviour
                     {
                         isFloor = true;
                     }
-                    RoomCell[] walls = room.GetWallCellsAroundGridId(gridId);
+                    RoomCell[] walls = room.GetWallCellsOutsideGridId(gridId);
                     foreach (RoomCell wall in walls)
                     {
+                        //under this something is wrong
                         wall.RemoveWallByGridId(gridId);
                     }
                     roomIndex++;
@@ -138,7 +164,7 @@ public class RoomBlueprint : MonoBehaviour
         bool isFloor = false;
         foreach (RoomPart room in parts)
         {
-            if (room.GetFloorByGridId(centerGridId+orientation) != null)
+            if (room.GetFloorByGridId(centerGridId + orientation) != null)
             {
                 isFloor = true;
                 break;
@@ -148,24 +174,25 @@ public class RoomBlueprint : MonoBehaviour
         {
             return false;
         }
-        RoomCell[] cells = parts[roomPart].GetWallCellsAroundGridId(centerGridId);
-        Debug.Log("Cells: " + cells.Length);
-        if (cells.Length > 0)
-        { 
-            //so here i have all walls that are around this cell and I need only this which have centerGridId as wall
-            foreach (RoomCell cell in cells)
-            {
-                if (cell.GetFloorPos() == centerGridId)
-                {
-                    return false;
-                }
-            }
+
+        //check if there is walls in this place
+        RoomCell cell = parts[roomPart].GetCellByGridId(centerGridId);
+        if (cell != null)
+        {
+            Debug.Log("Cell " + centerGridId + " is not null");
+            if(cell.GetWallByLocalPos(orientation + Vector2Int.one) != null)
+                return false;
+        }
+        else
+        {
+            return false;
         }
         return true;
     }
 
     private void CreateWall(ref RoomPart part, Vector2Int gridId, Vector2Int orientation)
     {
+        
         part.CreateWall(gridId, ref wallPref, orientation);
     }
 
@@ -194,6 +221,25 @@ public class RoomBlueprint : MonoBehaviour
                 gridId = part.GetGridId(new Vector2Int(x, z));
                 part.RemoveElement(new Vector2Int(x,z));
                 grid.ChangeGridState(GridState.free, gridId);
+            }
+        }
+    }
+
+    private void ClearArea(Vector2Int startPos, Vector2Int endPos)
+    {
+        Vector2Int gridId;
+        Debug.Log("Clearing area from " + startPos + " to "+ endPos);
+        for (int x = startPos.x; x <= endPos.x; x++)
+        {
+            for (int z = startPos.y; z <= endPos.y; z++)
+            {
+                gridId = new Vector2Int(x, z);
+                Vector2Int id;
+                foreach (RoomPart part in parts)
+                {
+                    id = part.GetIdByGridId(gridId);
+                    part.RemoveElement(id);
+                }
             }
         }
     }
