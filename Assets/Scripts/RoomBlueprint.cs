@@ -41,6 +41,11 @@ public class RoomBlueprint : MonoBehaviour
         ChangeSize(startPos, endPos, ref parts[parts.Length - 1]);
     }
 
+    /// <summary>
+    /// Remove all cells from area
+    /// </summary>
+    /// <param name="startPos"></param>
+    /// <param name="endPos"></param>
     public void EraseArea(Vector2Int startPos, Vector2Int endPos)
     {
         //set startPos as smaller value
@@ -66,6 +71,12 @@ public class RoomBlueprint : MonoBehaviour
         //optionaly check if there are any parts that are empty and remove them
     }
 
+    /// <summary>
+    /// Resize selected room part and fill with floor and build walls around
+    /// </summary>
+    /// <param name="startPos"></param>
+    /// <param name="endPos"></param>
+    /// <param name="part"></param>
     private void ChangeSize(Vector2Int startPos, Vector2Int endPos, ref RoomPart part)
     {
         ClearPart(ref part);
@@ -77,8 +88,9 @@ public class RoomBlueprint : MonoBehaviour
         }
     }
 
-
-
+    /// <summary>
+    /// Ending editing
+    /// </summary>
     public void ConfirmBlueprint()
     {
         foreach(RoomPart part in parts)
@@ -87,7 +99,10 @@ public class RoomBlueprint : MonoBehaviour
         }
     }
 
-    //probably git
+    /// <summary>
+    /// Build floor in selected room part
+    /// </summary>
+    /// <param name="part"></param>
     private void SetFloors(ref RoomPart part)
     {
         Vector2Int size = part.GetSize();
@@ -123,6 +138,11 @@ public class RoomBlueprint : MonoBehaviour
         }
     }
 
+    /// <summary>
+    /// Build walls around selected roomPart
+    /// </summary>
+    /// <param name="part"></param>
+    /// <param name="roomPart"></param>
     private void SetWalls(ref RoomPart part, int roomPart)
     {
         Debug.Log("Setting walls");
@@ -158,7 +178,13 @@ public class RoomBlueprint : MonoBehaviour
         }
     }
 
-    //probably git
+    /// <summary>
+    /// check if can build wall in selected place in selected orientation
+    /// </summary>
+    /// <param name="centerGridId">cell in which wall will be build</param>
+    /// <param name="orientation">On which side of cell wall will be build</param>
+    /// <param name="roomPart">in which roompart</param>
+    /// <returns></returns>
     private bool CanBuildWall(Vector2Int centerGridId, Vector2Int orientation, int roomPart)
     {
         bool isFloor = false;
@@ -190,13 +216,24 @@ public class RoomBlueprint : MonoBehaviour
         return true;
     }
 
+    /// <summary>
+    /// Build wall in selected place in selected orientation in selected room part
+    /// </summary>
+    /// <param name="part"></param>
+    /// <param name="gridId"></param>
+    /// <param name="orientation"></param>
     private void CreateWall(ref RoomPart part, Vector2Int gridId, Vector2Int orientation)
     {
         
         part.CreateWall(gridId, ref wallPref, orientation);
     }
 
-    //probably git
+    /// <summary>
+    /// Build floor in selected place in selected room part
+    /// </summary>
+    /// <param name="gridId"></param>
+    /// <param name="room"></param>
+    /// <param name="pref"></param>
     private void CreateFloor(Vector2Int gridId, ref RoomPart room, ref GameObject pref)
     {
         //test if prefab hase tag floor
@@ -208,7 +245,10 @@ public class RoomBlueprint : MonoBehaviour
         room.CreateFloor(room.GetIdByGridId(gridId), ref pref);
     }
 
-    //probably git
+    /// <summary>
+    /// Remove all cells from selected part
+    /// </summary>
+    /// <param name="part"></param>
     private void ClearPart(ref RoomPart part)
     {
         Debug.Log("Clearing part");
@@ -225,6 +265,11 @@ public class RoomBlueprint : MonoBehaviour
         }
     }
 
+    /// <summary>
+    /// Remove all cells from area
+    /// </summary>
+    /// <param name="startPos"></param>
+    /// <param name="endPos"></param>
     private void ClearArea(Vector2Int startPos, Vector2Int endPos)
     {
         Vector2Int gridId;

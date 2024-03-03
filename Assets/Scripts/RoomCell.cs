@@ -38,7 +38,12 @@ public partial class RoomCell
         }
     }
 
-    //git
+    /// <summary>
+    /// Create wall in this cell in given orientation
+    /// </summary>
+    /// <param name="gridId"></param>
+    /// <param name="pref"></param>
+    /// <param name="orientation"></param>
     public void CreateWall(Vector2Int gridId, ref GameObject pref, Vector2Int orientation)
     {
         Vector3 pos = roomPart.grid.GetWorldPosition(gridPos);
@@ -59,6 +64,10 @@ public partial class RoomCell
         RemoveWall(gridId - gridPos+Vector2Int.one);
     }
 
+    /// <summary>
+    /// Remove wall by local position in cell
+    /// </summary>
+    /// <param name="id"></param>
     private void RemoveWall(Vector2Int id)
     {
         if (walls[id.x, id.y] != null)
@@ -68,11 +77,19 @@ public partial class RoomCell
         }
     }
 
+    /// <summary>
+    /// Get X and Y of cell in roomPart array
+    /// </summary>
+    /// <returns></returns>
     public Vector2Int GetFloorPos()
     {
         return gridPos;
     }
 
+    /// <summary>
+    /// Get transform of floor in this cell
+    /// </summary>
+    /// <returns></returns>
     public Transform GetFloor()
     {
         if(tile==null)
@@ -101,11 +118,21 @@ public partial class RoomCell
         }
     }
 
+    /// <summary>
+    /// Get wall by which side of cell it is
+    /// </summary>
+    /// <param name="localPos">which side of the cell is wall</param>
+    /// <returns></returns>
     public Transform GetWallByLocalPos(Vector2Int localPos)
     {
         return walls[localPos.x, localPos.y];
     }
 
+    /// <summary>
+    /// calculate wall local position in cell by rotation
+    /// </summary>
+    /// <param name="rotation">rotation of wall</param>
+    /// <returns></returns>
     private Vector2Int CalcWallId(Quaternion rotation)
     {
         if (rotation.eulerAngles.y < 0)

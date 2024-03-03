@@ -100,7 +100,9 @@ public class Builder : MonoBehaviour
         return new Vector2Int(0, 0);
     }
 
-    //this must have also option to edit existing part
+    /// <summary>
+    /// Change game mode to editing selected Room
+    /// </summary>
     private void StartEditing()
     {
         //create ne game object for room part
@@ -108,12 +110,18 @@ public class Builder : MonoBehaviour
         room.createNewBlueprint(ref grid, wallPref, floorPref);
     }
 
+    /// <summary>
+    /// Exit game from editing mode
+    /// </summary>
     private void EndEditing()
     {
         room.ConfirmBlueprint();
         room = null;
     }
 
+    /// <summary>
+    /// Change to and from Editing mode
+    /// </summary>
     public void ToggleBuilding()
     {
         if(isBuilding)

@@ -8,6 +8,10 @@ public class RoomPart
     public Grid grid;
     public RoomCell[,] elements;
 
+    /// <summary>
+    /// Creating new RoomPart instance
+    /// </summary>
+    /// <param name="grid"></param>
     public RoomPart(ref Grid grid)
     {
         gridShift = Vector2Int.zero;
@@ -16,7 +20,11 @@ public class RoomPart
         this.grid = grid;
     }
 
-    //I guess this is git
+    /// <summary>
+    /// Set new size of this roompart, fill with floor and build walls
+    /// </summary>
+    /// <param name="startPos"></param>
+    /// <param name="endPos"></param>
     public void Resize(Vector2Int startPos, Vector2Int endPos)
     {
         Debug.Log("Resizing");
@@ -54,7 +62,12 @@ public class RoomPart
         elements = newElements;
     }
 
-
+    /// <summary>
+    /// create wall in selected cell with selected orientation from prefab
+    /// </summary>
+    /// <param name="gridId">position in game system grid</param>
+    /// <param name="pref">prefab of wall</param>
+    /// <param name="orientation">On which side of the cell wall should be</param>
     public void CreateWall(Vector2Int gridId, ref GameObject pref, Vector2Int orientation)
     {
         Vector2Int id = GetIdByGridId(gridId);
@@ -62,7 +75,11 @@ public class RoomPart
         elements[id.x, id.y].CreateWall(gridId, ref pref, orientation);
     }
 
-    //probably git
+    /// <summary>
+    /// Build floor in selected cell from prefab
+    /// </summary>
+    /// <param name="id"></param>
+    /// <param name="pref"></param>
     public void CreateFloor(Vector2Int id, ref GameObject pref)
     {
         Vector3 pos = grid.GetWorldPosition(GetGridId(id));
@@ -77,7 +94,6 @@ public class RoomPart
     /// This is for removing whole cell
     /// </summary>
     /// <param name="id">elementId</param>
-    //git
     public void RemoveElement(Vector2Int id)
     {
         try
@@ -89,13 +105,22 @@ public class RoomPart
         catch { }
     }
 
-    //git
+    /// <summary>
+    /// Get floor transform fromw RoomPart array position
+    /// </summary>
+    /// <param name="x"></param>
+    /// <param name="y"></param>
+    /// <returns></returns>
     public Transform GetFloorById(int x, int y)
     {
         return elements[x, y].GetFloor();
     }
 
-    //git
+    /// <summary>
+    /// Get floor transform from RoomPart by system grid Id
+    /// </summary>
+    /// <param name="gridId"></param>
+    /// <returns></returns>
     public Transform GetFloorByGridId(Vector2Int gridId)
     {
         try
@@ -109,7 +134,6 @@ public class RoomPart
         
     }
 
-    //git
     /// <summary>
     /// Get cells that have wall with back to this cell
     /// </summary>
@@ -146,7 +170,12 @@ public class RoomPart
         return wallsCells;
     }
 
-    //git
+    /// <summary>
+    /// get cell data from RoomPart array position
+    /// </summary>
+    /// <param name="x"></param>
+    /// <param name="y"></param>
+    /// <returns></returns>
     public RoomCell GetCellFromId(int x, int y)
     {
         try
@@ -157,7 +186,11 @@ public class RoomPart
         return null;
     }
 
-    //git
+    /// <summary>
+    /// get cell data from RoomPart by system grid Id
+    /// </summary>
+    /// <param name="gridId"></param>
+    /// <returns></returns>
     public RoomCell GetCellByGridId(Vector2Int gridId)
     {
         try
@@ -168,25 +201,41 @@ public class RoomPart
         return null;
     }
 
-    //git
+    /// <summary>
+    /// get position in RoomPart array by system grid Id
+    /// </summary>
+    /// <param name="x"></param>
+    /// <param name="y"></param>
+    /// <returns></returns>
     public Vector2Int GetIdByGridId(int x, int y)
     {
         return new Vector2Int(x - gridShift.x, y - gridShift.y);
     }
 
-    //git
+    /// <summary>
+    /// get position in RoomPart array by system grid Id
+    /// </summary>
+    /// <param name="gridId"></param>
+    /// <returns></returns>
     public Vector2Int GetIdByGridId(Vector2Int gridId)
     {
         return gridId - gridShift;
     }
 
-    //git
+    /// <summary>
+    /// get system grid Id by position in RoomPart array
+    /// </summary>
+    /// <param name="id"></param>
+    /// <returns></returns>
     public Vector2Int GetGridId(Vector2Int id)
     {
         return id + gridShift;
     }
 
-    //git
+    /// <summary>
+    /// get size of this RoomPart
+    /// </summary>
+    /// <returns></returns>
     public Vector2Int GetSize()
     {
         Vector2Int size = new Vector2Int(elements.GetLength(0), elements.GetLength(1));
