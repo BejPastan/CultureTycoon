@@ -190,7 +190,7 @@ public class RoomPart
     /// get cell data from RoomPart by system grid Id
     /// </summary>
     /// <param name="gridId"></param>
-    /// <returns></returns>
+    /// <returns>if cell not exist return null</returns>
     public RoomCell GetCellByGridId(Vector2Int gridId)
     {
         try
@@ -242,4 +242,3 @@ public class RoomPart
         return size;
     }
 }
-

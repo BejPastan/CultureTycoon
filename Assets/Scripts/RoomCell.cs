@@ -109,7 +109,6 @@ public partial class RoomCell
         //+1 because from the center of the cell is 1 unit to the edge to -1 x and -1 z
         try
         {
-            Debug.Log("GetWall at " + gridId + " from cell at " + gridPos);
             return walls[gridId.x - gridPos.x + 1, gridId.y - gridPos.y + 1];
         }
         catch
@@ -129,11 +128,22 @@ public partial class RoomCell
     }
 
     /// <summary>
+    /// Change wall object in cell
+    /// </summary>
+    /// <param name="wallPref">new wall object</param>
+    /// <param name="wallId">local id in cell</param>
+    public void ChangeWallObject(GameObject wallPref, Vector2Int wallId)
+    {
+        GameObject.Destroy(walls[wallId.x, wallId.y].gameObject);
+        walls[wallId.x, wallId.y] = GameObject.Instantiate(wallPref, roomPart.grid.GetWorldPosition(gridPos), Quaternion.identity).transform;
+    }
+
+    /// <summary>
     /// calculate wall local position in cell by rotation
     /// </summary>
     /// <param name="rotation">rotation of wall</param>
     /// <returns></returns>
-    private Vector2Int CalcWallId(Quaternion rotation)
+    public Vector2Int CalcWallId(Quaternion rotation)
     {
         if (rotation.eulerAngles.y < 0)
         {

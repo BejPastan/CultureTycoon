@@ -10,8 +10,11 @@ public class RoomBlueprint : MonoBehaviour
     public GameObject wallPref;
     [SerializeField]
     public GameObject floorPref;
+    [SerializeField]
+    public GameObject doorPref;
     public RoomPart[] parts = new RoomPart[0];
     public Grid grid;
+    public Transform doorObj;
     
     /// <summary>
     /// Creating New Blueprint
@@ -97,6 +100,26 @@ public class RoomBlueprint : MonoBehaviour
         {
             grid.ChangeGridState(GridState.blueprint, GridState.room, part.gridShift, part.gridEnd);
         }
+    }
+
+    public void SetDoors(Vector2Int position, Transform wall)
+    {
+        RoomCell cell;
+        if(doorObj != null)
+        {
+            cell = GetCell(grid.GetGridId(doorObj.transform.position));
+            if(cell != null)
+            {
+                cell.ChangeWallObject(wallPref, cell.CalcWallId(doorObj.rotation));
+            }
+        }
+        cell = GetCell(position);
+        if(cell != null)
+        {
+            cell.ChangeWallObject(doorPref, cell.CalcWallId(wall.rotation));
+            doorObj = wall;
+        }
+   
     }
 
     /// <summary>
@@ -287,5 +310,17 @@ public class RoomBlueprint : MonoBehaviour
                 }
             }
         }
+    }
+
+    private RoomCell GetCell(Vector2Int gridId)
+    {
+        foreach (RoomPart part in parts)
+        {
+            if(part.GetCellByGridId(gridId) != null)
+            {
+                return part.GetCellByGridId(gridId);
+            }
+        }
+        return null;
     }
 }
