@@ -54,7 +54,7 @@ public class RoomPart
         elements = newElements;
     }
 
-    //this is NOT COMPLETE
+
     public void CreateWall(Vector2Int gridId, ref GameObject pref, Vector2Int orientation)
     {
         Vector2Int id = GetIdByGridId(gridId);

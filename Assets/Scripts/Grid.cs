@@ -24,7 +24,10 @@ public class Grid : MonoBehaviour
         CreateGrid();
     }
 
-    public void CreateGrid()
+    /// <summary>
+    /// Creating
+    /// </summary>
+    private void CreateGrid()
     {
         gridStates = new GridState[width, depth];
         cellsVisual = new GameObject[width, depth];
@@ -37,6 +40,9 @@ public class Grid : MonoBehaviour
         }
     }
 
+    /// <summary>
+    /// change grid from showing to not showing and vice versa
+    /// </summary>
     public void ToggleGrid()
     {
         if(isShowing)
@@ -51,6 +57,9 @@ public class Grid : MonoBehaviour
         }
     }
 
+    /// <summary>
+    /// visualization of grid cells on the scene
+    /// </summary>
     private void ShowGrid()
     {
         cellsVisual = new GameObject[width, depth];
@@ -64,6 +73,9 @@ public class Grid : MonoBehaviour
         }
     }
 
+    /// <summary>
+    /// hide visualization of grid cells on the scene
+    /// </summary>
     private void DisableGrid()
     {
         for (int i = 0; i < width; i++)
@@ -77,6 +89,11 @@ public class Grid : MonoBehaviour
         cellsVisual = new GameObject[0, 0];
     }
 
+    /// <summary>
+    /// Get X and Y position of cell in selected position on world. If there is no grid return closest cell
+    /// </summary>
+    /// <param name="position">position of cell in the world</param>
+    /// <returns></returns>
     public Vector2Int GetGridId(Vector3 position)
     {
         position -= origin;
@@ -92,12 +109,24 @@ public class Grid : MonoBehaviour
         return gridId;
     }
 
+    /// <summary>
+    /// Get positon of cell in the world by its X nad Y position in grid array
+    /// </summary>
+    /// <param name="id"></param>
+    /// <returns></returns>
     public Vector3 GetWorldPosition(Vector2Int id)
     {
         Vector3 pos = new Vector3(id.x * cellSize, 0, id.y * cellSize)+origin;
         return pos;
     }
 
+    /// <summary>
+    /// Change grid state in selected range, from one state to another
+    /// </summary>
+    /// <param name="changeThisState">cells with this state will be changed</param>
+    /// <param name="toThisState">targeted state of cells</param>
+    /// <param name="rangeStart">range beetwen which cells will be changed</param>
+    /// <param name="rangeEnd">range beetwen which cells will be changed</param>
     public void ChangeGridState(GridState changeThisState, GridState toThisState, Vector2Int rangeStart, Vector2Int rangeEnd)
     {
         //change all blueprint to room
@@ -116,11 +145,22 @@ public class Grid : MonoBehaviour
         }
     }
 
+    /// <summary>
+    /// Change state of all cells with selected state to another state
+    /// </summary>
+    /// <param name="changeThisState">selected state</param>
+    /// <param name="toThisState">targeted state</param>
     public void ChangeGridState(GridState changeThisState, GridState toThisState)
     {
         ChangeGridState(changeThisState, toThisState, new Vector2Int(0, 0), new Vector2Int(width, depth));
     }    
 
+    /// <summary>
+    /// change state of all cells in selected range
+    /// </summary>
+    /// <param name="toThisState"></param>
+    /// <param name="rangeStart"></param>
+    /// <param name="rangeEnd"></param>
     public void ChangeGridState(GridState toThisState, Vector2Int rangeStart, Vector2Int rangeEnd)
     {
         for (int x = rangeStart.x; x < rangeEnd.x; x++)
@@ -132,6 +172,11 @@ public class Grid : MonoBehaviour
         }
     }
 
+    /// <summary>
+    /// change state of selected cell
+    /// </summary>
+    /// <param name="toThisState"></param>
+    /// <param name="id"></param>
     public void ChangeGridState(GridState toThisState, Vector2Int id)
     {
         gridStates[id.x, id.y] = toThisState;
