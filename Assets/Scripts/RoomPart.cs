@@ -62,6 +62,48 @@ public class RoomPart
         elements = newElements;
     }
 
+    public void MergeParts(RoomPart toMerge)
+    {
+        Vector2Int start = toMerge.gridShift;
+        if(start.x < gridShift.x)
+        {
+            start.x = gridShift.x;
+        }
+        if (start.y < gridShift.y)
+        {
+            start.y = gridShift.y;
+        }
+        Vector2Int end = toMerge.gridEnd;
+        if (end.x > gridEnd.x)
+        {
+            end.x = gridEnd.x;
+        }
+        if (end.y > gridEnd.y)
+        {
+            end.y = gridEnd.y;
+        }
+
+        Vector2Int size = end - start + Vector2Int.one;
+
+        RoomCell[,] newElements = new RoomCell[size.x, size.y];
+
+        for (int x = 0; x < size.x; x++)
+        {
+            for (int z = 0; z < size.y; z++)
+            {
+                Vector2Int gridId = new Vector2Int(x + start.x, z + start.y);
+                if (toMerge.GetCellByGridId(gridId)!= null)
+                {
+                    newElements[x, z] = toMerge.GetCellByGridId(gridId);
+                }
+                else if(GetCellByGridId(gridId) != null)
+                {
+                    newElements[x, z] = GetCellByGridId(gridId);
+                }
+            }
+        }
+    }
+
     /// <summary>
     /// create wall in selected cell with selected orientation from prefab
     /// </summary>

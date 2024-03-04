@@ -17,7 +17,9 @@ public class Builder : MonoBehaviour
     Vector2Int endPos;
 
     [SerializeField]
-    RoomBlueprint room;
+    RoomBlueprint roomBP;
+    [SerializeField]
+    Room room;
 
     [SerializeField]
     GameObject floorPref;
@@ -46,7 +48,7 @@ public class Builder : MonoBehaviour
                     if (wall != null && wall.CompareTag("Wall"))
                     {
                         Debug.Log("Building door");
-                        room.SetDoors(GetMousePosition(), wall.rotation);
+                        roomBP.SetDoors(GetMousePosition(), wall.rotation);
                         EndEditing();
                         return;
                     }
@@ -61,14 +63,14 @@ public class Builder : MonoBehaviour
                     {
                         startPos = GetMousePosition();
                         isLeftClick = true;
-                        room.CreateNewPart();
+                        roomBP.CreateNewPart();
                     }
                     if (isLeftClick)
                     {
                         if (endPos != GetMousePosition())
                         {
                             endPos = GetMousePosition();
-                            room.PaintPart(startPos, endPos);
+                            roomBP.PaintPart(startPos, endPos);
                         }
                     }
 
@@ -85,7 +87,7 @@ public class Builder : MonoBehaviour
                             if (endPos != GetMousePosition())
                             {
                                 endPos = GetMousePosition();
-                                room.EraseArea(startPos, endPos);
+                                roomBP.EraseArea(startPos, endPos);
                             }
                         }
                     }
@@ -136,10 +138,21 @@ public class Builder : MonoBehaviour
     private void StartEditing()
     {
         //create ne game object for room part
-        room = new GameObject("Room").AddComponent<RoomBlueprint>();
-        room.createNewBlueprint(ref grid, wallPref, floorPref, doorPref);
+        isBuilding = true;
+        room = new GameObject("Room").AddComponent<Room>();
+        roomBP = room.gameObject.AddComponent<RoomBlueprint>();
+        roomBP.createNewBlueprint(ref grid, wallPref, floorPref, doorPref);
         grid.ToggleGrid();
-        room.DisableCollision();
+        roomBP.DisableCollision();
+    }
+
+    public void StartEditing(Room room)
+    {
+        isBuilding = true;
+        this.room = room;
+        roomBP = room.GetComponent<RoomBlueprint>();
+        grid.ToggleGrid();
+        roomBP.DisableCollision();
     }
 
     /// <summary>
@@ -149,15 +162,16 @@ public class Builder : MonoBehaviour
     {
         buildingDoor = false;
         isBuilding = false;
-        room.ConfirmBlueprint();
-        room = null;
+        room.ConfirmRoom(roomBP);
+        roomBP = null;
         grid.ToggleGrid();
+        room = null;
     }
 
     private void StartBuildingDoor()
     {
         buildingDoor = true;
-        room.EnableCollision();
+        roomBP.EnableCollision();
     }
 
     private Transform GetObjectUnderMouse()
@@ -183,9 +197,7 @@ public class Builder : MonoBehaviour
         }
         else
         {
-            isBuilding = true;
             StartEditing();
         }
-        
     }
 }

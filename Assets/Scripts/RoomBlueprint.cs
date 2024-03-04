@@ -2,6 +2,7 @@ using System;
 using Unity.Burst.Intrinsics;
 using Unity.VisualScripting;
 using Unity.VisualScripting.Antlr3.Runtime.Tree;
+using UnityEditor.Experimental.GraphView;
 using UnityEngine;
 
 public class RoomBlueprint : MonoBehaviour
@@ -93,14 +94,14 @@ public class RoomBlueprint : MonoBehaviour
     }
 
     /// <summary>
-    /// Ending editing
+    /// Ending editing and returnign all cells
     /// </summary>
-    public void ConfirmBlueprint()
+    public void ConfirmBlueprint(out RoomCell[,] cells)
     {
-        foreach(RoomPart part in parts)
+        for(int roomIndex = 0; roomIndex < parts.Length; roomIndex++)
         {
-            grid.ChangeGridState(GridState.blueprint, GridState.room, part.gridShift, part.gridEnd);
         }
+        grid.ChangeGridState(GridState.blueprint, GridState.room, parts[0].gridShift, parts[0].gridEnd);
     }
 
     public void EnableCollision()
