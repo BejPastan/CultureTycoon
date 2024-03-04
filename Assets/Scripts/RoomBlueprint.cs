@@ -28,6 +28,31 @@ public class RoomBlueprint : MonoBehaviour
         this.doorPref = doorPref;
     }
 
+    public void Cancel(ref RoomBlueprint previousState)
+    {
+        for(int roomIndex = 0; roomIndex < parts.Length; roomIndex++)
+        {
+            ClearPart(ref parts[roomIndex]);//after this i have while gridState as free, and I need to change it to room
+        }
+        parts = previousState.parts;
+        doorObj = previousState.doorObj;
+        for (int roomIndex = 0; roomIndex < parts.Length; roomIndex++)
+        {
+            Vector2Int gridId;
+            for (int x = 0; x < parts[roomIndex].elements.GetLength(0); x++)
+            {
+                for (int z = 0; z < parts[roomIndex].elements.GetLength(1); z++)
+                {
+                    gridId = parts[roomIndex].GetGridId(new Vector2Int(x, z));
+                    if (parts[roomIndex].elements[x, z] != null)
+                    {
+                        grid.ChangeGridState(GridState.blueprint, gridId);
+                    }
+                }
+            }
+        }
+    }
+
     /// <summary>
     /// Creating new room part
     /// </summary>
@@ -98,10 +123,12 @@ public class RoomBlueprint : MonoBehaviour
     /// </summary>
     public void ConfirmBlueprint(out RoomCell[,] cells)
     {
-        for(int roomIndex = 0; roomIndex < parts.Length; roomIndex++)
+        for(int roomIndex = 1; roomIndex < parts.Length; roomIndex++)
         {
+            parts[0].MergeParts(parts[roomIndex]);
         }
         grid.ChangeGridState(GridState.blueprint, GridState.room, parts[0].gridShift, parts[0].gridEnd);
+        cells = parts[0].elements;
     }
 
     public void EnableCollision()

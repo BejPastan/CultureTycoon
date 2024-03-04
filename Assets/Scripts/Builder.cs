@@ -168,6 +168,13 @@ public class Builder : MonoBehaviour
         room = null;
     }
 
+    public void CancelEditing()
+    {
+        buildingDoor = false;
+        isBuilding = false;
+        room.CancelEditing(ref roomBP);
+    }
+
     private void StartBuildingDoor()
     {
         buildingDoor = true;

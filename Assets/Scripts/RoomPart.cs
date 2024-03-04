@@ -102,6 +102,10 @@ public class RoomPart
                 }
             }
         }
+
+        elements = newElements;
+        gridShift = start;
+        gridEnd = end;
     }
 
     /// <summary>
