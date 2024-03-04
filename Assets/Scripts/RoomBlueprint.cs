@@ -36,6 +36,8 @@ public class RoomBlueprint : MonoBehaviour
         }
         parts = previousState.parts;
         doorObj = previousState.doorObj;
+
+        //returning to previous state
         for (int roomIndex = 0; roomIndex < parts.Length; roomIndex++)
         {
             Vector2Int gridId;

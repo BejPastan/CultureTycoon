@@ -16,6 +16,6 @@ public class Room : MonoBehaviour
     public void CancelEditing(ref RoomBlueprint actualState)
     {
         actualState.Cancel(ref roomBlueprint);
-        roomBlueprint
+        roomBlueprint = actualState;
     }
 }
