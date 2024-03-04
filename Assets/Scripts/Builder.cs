@@ -22,6 +22,9 @@ public class Builder : MonoBehaviour
     Room room;
 
     [SerializeField]
+    GameObject roomPref;
+
+    [SerializeField]
     GameObject floorPref;
     [SerializeField]
     GameObject wallPref;
@@ -139,8 +142,9 @@ public class Builder : MonoBehaviour
     {
         //create ne game object for room part
         isBuilding = true;
-        room = new GameObject("Room").AddComponent<Room>();
-        roomBP = room.gameObject.AddComponent<RoomBlueprint>();
+        room = Instantiate(roomPref, Vector3.zero, Quaternion.identity).GetComponent<Room>();
+        room.OnCreate(this);
+        roomBP = room.gameObject.GetComponent<RoomBlueprint>();
         roomBP.createNewBlueprint(ref grid, wallPref, floorPref, doorPref);
         grid.ToggleGrid();
         roomBP.DisableCollision();

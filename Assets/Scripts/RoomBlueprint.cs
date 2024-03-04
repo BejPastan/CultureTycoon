@@ -129,6 +129,7 @@ public class RoomBlueprint : MonoBehaviour
         {
             parts[0].MergeParts(parts[roomIndex]);
         }
+        Array.Resize(ref parts, 1);
         grid.ChangeGridState(GridState.blueprint, GridState.room, parts[0].gridShift, parts[0].gridEnd);
         cells = parts[0].elements;
     }
