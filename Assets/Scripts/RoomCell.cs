@@ -134,8 +134,9 @@ public partial class RoomCell
     /// <param name="wallId">local id in cell</param>
     public void ChangeWallObject(GameObject wallPref, Vector2Int wallId)
     {
+        Quaternion rotation = walls[wallId.x, wallId.y].rotation;
         GameObject.Destroy(walls[wallId.x, wallId.y].gameObject);
-        walls[wallId.x, wallId.y] = GameObject.Instantiate(wallPref, roomPart.grid.GetWorldPosition(gridPos), Quaternion.identity).transform;
+        walls[wallId.x, wallId.y] = GameObject.Instantiate(wallPref, roomPart.grid.GetWorldPosition(gridPos), rotation).transform;
     }
 
     /// <summary>
@@ -162,5 +163,27 @@ public partial class RoomCell
                 return new Vector2Int(1, 2);
         }
         return new Vector2Int(1, 1);
+    }
+
+    public void EnableCollision()
+    {
+        foreach (Transform wall in walls)
+        {
+            if (wall != null)
+            {
+                wall.GetComponent<Collider>().isTrigger = false;
+            }
+        }
+    }
+
+    public void DisableCollision()
+    {
+        foreach (Transform wall in walls)
+        {
+            if (wall != null)
+            {
+                wall.GetComponent<Collider>().isTrigger = true;
+            }
+        }
     }
 }

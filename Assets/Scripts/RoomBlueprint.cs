@@ -19,11 +19,12 @@ public class RoomBlueprint : MonoBehaviour
     /// <summary>
     /// Creating New Blueprint
     /// </summary> 
-    public void createNewBlueprint(ref Grid grid, GameObject wallPref, GameObject floorPref)
+    public void createNewBlueprint(ref Grid grid, GameObject wallPref, GameObject floorPref, GameObject doorPref)
     {
         this.grid = grid;
         this.wallPref = wallPref;
         this.floorPref = floorPref;
+        this.doorPref = doorPref;
     }
 
     /// <summary>
@@ -102,7 +103,23 @@ public class RoomBlueprint : MonoBehaviour
         }
     }
 
-    public void SetDoors(Vector2Int position, Transform wall)
+    public void EnableCollision()
+    {
+        foreach (RoomPart part in parts)
+        {
+            part.EnableCollision();
+        }
+    }
+
+    public void DisableCollision()
+    {
+        foreach (RoomPart part in parts)
+        {
+            part.DisableCollision();
+        }
+    }
+
+    public void SetDoors(Vector2Int position,Quaternion wallRotation)
     {
         RoomCell cell;
         if(doorObj != null)
@@ -116,8 +133,8 @@ public class RoomBlueprint : MonoBehaviour
         cell = GetCell(position);
         if(cell != null)
         {
-            cell.ChangeWallObject(doorPref, cell.CalcWallId(wall.rotation));
-            doorObj = wall;
+            cell.ChangeWallObject(doorPref, cell.CalcWallId(wallRotation));
+            doorObj = cell.GetWallByLocalPos(cell.CalcWallId(wallRotation)).transform;
         }
    
     }

@@ -201,6 +201,28 @@ public class RoomPart
         return null;
     }
 
+    public void EnableCollision()
+    {
+        foreach (RoomCell cell in elements)
+        {
+            if (cell != null)
+            {
+                cell.EnableCollision();
+            }
+        }
+    }
+
+    public void DisableCollision()
+    {
+        foreach (RoomCell cell in elements)
+        {
+            if (cell != null)
+            {
+                cell.DisableCollision();
+            }
+        }
+    }
+
     /// <summary>
     /// get position in RoomPart array by system grid Id
     /// </summary>

@@ -9,6 +9,7 @@ public class Builder : MonoBehaviour
     public bool isBuilding = false;
     public bool isLeftClick = false;
     public bool isRightClick = false;
+    public bool buildingDoor = false;
     
     [SerializeField]
     Grid grid;
@@ -22,58 +23,83 @@ public class Builder : MonoBehaviour
     GameObject floorPref;
     [SerializeField]
     GameObject wallPref;
+    [SerializeField]
+    GameObject doorPref;
 
     private void Update()
     {
-        if(isBuilding)
+        Building();
+    }
+
+    private void Building()
+    {
+        if (isBuilding)
         {
-            //on Right click
-            //check if mouse is not above UI
-            if(!EventSystem.current.IsPointerOverGameObject())
+            if (buildingDoor)
             {
-                //building
+                Debug.Log("Building door");
                 if (Input.GetMouseButtonDown(0))
                 {
-                    startPos = GetMousePosition();
-                    isLeftClick = true;
-                    room.CreateNewPart();
-                }
-                if (isLeftClick)
-                {
-                    if (endPos != GetMousePosition())
+                    Debug.Log("Building door");
+                    Transform wall = GetObjectUnderMouse();
+                    Debug.Log(wall);
+                    if (wall != null && wall.CompareTag("Wall"))
                     {
-                        endPos = GetMousePosition();
-                        room.PaintPart(startPos, endPos);
+                        Debug.Log("Building door");
+                        room.SetDoors(GetMousePosition(), wall.rotation);
+                        EndEditing();
+                        return;
                     }
                 }
-
-                //removing
-                if(!isLeftClick)
+            }
+            else
+            {
+                if (!EventSystem.current.IsPointerOverGameObject())
                 {
-                    if (Input.GetMouseButtonDown(1))
+                    //building
+                    if (Input.GetMouseButtonDown(0))
                     {
                         startPos = GetMousePosition();
-                        isRightClick = true;
+                        isLeftClick = true;
+                        room.CreateNewPart();
                     }
-                    if (isRightClick)
+                    if (isLeftClick)
                     {
                         if (endPos != GetMousePosition())
                         {
                             endPos = GetMousePosition();
-                            room.EraseArea(startPos, endPos);
+                            room.PaintPart(startPos, endPos);
+                        }
+                    }
+
+                    //removing
+                    if (!isLeftClick)
+                    {
+                        if (Input.GetMouseButtonDown(1))
+                        {
+                            startPos = GetMousePosition();
+                            isRightClick = true;
+                        }
+                        if (isRightClick)
+                        {
+                            if (endPos != GetMousePosition())
+                            {
+                                endPos = GetMousePosition();
+                                room.EraseArea(startPos, endPos);
+                            }
                         }
                     }
                 }
-            }
-            if (isBuilding)
-            {
-                if (Input.GetMouseButtonUp(0))
+                if (isBuilding)
                 {
-                    isLeftClick = false;
-                }
-                if(Input.GetMouseButtonUp(1))
-                {
-                    isRightClick = false;
+                    if (Input.GetMouseButtonUp(0))
+                    {
+                        isLeftClick = false;
+                    }
+                    if (Input.GetMouseButtonUp(1))
+                    {
+                        isRightClick = false;
+                    }
                 }
             }
         }
@@ -87,14 +113,18 @@ public class Builder : MonoBehaviour
     {
         //make ray from camera to mouse position
         Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
-        RaycastHit hit;
-        //if ray hit something
-        if (Physics.Raycast(ray, out hit))
+        RaycastHit[] hit;
+        //get multiple hits
+        hit = Physics.RaycastAll(ray);
+        if (hit.Length > 0)
         {
-            if(hit.transform.CompareTag("Ground"))
+            foreach (RaycastHit h in hit)
             {
-                Vector3 hitPoint = hit.point;
-                return grid.GetGridId(hitPoint);
+                if (h.transform.CompareTag("Ground"))
+                {
+                    Vector3 hitPoint = h.point;
+                    return grid.GetGridId(hitPoint);
+                }
             }
         }
         return new Vector2Int(0, 0);
@@ -107,7 +137,9 @@ public class Builder : MonoBehaviour
     {
         //create ne game object for room part
         room = new GameObject("Room").AddComponent<RoomBlueprint>();
-        room.createNewBlueprint(ref grid, wallPref, floorPref);
+        room.createNewBlueprint(ref grid, wallPref, floorPref, doorPref);
+        grid.ToggleGrid();
+        room.DisableCollision();
     }
 
     /// <summary>
@@ -115,8 +147,29 @@ public class Builder : MonoBehaviour
     /// </summary>
     private void EndEditing()
     {
+        buildingDoor = false;
+        isBuilding = false;
         room.ConfirmBlueprint();
         room = null;
+        grid.ToggleGrid();
+    }
+
+    private void StartBuildingDoor()
+    {
+        buildingDoor = true;
+        room.EnableCollision();
+    }
+
+    private Transform GetObjectUnderMouse()
+    {
+        Debug.Log("Getting object under mouse");
+        Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
+        RaycastHit hit;
+        if (Physics.Raycast(ray, out hit))
+        {
+            return hit.transform;
+        }
+        return null;
     }
 
     /// <summary>
@@ -126,14 +179,13 @@ public class Builder : MonoBehaviour
     {
         if(isBuilding)
         {
-            isBuilding = false;
-            EndEditing();
+            StartBuildingDoor();            
         }
         else
         {
             isBuilding = true;
             StartEditing();
         }
-        grid.ToggleGrid();
+        
     }
 }
