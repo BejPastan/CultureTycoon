@@ -1,6 +1,3 @@
-using System;
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.EventSystems;
 
@@ -154,9 +151,9 @@ public class Builder : MonoBehaviour
     {
         isBuilding = true;
         this.room = room;
-        roomBP = room.GetComponent<RoomBlueprint>();
         grid.ToggleGrid();
-        roomBP.DisableCollision();
+        roomBP = room.StartEdit();
+        
     }
 
     /// <summary>
@@ -209,6 +206,18 @@ public class Builder : MonoBehaviour
         else
         {
             StartEditing();
+        }
+    }
+
+    public void ToggleBuildingDoor()
+    {
+        if(buildingDoor)
+        {
+            buildingDoor = false;
+        }
+        else
+        {
+            StartBuildingDoor();
         }
     }
 }

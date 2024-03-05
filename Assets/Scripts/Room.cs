@@ -1,5 +1,3 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
 public class Room : MonoBehaviour
@@ -37,12 +35,19 @@ public class Room : MonoBehaviour
             }
         }
 
-        uiController.ShowUI();
+        uiController.EndEditing();
     }
 
     public void CancelEditing(ref RoomBlueprint actualState)
     {
         actualState.Cancel(ref roomBlueprint);
         roomBlueprint = actualState;
+    }
+
+    public RoomBlueprint StartEdit()
+    {
+        uiController.StartEditing();
+        roomBlueprint.DisableCollision();
+        return roomBlueprint;
     }
 }
