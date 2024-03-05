@@ -14,6 +14,9 @@ public class Builder : MonoBehaviour
     Vector2Int endPos;
 
     [SerializeField]
+    BuilderUI uiControl;
+
+    [SerializeField]
     RoomBlueprint roomBP;
     [SerializeField]
     Room room;
@@ -49,7 +52,6 @@ public class Builder : MonoBehaviour
                     {
                         Debug.Log("Building door");
                         roomBP.SetDoors(GetMousePosition(), wall.rotation);
-                        EndEditing();
                         return;
                     }
                 }
@@ -145,6 +147,7 @@ public class Builder : MonoBehaviour
         roomBP.createNewBlueprint(ref grid, wallPref, floorPref, doorPref);
         grid.ToggleGrid();
         roomBP.DisableCollision();
+        uiControl.StartEditing();
     }
 
     public void StartEditing(Room room)
@@ -153,7 +156,7 @@ public class Builder : MonoBehaviour
         this.room = room;
         grid.ToggleGrid();
         roomBP = room.StartEdit();
-        
+        uiControl.StartEditing();
     }
 
     /// <summary>
@@ -167,6 +170,7 @@ public class Builder : MonoBehaviour
         roomBP = null;
         grid.ToggleGrid();
         room = null;
+        uiControl.StopEditing();
     }
 
     public void CancelEditing()
@@ -174,12 +178,22 @@ public class Builder : MonoBehaviour
         buildingDoor = false;
         isBuilding = false;
         room.CancelEditing(ref roomBP);
+        uiControl.StopEditing();
+        grid.ToggleGrid();
     }
 
     private void StartBuildingDoor()
     {
         buildingDoor = true;
         roomBP.EnableCollision();
+        uiControl.StartBuildingDoor();
+    }
+
+    private void EndBuildingDoor()
+    {
+        buildingDoor = false;
+        roomBP.DisableCollision();
+        uiControl.StopBuildingDoor();
     }
 
     private Transform GetObjectUnderMouse()
@@ -201,7 +215,10 @@ public class Builder : MonoBehaviour
     {
         if(isBuilding)
         {
-            StartBuildingDoor();            
+            if(roomBP.doorObj != null)//I need to change this to function chack conditions from room or room blueprint
+            {
+                EndEditing();
+            }      
         }
         else
         {
@@ -211,13 +228,16 @@ public class Builder : MonoBehaviour
 
     public void ToggleBuildingDoor()
     {
-        if(buildingDoor)
+        if(isBuilding)
         {
-            buildingDoor = false;
-        }
-        else
-        {
-            StartBuildingDoor();
+            if (buildingDoor)
+            {
+                EndBuildingDoor();
+            }
+            else
+            {
+                StartBuildingDoor();
+            }
         }
     }
 }

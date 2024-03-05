@@ -24,31 +24,32 @@ public class RoomBlueprint : MonoBehaviour
         this.doorPref = doorPref;
     }
 
-    public void Cancel(ref RoomBlueprint previousState)
+    public void Cancel()
     {
-        for(int roomIndex = 0; roomIndex < parts.Length; roomIndex++)
+        for(int roomIndex = 1; roomIndex < parts.Length; roomIndex++)
         {
             ClearPart(ref parts[roomIndex]);//after this i have while gridState as free, and I need to change it to room
+            //another problem is that this also remove me all meshes
         }
-        parts = previousState.parts;
-        doorObj = previousState.doorObj;
+        SetWalls(ref parts[0], 0);
+        Debug.Log("Returning to previous state");
 
         //returning to previous state
-        for (int roomIndex = 0; roomIndex < parts.Length; roomIndex++)
-        {
-            Vector2Int gridId;
-            for (int x = 0; x < parts[roomIndex].elements.GetLength(0); x++)
-            {
-                for (int z = 0; z < parts[roomIndex].elements.GetLength(1); z++)
-                {
-                    gridId = parts[roomIndex].GetGridId(new Vector2Int(x, z));
-                    if (parts[roomIndex].elements[x, z] != null)
-                    {
-                        grid.ChangeGridState(GridState.blueprint, gridId);
-                    }
-                }
-            }
-        }
+        //for (int roomIndex = 0; roomIndex < parts.Length; roomIndex++)
+        //{
+        //    Vector2Int gridId;
+        //    for (int x = 0; x < parts[roomIndex].elements.GetLength(0); x++)
+        //    {
+        //        for (int z = 0; z < parts[roomIndex].elements.GetLength(1); z++)
+        //        {
+        //            gridId = parts[roomIndex].GetGridId(new Vector2Int(x, z));
+        //            if (parts[roomIndex].elements[x, z] != null)
+        //            {
+        //                grid.ChangeGridState(GridState.blueprint, gridId);
+        //            }
+        //        }
+        //    }
+        //}
     }
 
     /// <summary>
