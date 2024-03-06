@@ -872,7 +872,7 @@ MonoBehaviour:
       m_Calls:
       - m_Target: {fileID: 1606837068}
         m_TargetAssemblyTypeName: Builder, Assembly-CSharp
-        m_MethodName: ToggleBuilding
+        m_MethodName: StartEditing
         m_Mode: 2
         m_Arguments:
           m_ObjectArgument: {fileID: 11400000, guid: dd3bc39f96303694da4677a23a61b08a,
@@ -1839,7 +1839,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   buildingButton: {fileID: 0}
   doorButton: {fileID: 299985137}
-  buildingMenu: {fileID: 0}
+  buildingMenu: {fileID: 442139656}
 --- !u!1 &2113191745
 GameObject:
   m_ObjectHideFlags: 0
