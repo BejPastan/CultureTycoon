@@ -9,15 +9,17 @@ public class Room : MonoBehaviour
     [SerializeField]
     RoomUI uiController;
 
-    public void OnCreate(Builder builder)
+    public void OnCreate(Builder builder, RoomBlueprint blueprint)
     {
         uiController.SetEditButton(builder, this);
+        roomBlueprint = blueprint;
     }
 
     public void ConfirmRoom(RoomBlueprint actualState)
     {
         roomBlueprint = actualState;
-        actualState.ConfirmBlueprint(out cells);
+        actualState.ConfirmBlueprint(out cells, out Vector3 roomCenter);
+        uiController.transform.position = new Vector3(roomCenter.x, uiController.transform.position.y, roomCenter.z);
         //change parent of all cells elements to elementsParent
         foreach (RoomCell cell in cells)
         {
@@ -34,7 +36,7 @@ public class Room : MonoBehaviour
                 }
             }
         }
-
+        
         uiController.EndEditing();
     }
 

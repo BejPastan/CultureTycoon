@@ -1,7 +1,9 @@
 using System;
 using UnityEngine;
 
-public class RoomBlueprint : MonoBehaviour
+//make this available in editor
+[CreateAssetMenu(fileName = "RoomBlueprint", menuName = "RoomBlueprint", order = 1)]
+public class RoomBlueprint : ScriptableObject
 {
     [SerializeField]
     public GameObject wallPref;
@@ -12,16 +14,18 @@ public class RoomBlueprint : MonoBehaviour
     public RoomPart[] parts = new RoomPart[0];
     public Grid grid;
     public Transform doorObj;
+
+    public int minSurface;
     
     /// <summary>
     /// Creating New Blueprint
     /// </summary> 
-    public void createNewBlueprint(ref Grid grid, GameObject wallPref, GameObject floorPref, GameObject doorPref)
+    public void CreateNewBlueprint(ref Grid grid/*, GameObject wallPref, GameObject floorPref, GameObject doorPref*/)
     {
         this.grid = grid;
-        this.wallPref = wallPref;
-        this.floorPref = floorPref;
-        this.doorPref = doorPref;
+        //this.wallPref = wallPref;
+        //this.floorPref = floorPref;
+        //this.doorPref = doorPref;
     }
 
     public void Cancel()
@@ -33,23 +37,6 @@ public class RoomBlueprint : MonoBehaviour
         }
         SetWalls(ref parts[0], 0);
         Debug.Log("Returning to previous state");
-
-        //returning to previous state
-        //for (int roomIndex = 0; roomIndex < parts.Length; roomIndex++)
-        //{
-        //    Vector2Int gridId;
-        //    for (int x = 0; x < parts[roomIndex].elements.GetLength(0); x++)
-        //    {
-        //        for (int z = 0; z < parts[roomIndex].elements.GetLength(1); z++)
-        //        {
-        //            gridId = parts[roomIndex].GetGridId(new Vector2Int(x, z));
-        //            if (parts[roomIndex].elements[x, z] != null)
-        //            {
-        //                grid.ChangeGridState(GridState.blueprint, gridId);
-        //            }
-        //        }
-        //    }
-        //}
     }
 
     /// <summary>
@@ -100,6 +87,35 @@ public class RoomBlueprint : MonoBehaviour
         //optionaly check if there are any parts that are empty and remove them
     }
 
+
+    public bool PassRequirements(out bool noCells)
+    {
+        //count all cells in all parts
+        noCells = false;
+        int surface = 0;
+        foreach (RoomPart part in parts)
+        {
+            for(int x = 0; x < part.GetSize().x; x++)
+            {
+                for(int z = 0; z < part.GetSize().y; z++)
+                {
+                    if(part.GetFloorByGridId(part.GetGridId(new Vector2Int(x, z))) != null)
+                    {
+                        surface++;
+                    }
+                }
+            }
+        }
+
+        if(surface == 0)
+            return noCells = true;
+
+        if(surface < minSurface || doorObj == null)
+        {
+            return false;
+        }
+        return true;
+    }
     /// <summary>
     /// Resize selected room part and fill with floor and build walls around
     /// </summary>
@@ -120,7 +136,7 @@ public class RoomBlueprint : MonoBehaviour
     /// <summary>
     /// Ending editing and returnign all cells
     /// </summary>
-    public void ConfirmBlueprint(out RoomCell[,] cells)
+    public void ConfirmBlueprint(out RoomCell[,] cells, out Vector3 roomCenter)
     {
         for(int roomIndex = 1; roomIndex < parts.Length; roomIndex++)
         {
@@ -129,6 +145,8 @@ public class RoomBlueprint : MonoBehaviour
         Array.Resize(ref parts, 1);
         grid.ChangeGridState(GridState.blueprint, GridState.room, parts[0].gridShift, parts[0].gridEnd);
         cells = parts[0].elements;
+        //calculate room center
+        roomCenter = grid.GetWorldPosition(parts[0].GetGridId(parts[0].GetSize()/2)) ;
     }
 
     public void EnableCollision()

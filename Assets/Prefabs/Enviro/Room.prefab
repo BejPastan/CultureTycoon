@@ -37,7 +37,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 0, y: 0}
-  m_AnchoredPosition: {x: 0, y: 2}
+  m_AnchoredPosition: {x: 0, y: 3}
   m_SizeDelta: {x: 200, y: 100}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!223 &5560128765100882925
@@ -126,7 +126,6 @@ GameObject:
   m_Component:
   - component: {fileID: 4343129320602534323}
   - component: {fileID: 5877307068456761086}
-  - component: {fileID: 2359799003355494797}
   m_Layer: 0
   m_Name: Room
   m_TagString: Untagged
@@ -165,23 +164,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   elementsParent: {fileID: 4239305848605022623}
   uiController: {fileID: 6832886890356002326}
---- !u!114 &2359799003355494797
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 2794751986783855699}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 913e45a3212c5a94fa0f4c285b0a5e8f, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  wallPref: {fileID: 0}
-  floorPref: {fileID: 0}
-  doorPref: {fileID: 0}
-  grid: {fileID: 0}
-  doorObj: {fileID: 0}
 --- !u!1 &3602181151294785385
 GameObject:
   m_ObjectHideFlags: 0

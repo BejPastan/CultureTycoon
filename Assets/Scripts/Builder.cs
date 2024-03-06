@@ -24,12 +24,12 @@ public class Builder : MonoBehaviour
     [SerializeField]
     GameObject roomPref;
 
-    [SerializeField]
-    GameObject floorPref;
-    [SerializeField]
-    GameObject wallPref;
-    [SerializeField]
-    GameObject doorPref;
+    //[SerializeField]
+    //GameObject floorPref;
+    //[SerializeField]
+    //GameObject wallPref;
+    //[SerializeField]
+    //GameObject doorPref;
 
     private void Update()
     {
@@ -135,23 +135,32 @@ public class Builder : MonoBehaviour
     }
 
     /// <summary>
-    /// Change game mode to editing selected Room
+    /// Change game mode to building new Room
     /// </summary>
-    private void StartEditing()
+    /// <param name="blueprint">room type blueprint</param>
+    public void StartEditing(RoomBlueprint blueprint)
     {
         //create ne game object for room part
         isBuilding = true;
+        //create new instance of room blueprint
+        roomBP = Instantiate(blueprint);
+        roomBP.CreateNewBlueprint(ref grid);
+
         room = Instantiate(roomPref, Vector3.zero, Quaternion.identity).GetComponent<Room>();
-        room.OnCreate(this);
-        roomBP = room.gameObject.GetComponent<RoomBlueprint>();
-        roomBP.createNewBlueprint(ref grid, wallPref, floorPref, doorPref);
+        room.OnCreate(this, roomBP);
+
         grid.ToggleGrid();
         roomBP.DisableCollision();
         uiControl.StartEditing();
     }
 
+    /// <summary>
+    /// Change game mode to editing selected Room
+    /// </summary>
     public void StartEditing(Room room)
     {
+        if (isBuilding)
+            EndEditing();
         isBuilding = true;
         this.room = room;
         grid.ToggleGrid();
@@ -164,9 +173,20 @@ public class Builder : MonoBehaviour
     /// </summary>
     private void EndEditing()
     {
+        if(!roomBP.PassRequirements(out bool noCells))
+        {
+            if(noCells)
+            {
+                RemoveRoom();
+            }
+            CancelEditing();
+        }
         buildingDoor = false;
         isBuilding = false;
-        room.ConfirmRoom(roomBP);
+        try
+        {
+            room.ConfirmRoom(roomBP);
+        } catch { }
         roomBP = null;
         grid.ToggleGrid();
         room = null;
@@ -178,6 +198,11 @@ public class Builder : MonoBehaviour
         buildingDoor = false;
         isBuilding = false;
         room.CancelEditing(ref roomBP);
+        if(!roomBP.PassRequirements(out bool noCells))
+        {
+            room.ConfirmRoom(roomBP);
+            RemoveRoom();
+        }
         uiControl.StopEditing();
         grid.ToggleGrid();
     }
@@ -208,22 +233,9 @@ public class Builder : MonoBehaviour
         return null;
     }
 
-    /// <summary>
-    /// Change to and from Editing mode
-    /// </summary>
-    public void ToggleBuilding()
+    public void RemoveRoom()
     {
-        if(isBuilding)
-        {
-            if(roomBP.doorObj != null)//I need to change this to function chack conditions from room or room blueprint
-            {
-                EndEditing();
-            }      
-        }
-        else
-        {
-            StartEditing();
-        }
+        Destroy(room.gameObject);
     }
 
     public void ToggleBuildingDoor()
