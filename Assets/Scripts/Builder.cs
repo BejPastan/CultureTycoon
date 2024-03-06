@@ -200,7 +200,6 @@ public class Builder : MonoBehaviour
         room.CancelEditing(ref roomBP);
         if(!roomBP.PassRequirements(out bool noCells))
         {
-            room.ConfirmRoom(roomBP);
             RemoveRoom();
         }
         uiControl.StopEditing();
