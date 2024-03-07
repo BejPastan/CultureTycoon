@@ -14,29 +14,26 @@ public class RoomBlueprint : ScriptableObject
     public RoomPart[] parts = new RoomPart[0];
     public Grid grid;
     public Transform doorObj;
+    public Transform roomObj;
 
     public int minSurface;
     
     /// <summary>
     /// Creating New Blueprint
     /// </summary> 
-    public void CreateNewBlueprint(ref Grid grid/*, GameObject wallPref, GameObject floorPref, GameObject doorPref*/)
+    public void CreateNewBlueprint(ref Grid grid, Transform roomObj)
     {
         this.grid = grid;
-        //this.wallPref = wallPref;
-        //this.floorPref = floorPref;
-        //this.doorPref = doorPref;
+        this.roomObj = roomObj;
     }
 
     public void Cancel()
     {
         for(int roomIndex = 1; roomIndex < parts.Length; roomIndex++)
         {
-            ClearPart(ref parts[roomIndex]);//after this i have while gridState as free, and I need to change it to room
-            //another problem is that this also remove me all meshes
+            ClearPart(ref parts[roomIndex]);
         }
         SetWalls(ref parts[0], 0);
-        Debug.Log("Returning to previous state");
     }
 
     /// <summary>
@@ -45,7 +42,7 @@ public class RoomBlueprint : ScriptableObject
     public void CreateNewPart()
     {
         Array.Resize(ref parts, parts.Length + 1);
-        parts[parts.Length - 1] = new RoomPart(ref grid);
+        parts[parts.Length - 1] = new RoomPart(ref grid, ref roomObj);
         Debug.Log("New part created");
     }
 
@@ -87,6 +84,13 @@ public class RoomBlueprint : ScriptableObject
         //optionaly check if there are any parts that are empty and remove them
     }
 
+    public void RemoveAll()
+    {
+        for(int roomIndex = 0; roomIndex < parts.Length; roomIndex++)
+        {
+            ClearPart(ref parts[roomIndex]);
+        }
+    }
 
     public bool PassRequirements(out bool noCells)
     {
@@ -141,6 +145,12 @@ public class RoomBlueprint : ScriptableObject
         for(int roomIndex = 1; roomIndex < parts.Length; roomIndex++)
         {
             parts[0].MergeParts(parts[roomIndex]);
+        }
+        Debug.Log("parts length: "+parts.Length);
+        Debug.Log("part 0 bounds: " + parts[0].gridShift + " " + parts[0].gridEnd);
+        foreach(RoomPart part in parts)
+        {
+            Debug.Log("part bounds: " + part.gridShift + " " + part.gridEnd);
         }
         Array.Resize(ref parts, 1);
         grid.ChangeGridState(GridState.blueprint, GridState.room, parts[0].gridShift, parts[0].gridEnd);
@@ -231,7 +241,6 @@ public class RoomBlueprint : ScriptableObject
     /// <param name="roomPart"></param>
     private void SetWalls(ref RoomPart part, int roomPart)
     {
-        Debug.Log("Setting walls");
         Vector2Int gridId;
         Vector2Int size = part.GetSize();
         for (int x = 0; x < size.x; x++)
@@ -291,7 +300,6 @@ public class RoomBlueprint : ScriptableObject
         RoomCell cell = parts[roomPart].GetCellByGridId(centerGridId);
         if (cell != null)
         {
-            Debug.Log("Cell " + centerGridId + " is not null");
             if(cell.GetWallByLocalPos(orientation + Vector2Int.one) != null)
                 return false;
         }
@@ -325,7 +333,6 @@ public class RoomBlueprint : ScriptableObject
         //test if prefab hase tag floor
         if(pref.CompareTag("Floor"))
         {
-            Debug.Log("CreateFloor at "+ gridId);
             grid.ChangeGridState(GridState.blueprint, gridId);
         }
         room.CreateFloor(room.GetIdByGridId(gridId), ref pref);

@@ -7,17 +7,19 @@ public class RoomPart
     public Vector2Int gridEnd;
     public Grid grid;
     public RoomCell[,] elements;
+    public Transform roomObj;
 
     /// <summary>
     /// Creating new RoomPart instance
     /// </summary>
     /// <param name="grid"></param>
-    public RoomPart(ref Grid grid)
+    public RoomPart(ref Grid grid, ref Transform roomObj)
     {
         gridShift = Vector2Int.zero;
         gridEnd = Vector2Int.zero;
         elements = new RoomCell[0, 0];
         this.grid = grid;
+        this.roomObj = roomObj;
     }
 
     /// <summary>
@@ -27,7 +29,6 @@ public class RoomPart
     /// <param name="endPos"></param>
     public void Resize(Vector2Int startPos, Vector2Int endPos)
     {
-        Debug.Log("Resizing");
         //set start as smaller value
         if (startPos.x > endPos.x)
         {
@@ -65,25 +66,26 @@ public class RoomPart
     public void MergeParts(RoomPart toMerge)
     {
         Vector2Int start = toMerge.gridShift;
-        if(start.x < gridShift.x)
-        {
-            start.x = gridShift.x;
-        }
-        if (start.y < gridShift.y)
-        {
-            start.y = gridShift.y;
-        }
         Vector2Int end = toMerge.gridEnd;
-        if (end.x > gridEnd.x)
-        {
-            end.x = gridEnd.x;
-        }
-        if (end.y > gridEnd.y)
-        {
-            end.y = gridEnd.y;
-        }
+
+        //select smallest X and y from start and end and gridShift and gridEnd
+        if(start.x>gridShift.x)
+        { start.x = gridShift.x; }
+        if(start.y>gridShift.y)
+        { start.y = gridShift.y; }
+
+        if(end.x<gridEnd.x)
+        { end.x = gridEnd.x; }
+        if(end.y<gridEnd.y)
+        { end.y = gridEnd.y; }
+
+        Debug.Log("bounds of part 1:" +gridShift + " " + gridEnd);
+        Debug.Log("bounds of part 2: " + toMerge.gridShift + " " + toMerge.gridEnd);
+
+        Debug.LogWarning("Merging " + start + " " + end);
 
         Vector2Int size = end - start + Vector2Int.one;
+        Debug.Log(size);
 
         RoomCell[,] newElements = new RoomCell[size.x, size.y];
 
@@ -94,10 +96,12 @@ public class RoomPart
                 Vector2Int gridId = new Vector2Int(x + start.x, z + start.y);
                 if (toMerge.GetCellByGridId(gridId)!= null)
                 {
+                    Debug.Log("Get element from toMerge part from position :" + gridId);
                     newElements[x, z] = toMerge.GetCellByGridId(gridId);
                 }
-                else if(GetCellByGridId(gridId) != null)
+                if(GetCellByGridId(gridId) != null)
                 {
+                    Debug.Log("Get element from original part from position :" + gridId);
                     newElements[x, z] = GetCellByGridId(gridId);
                 }
             }
@@ -117,7 +121,6 @@ public class RoomPart
     public void CreateWall(Vector2Int gridId, ref GameObject pref, Vector2Int orientation)
     {
         Vector2Int id = GetIdByGridId(gridId);
-        Debug.Log("Creating wall at " + gridId + " at local "+ id);
         elements[id.x, id.y].CreateWall(gridId, ref pref, orientation);
     }
 
@@ -202,7 +205,6 @@ public class RoomPart
                     if (elements[x, z] != null)
                     {
                         Transform wall = elements[x, z].GetWall(gridId);
-                        Debug.Log("Wall at " + (x + gridShift.x) + " " + (z + gridShift.y) + " " + wall);
                         if (wall != null)
                         {
                             Array.Resize(ref wallsCells, wallsCells.Length + 1);

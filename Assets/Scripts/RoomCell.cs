@@ -10,6 +10,7 @@ public partial class RoomCell
     public RoomCell(Transform tile, Vector2Int gridPos, ref RoomPart roomPart)
     {
         this.tile = tile;
+        tile.SetParent(roomPart.roomObj);
         this.gridPos = gridPos;
         walls = new Transform[3, 3];
         this.roomPart = roomPart;
@@ -51,7 +52,7 @@ public partial class RoomCell
         Quaternion rotation = Quaternion.Euler(0, (90 * orientation.y * (orientation.y + 1)) + ((orientation.x * - 90) + 90), 0);
         //create element
         orientation += Vector2Int.one;
-        walls[orientation.x, orientation.y] = GameObject.Instantiate(pref, pos, rotation).transform;
+        walls[orientation.x, orientation.y] = GameObject.Instantiate(pref, pos, rotation, roomPart.roomObj).transform;
     }
 
     /// <summary>
@@ -60,7 +61,6 @@ public partial class RoomCell
     /// <param name="gridId"></param>
     public void RemoveWallByGridId(Vector2Int gridId)
     {
-        Debug.Log("RemoveWall at "+gridId);
         RemoveWall(gridId - gridPos+Vector2Int.one);
     }
 

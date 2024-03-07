@@ -9,39 +9,26 @@ public class Room : MonoBehaviour
     [SerializeField]
     RoomUI uiController;
 
-    public void OnCreate(Builder builder, RoomBlueprint blueprint)
+    public void OnCreate(Builder builder)
     {
         uiController.SetEditButton(builder, this);
-        roomBlueprint = blueprint;
     }
 
     public void ConfirmRoom(RoomBlueprint actualState)
     {
         roomBlueprint = actualState;
         actualState.ConfirmBlueprint(out cells, out Vector3 roomCenter);
-        uiController.transform.position = new Vector3(roomCenter.x, uiController.transform.position.y, roomCenter.z);
-        //change parent of all cells elements to elementsParent
-        foreach (RoomCell cell in cells)
-        {
-            cell.GetFloor().transform.SetParent(elementsParent);
-            for(int x = 0; x < 3; x++)
-            {
-                for(int y = 0; y < 3; y++)
-                {
-                    try
-                    {
-                        cell.GetWallByLocalPos(new Vector2Int(x, y)).transform.SetParent(elementsParent);
-                    }
-                    catch { }
-                }
-            }
-        }
-        
+        uiController.transform.position = new Vector3(roomCenter.x, uiController.transform.position.y, roomCenter.z);        
         uiController.EndEditing();
     }
 
     public void CancelEditing(ref RoomBlueprint actualState)
     {
+        if(roomBlueprint == null)
+        {
+            actualState.RemoveAll();
+            return;
+        }
         actualState.Cancel();
         roomBlueprint = actualState;
     }

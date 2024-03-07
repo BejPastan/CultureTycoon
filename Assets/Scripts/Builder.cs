@@ -42,15 +42,12 @@ public class Builder : MonoBehaviour
         {
             if (buildingDoor)
             {
-                Debug.Log("Building door");
                 if (Input.GetMouseButtonDown(0))
                 {
-                    Debug.Log("Building door");
                     Transform wall = GetObjectUnderMouse();
                     Debug.Log(wall);
                     if (wall != null && wall.CompareTag("Wall"))
                     {
-                        Debug.Log("Building door");
                         roomBP.SetDoors(GetMousePosition(), wall.rotation);
                         return;
                     }
@@ -135,34 +132,32 @@ public class Builder : MonoBehaviour
     }
 
     /// <summary>
-    /// Change game mode to building new Room
+    /// Change game mode to building a new room
     /// </summary>
-    /// <param name="blueprint">room type blueprint</param>
-    public void StartEditing(RoomBlueprint blueprint)
+    /// <param name="blueprint">Room type blueprint</param>
+    public void StartEditing(RoomBlueprint roomBlueprint)
     {
-        //create ne game object for room part
         isBuilding = true;
-        //create new instance of room blueprint
-        roomBP = Instantiate(blueprint);
-        roomBP.CreateNewBlueprint(ref grid);
-
         room = Instantiate(roomPref, Vector3.zero, Quaternion.identity).GetComponent<Room>();
-        room.OnCreate(this, roomBP);
+        room.OnCreate(this);
 
+        roomBP = Instantiate(roomBlueprint);
+        roomBP.CreateNewBlueprint(ref grid, room.transform);
         grid.ToggleGrid();
         roomBP.DisableCollision();
         uiControl.StartEditing();
     }
 
     /// <summary>
-    /// Change game mode to editing selected Room
+    /// Change game mode to editing the selected room
     /// </summary>
-    public void StartEditing(Room room)
+    public void StartEditing(Room selectedRoom)
     {
+        Debug.Log("start Editing");
         if (isBuilding)
             EndEditing();
         isBuilding = true;
-        this.room = room;
+        room = selectedRoom;
         grid.ToggleGrid();
         roomBP = room.StartEdit();
         uiControl.StartEditing();
@@ -171,7 +166,7 @@ public class Builder : MonoBehaviour
     /// <summary>
     /// Exit game from editing mode
     /// </summary>
-    private void EndEditing()
+    public void EndEditing()
     {
         if(!roomBP.PassRequirements(out bool noCells))
         {
@@ -180,17 +175,15 @@ public class Builder : MonoBehaviour
                 RemoveRoom();
             }
             CancelEditing();
+            return;
         }
         buildingDoor = false;
         isBuilding = false;
-        try
-        {
-            room.ConfirmRoom(roomBP);
-        } catch { }
+        room.ConfirmRoom(roomBP);
         roomBP = null;
         grid.ToggleGrid();
         room = null;
-        uiControl.StopEditing();
+        uiControl.EndEditing();
     }
 
     public void CancelEditing()
@@ -202,7 +195,7 @@ public class Builder : MonoBehaviour
         {
             RemoveRoom();
         }
-        uiControl.StopEditing();
+        uiControl.EndEditing();
         grid.ToggleGrid();
     }
 

@@ -5,12 +5,15 @@ using TMPro;
 public class BuilderUI : MonoBehaviour
 {
     [SerializeField]
-    Button buildingButton;
+    Transform buildingButton;
     [SerializeField]
     Button doorButton;
 
+
     [SerializeField]
-    Transform buildingMenu;
+    Transform newRoomSelectMenu;
+    [SerializeField]
+    Transform newRoomBuildingInfo;
 
     public void ToggleBuildMenu(Transform menu)
     {
@@ -28,23 +31,26 @@ public class BuilderUI : MonoBehaviour
     public void StartEditing()
     {
         //change text of button
-        buildingButton.interactable = false;
-        buildingMenu.gameObject.SetActive(true);
+        buildingButton.gameObject.SetActive(false);
+        //I must disconect building menu from building button
+        newRoomSelectMenu.gameObject.SetActive(true);
+        newRoomBuildingInfo.gameObject.SetActive(true);
     }
 
-    public void StopEditing()
+    public void EndEditing()
     {
-        buildingButton.interactable = true;
-        buildingMenu.gameObject.SetActive(false);
+        buildingButton.gameObject.SetActive(true);
+        newRoomSelectMenu.gameObject.SetActive(false);
+        newRoomBuildingInfo.gameObject.SetActive(false);
     }
 
     public void StartBuildingDoor()
     {
-        doorButton.transform.GetComponentInChildren<TextMeshProUGUI>().text = "End Setting Door";
+        doorButton.transform.GetComponentInChildren<TextMeshProUGUI>().color = Color.green;
     }
 
     public void StopBuildingDoor()
     {
-        doorButton.transform.GetComponentInChildren<TextMeshProUGUI>().text = "Start Setting Door";
+        doorButton.transform.GetComponentInChildren<TextMeshProUGUI>().color = Color.black;
     }
 }
