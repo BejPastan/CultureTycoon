@@ -15,8 +15,10 @@ public class RoomBlueprint : ScriptableObject
     public Grid grid;
     public Transform doorObj;
     public Transform roomObj;
+    [SerializeField] public static RoomType roomType;
+    public RoomType RoomType { get => roomType; }
 
-    public int minSurface;
+    [SerializeField] public static int minSurface;
     
     /// <summary>
     /// Creating New Blueprint
@@ -210,25 +212,28 @@ public class RoomBlueprint : ScriptableObject
                 gridId = part.GetGridId(new Vector2Int(x, z));
                 bool isFloor = false;
                 int roomIndex = 0;
-                foreach (RoomPart room in parts)
+                if (grid.gridStates[gridId.x, gridId.y]==GridState.free)
                 {
-                    //here i need to check if in this place is floor or walls
-                    if(room.GetFloorByGridId(gridId) != null)
+                    foreach (RoomPart room in parts)
                     {
-                        isFloor = true;
+                        //here i need to check if in this place is floor or walls
+                        if (room.GetFloorByGridId(gridId) != null)
+                        {
+                            isFloor = true;
+                        }
+                        RoomCell[] walls = room.GetWallCellsOutsideGridId(gridId);
+                        foreach (RoomCell wall in walls)
+                        {
+                            //under this something is wrong
+                            wall.RemoveWallByGridId(gridId);
+                        }
+                        roomIndex++;
+
                     }
-                    RoomCell[] walls = room.GetWallCellsOutsideGridId(gridId);
-                    foreach (RoomCell wall in walls)
+                    if (!isFloor)
                     {
-                        //under this something is wrong
-                        wall.RemoveWallByGridId(gridId);
+                        CreateFloor(gridId, ref part, ref floorPref);
                     }
-                    roomIndex++;
-                    
-                }
-                if(!isFloor)
-                {
-                    CreateFloor(gridId, ref part, ref floorPref);
                 }
             }
         }
@@ -353,7 +358,11 @@ public class RoomBlueprint : ScriptableObject
             {
                 gridId = part.GetGridId(new Vector2Int(x, z));
                 part.RemoveElement(new Vector2Int(x,z));
-                grid.ChangeGridState(GridState.free, gridId);
+                if(part.GetCellFromId(x, z) != null)
+                {
+                    grid.ChangeGridState(GridState.free, gridId);
+                }
+                
             }
         }
     }
@@ -393,4 +402,10 @@ public class RoomBlueprint : ScriptableObject
         }
         return null;
     }
+}
+
+public enum RoomType
+{
+    artWorkshop,
+    none
 }

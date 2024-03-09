@@ -1,14 +1,16 @@
+using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
-using TMPro;
 
 public class BuilderUI : MonoBehaviour
 {
     [SerializeField]
-    Transform buildingButton;
+    Transform bottomMenu;
     [SerializeField]
     Button doorButton;
 
+    [SerializeField]
+    Transform equipmentMenu;
 
     [SerializeField]
     Transform newRoomSelectMenu;
@@ -27,21 +29,21 @@ public class BuilderUI : MonoBehaviour
         }
     }
 
-
-    public void StartEditing()
+    public void StartEditingRoom()
     {
         //change text of button
-        buildingButton.gameObject.SetActive(false);
+        bottomMenu.gameObject.SetActive(false);
         //I must disconect building menu from building button
         newRoomSelectMenu.gameObject.SetActive(true);
         newRoomBuildingInfo.gameObject.SetActive(true);
     }
 
-    public void EndEditing()
+    public void EndEditingRoom()
     {
-        buildingButton.gameObject.SetActive(true);
+        bottomMenu.gameObject.SetActive(true);
         newRoomSelectMenu.gameObject.SetActive(false);
         newRoomBuildingInfo.gameObject.SetActive(false);
+        StopBuildingDoor();
     }
 
     public void StartBuildingDoor()
@@ -52,5 +54,10 @@ public class BuilderUI : MonoBehaviour
     public void StopBuildingDoor()
     {
         doorButton.transform.GetComponentInChildren<TextMeshProUGUI>().color = Color.black;
+    }
+
+    public void StartPlacingEquipment()
+    {
+
     }
 }

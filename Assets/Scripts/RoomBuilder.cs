@@ -1,7 +1,7 @@
 using UnityEngine;
 using UnityEngine.EventSystems;
 
-public class Builder : MonoBehaviour
+public class RoomBuilder : MonoBehaviour
 {
     public bool isBuilding = false;
     public bool isLeftClick = false;
@@ -145,7 +145,7 @@ public class Builder : MonoBehaviour
         roomBP.CreateNewBlueprint(ref grid, room.transform);
         grid.ToggleGrid();
         roomBP.DisableCollision();
-        uiControl.StartEditing();
+        uiControl.StartEditingRoom();
     }
 
     /// <summary>
@@ -160,7 +160,7 @@ public class Builder : MonoBehaviour
         room = selectedRoom;
         grid.ToggleGrid();
         roomBP = room.StartEdit();
-        uiControl.StartEditing();
+        uiControl.StartEditingRoom();
     }
 
     /// <summary>
@@ -174,7 +174,7 @@ public class Builder : MonoBehaviour
             {
                 RemoveRoom();
             }
-            CancelEditing();
+            //CancelEditing();
             return;
         }
         buildingDoor = false;
@@ -183,7 +183,7 @@ public class Builder : MonoBehaviour
         roomBP = null;
         grid.ToggleGrid();
         room = null;
-        uiControl.EndEditing();
+        uiControl.EndEditingRoom();
     }
 
     public void CancelEditing()
@@ -195,7 +195,7 @@ public class Builder : MonoBehaviour
         {
             RemoveRoom();
         }
-        uiControl.EndEditing();
+        uiControl.EndEditingRoom();
         grid.ToggleGrid();
     }
 

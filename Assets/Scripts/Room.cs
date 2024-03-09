@@ -2,14 +2,14 @@ using UnityEngine;
 
 public class Room : MonoBehaviour
 {
-    RoomCell[,] cells = new RoomCell[0,0];
+    RoomCell[,] cells;
     RoomBlueprint roomBlueprint;
     [SerializeField]
     Transform elementsParent;
     [SerializeField]
     RoomUI uiController;
 
-    public void OnCreate(Builder builder)
+    public void OnCreate(RoomBuilder builder)
     {
         uiController.SetEditButton(builder, this);
     }
@@ -38,5 +38,20 @@ public class Room : MonoBehaviour
         uiController.StartEditing();
         roomBlueprint.DisableCollision();
         return roomBlueprint;
+    }
+
+    public RoomType GetRoomType()
+    {
+        return roomBlueprint.RoomType;
+    }
+
+    public bool IsOnThisGrid(Vector2Int gridId)
+    {
+        if (roomBlueprint.parts[0].GetCellByGridId(gridId) != null)
+        { 
+            Debug.Log("IsOnThisGrid");
+            return true; 
+        }
+        return false;
     }
 }

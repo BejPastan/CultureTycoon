@@ -5,9 +5,9 @@ public class Grid : MonoBehaviour
     [SerializeField]
     bool isShowing = true;
     [SerializeField]
-    int width = 10;
+    public readonly int width = 10;
     [SerializeField]
-    int depth = 10;
+    public readonly int depth = 10;
     [SerializeField]
     public GridState[,] gridStates;
     [SerializeField]
@@ -108,6 +108,14 @@ public class Grid : MonoBehaviour
             gridId.y = depth - 1;
         return gridId;
     }
+
+    public Vector2Int GetRealGridId(Vector3 position)
+    {
+        position -= origin;
+        Vector2Int gridId = new Vector2Int(Mathf.RoundToInt(position.x / cellSize), Mathf.RoundToInt(position.z / cellSize));
+        return gridId;
+    }
+
 
     /// <summary>
     /// Get positon of cell in the world by its X nad Y position in grid array
