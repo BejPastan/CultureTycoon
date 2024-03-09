@@ -58,6 +58,11 @@ public class BuilderUI : MonoBehaviour
 
     public void StartPlacingEquipment()
     {
+        
+    }
 
+    public void StopPlacingEquipment()
+    {
+        
     }
 }

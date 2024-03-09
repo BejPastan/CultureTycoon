@@ -5,10 +5,12 @@ using UnityEngine;
 
 public class FurniturePlacer : MonoBehaviour
 {
-    [SerializeField] bool isPlacing = false;
+    bool isPlacing = false;
+    bool canPlace = false;
     [SerializeField] FurnitureData objectToPlace;
     [SerializeField] Grid grid;
     Vector2Int mouseGridPos;
+    [SerializeField] Material defaultMaterial;
 
     //rotating object
 
@@ -22,15 +24,18 @@ public class FurniturePlacer : MonoBehaviour
     {
         Debug.Log("StartPlacing");
         objectToPlace = Instantiate(objectPref).GetComponent<FurnitureData>();
+        objectToPlace.StartMoving(defaultMaterial);
         isPlacing = true;
         grid.ToggleGrid();
+
     }
 
     public void Place()
     {
-        objectToPlace = null;
         isPlacing = false;
         grid.ToggleGrid();
+        objectToPlace.Place();
+        objectToPlace = null;
     }
 
     public void Cancel()
@@ -42,29 +47,38 @@ public class FurniturePlacer : MonoBehaviour
 
     private void Update()
     {
-        if(isPlacing)
+        if (isPlacing)
         {
-            if(Input.GetMouseButtonDown(0))
-            {
-                Place();
-                return;
-            }
-            if(Input.GetKey(KeyCode.Escape))
-            {
-                Cancel();
-                return;
-            }
-            if(mouseGridPos != MouseGridPos())
-            {
-                mouseGridPos = MouseGridPos();
-                objectToPlace.SetOnGrid(mouseGridPos);
-            }
-            if(Input.mouseScrollDelta.y != 0)
-            {
-                objectToPlace.Rotate((int)Input.mouseScrollDelta.y);
-            }
+            InputHandler();
         }
     }
+
+    private void InputHandler()
+    {
+        if (Input.GetMouseButtonDown(0))
+        {
+            if(canPlace)
+            { Place(); }
+            return;
+        }
+        if (Input.GetKey(KeyCode.Escape))
+        {
+            Cancel();
+            return;
+        }
+        if (mouseGridPos != MouseGridPos())
+        {
+            mouseGridPos = MouseGridPos();
+            objectToPlace.SetOnGrid(mouseGridPos);
+            canPlace = objectToPlace.CheckConditions();
+        }
+        if (Input.mouseScrollDelta.y != 0)
+        {
+            objectToPlace.Rotate((int)Input.mouseScrollDelta.y);
+            canPlace = objectToPlace.CheckConditions();
+        }
+    }
+
 
 
     private Vector2Int MouseGridPos()
@@ -76,7 +90,8 @@ public class FurniturePlacer : MonoBehaviour
         {
             if (h.transform.CompareTag("Ground"))
             {
-                return grid.GetGridId(h.point);
+                Vector2Int gridId = grid.GetGridId(h.point);
+                return gridId;
                 
             }
         }

@@ -116,7 +116,6 @@ public class Grid : MonoBehaviour
         return gridId;
     }
 
-
     /// <summary>
     /// Get positon of cell in the world by its X nad Y position in grid array
     /// </summary>

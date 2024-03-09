@@ -57,7 +57,7 @@ Transform:
   m_GameObject: {fileID: 3280353975451341478}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalPosition: {x: 0.00000074505795, y: 0, z: 1}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -121,6 +121,23 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: -7635826562936255635, guid: de01e3970a591b242b12786c2e2cf490,
+        type: 3}
+      propertyPath: m_Materials.Array.size
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: -7635826562936255635, guid: de01e3970a591b242b12786c2e2cf490,
+        type: 3}
+      propertyPath: m_Materials.Array.data[0]
+      value: 
+      objectReference: {fileID: -6478536213147159724, guid: de01e3970a591b242b12786c2e2cf490,
+        type: 3}
+    - target: {fileID: -7635826562936255635, guid: de01e3970a591b242b12786c2e2cf490,
+        type: 3}
+      propertyPath: m_Materials.Array.data[1]
+      value: 
+      objectReference: {fileID: -6478536213147159724, guid: de01e3970a591b242b12786c2e2cf490,
+        type: 3}
     - target: {fileID: 919132149155446097, guid: de01e3970a591b242b12786c2e2cf490,
         type: 3}
       propertyPath: m_Name
@@ -162,6 +179,12 @@ PrefabInstance:
       insertIndex: -1
       addedObject: {fileID: 3674151551278118228}
   m_SourcePrefab: {fileID: 100100000, guid: de01e3970a591b242b12786c2e2cf490, type: 3}
+--- !u!23 &5265236735143132441 stripped
+MeshRenderer:
+  m_CorrespondingSourceObject: {fileID: -7635826562936255635, guid: de01e3970a591b242b12786c2e2cf490,
+    type: 3}
+  m_PrefabInstance: {fileID: 6852781916986963572}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1 &6041738369723484965 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 919132149155446097, guid: de01e3970a591b242b12786c2e2cf490,
@@ -180,7 +203,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 93565b8dabbff7b4cae4107aed820f7d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  name: small Painting canvas
+  newName: Small canva
   buildingCost: 0
   quality: 0
   destinationType: 0
@@ -188,9 +211,12 @@ MonoBehaviour:
   - {fileID: 4367715990770579585}
   usagePrice: 0
   maintenanceCost: 0
-  size: {x: 1, y: 2}
-  centerPos: {x: 0, y: 0}
   rotationNumber: 0
+  grid: {fileID: 0}
+  roomCenter: {x: 0, y: 0}
+  startPos: {x: 0, y: 0}
+  endPos: {x: 0, y: 1}
+  meshRenderer: {fileID: 5265236735143132441}
 --- !u!65 &6443583335455535505
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -238,7 +264,7 @@ Rigidbody:
   m_IsKinematic: 0
   m_Interpolate: 0
   m_Constraints: 0
-  m_CollisionDetection: 0
+  m_CollisionDetection: 1
 --- !u!4 &6382517277925249439 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: -8679921383154817045, guid: de01e3970a591b242b12786c2e2cf490,

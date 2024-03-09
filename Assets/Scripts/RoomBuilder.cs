@@ -86,7 +86,7 @@ public class RoomBuilder : MonoBehaviour
                             if (endPos != GetMousePosition())
                             {
                                 endPos = GetMousePosition();
-                                roomBP.EraseArea(startPos, endPos);
+                                room.EraseArea(startPos, endPos);
                             }
                         }
                     }
@@ -174,7 +174,6 @@ public class RoomBuilder : MonoBehaviour
             {
                 RemoveRoom();
             }
-            //CancelEditing();
             return;
         }
         buildingDoor = false;
@@ -188,15 +187,16 @@ public class RoomBuilder : MonoBehaviour
 
     public void CancelEditing()
     {
-        buildingDoor = false;
-        isBuilding = false;
-        room.CancelEditing(ref roomBP);
         if(!roomBP.PassRequirements(out bool noCells))
         {
             RemoveRoom();
         }
+        buildingDoor = false;
+        isBuilding = false;
+        room.CancelEditing(ref roomBP);
         uiControl.EndEditingRoom();
         grid.ToggleGrid();
+        Debug.Log("CancelEditing");
     }
 
     private void StartBuildingDoor()
@@ -227,6 +227,9 @@ public class RoomBuilder : MonoBehaviour
 
     public void RemoveRoom()
     {
+        grid.ToggleGrid();
+        isBuilding = false;
+        uiControl.EndEditingRoom();
         Destroy(room.gameObject);
     }
 

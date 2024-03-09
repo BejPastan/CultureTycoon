@@ -15,10 +15,10 @@ public class RoomBlueprint : ScriptableObject
     public Grid grid;
     public Transform doorObj;
     public Transform roomObj;
-    [SerializeField] public static RoomType roomType;
+    [SerializeField] public RoomType roomType;
     public RoomType RoomType { get => roomType; }
 
-    [SerializeField] public static int minSurface;
+    [SerializeField] public int minSurface;
     
     /// <summary>
     /// Creating New Blueprint
@@ -114,7 +114,10 @@ public class RoomBlueprint : ScriptableObject
         }
 
         if(surface == 0)
-            return noCells = true;
+        {
+            noCells = true;
+            return false;
+        }               
 
         if(surface < minSurface || doorObj == null)
         {
@@ -147,12 +150,6 @@ public class RoomBlueprint : ScriptableObject
         for(int roomIndex = 1; roomIndex < parts.Length; roomIndex++)
         {
             parts[0].MergeParts(parts[roomIndex]);
-        }
-        Debug.Log("parts length: "+parts.Length);
-        Debug.Log("part 0 bounds: " + parts[0].gridShift + " " + parts[0].gridEnd);
-        foreach(RoomPart part in parts)
-        {
-            Debug.Log("part bounds: " + part.gridShift + " " + part.gridEnd);
         }
         Array.Resize(ref parts, 1);
         grid.ChangeGridState(GridState.blueprint, GridState.room, parts[0].gridShift, parts[0].gridEnd);
