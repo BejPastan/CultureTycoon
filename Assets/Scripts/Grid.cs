@@ -109,6 +109,11 @@ public class Grid : MonoBehaviour
         return gridId;
     }
 
+    /// <summary>
+    /// get X and Y position of cell in selected position on the world can be outside of grid
+    /// </summary>
+    /// <param name="position"></param>
+    /// <returns></returns>
     public Vector2Int GetRealGridId(Vector3 position)
     {
         position -= origin;

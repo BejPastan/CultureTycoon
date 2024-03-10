@@ -17,6 +17,10 @@ public class BuilderUI : MonoBehaviour
     [SerializeField]
     Transform newRoomBuildingInfo;
 
+    /// <summary>
+    /// show apripriate menu for funrnitures or rooms
+    /// </summary>
+    /// <param name="menu"></param>
     public void ToggleBuildMenu(Transform menu)
     {
         if(menu.gameObject.activeSelf)
@@ -29,6 +33,9 @@ public class BuilderUI : MonoBehaviour
         }
     }
 
+    /// <summary>
+    /// Change UI to room editing mode
+    /// </summary>
     public void StartEditingRoom()
     {
         //change text of button
@@ -38,6 +45,9 @@ public class BuilderUI : MonoBehaviour
         newRoomBuildingInfo.gameObject.SetActive(true);
     }
 
+    /// <summary>
+    /// Change UI to normal mode
+    /// </summary>
     public void EndEditingRoom()
     {
         bottomMenu.gameObject.SetActive(true);
@@ -46,23 +56,19 @@ public class BuilderUI : MonoBehaviour
         StopBuildingDoor();
     }
 
+    /// <summary>
+    /// Change UI to setting door mode
+    /// </summary>
     public void StartBuildingDoor()
     {
         doorButton.transform.GetComponentInChildren<TextMeshProUGUI>().color = Color.green;
     }
 
+    /// <summary>
+    /// Return building door UI to normal mode
+    /// </summary>
     public void StopBuildingDoor()
     {
         doorButton.transform.GetComponentInChildren<TextMeshProUGUI>().color = Color.black;
-    }
-
-    public void StartPlacingEquipment()
-    {
-        
-    }
-
-    public void StopPlacingEquipment()
-    {
-        
     }
 }

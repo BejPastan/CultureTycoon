@@ -13,14 +13,10 @@ public class FurniturePlacer : MonoBehaviour
     [SerializeField] Material defaultMaterial;
     bool relocation = false;
 
-    //rotating object
-
-    //moving object
-
-    //snapping to grid
-
-    //placing object
-
+    /// <summary>
+    /// Create new object to place and start placing it
+    /// </summary>
+    /// <param name="objectPref"></param>
     public void StartPlacing(GameObject objectPref)
     {
         Debug.Log("StartPlacing");
@@ -31,6 +27,10 @@ public class FurniturePlacer : MonoBehaviour
         relocation = false;
     }
 
+    /// <summary>
+    /// start moving existing object on grid
+    /// </summary>
+    /// <param name="furniture"></param>
     public void StartPlacing(FurnitureData furniture)
     {
         Debug.Log("StartPlacing");
@@ -41,6 +41,9 @@ public class FurniturePlacer : MonoBehaviour
         relocation = true;
     }
 
+    /// <summary>
+    /// place object on grid
+    /// </summary>
     public void Place()
     {
         isPlacing = false;
@@ -50,6 +53,9 @@ public class FurniturePlacer : MonoBehaviour
         relocation = false;
     }
 
+    /// <summary>
+    /// cancel placing new obejct
+    /// </summary>
     public void Cancel()
     {
         Destroy(objectToPlace.gameObject);
@@ -58,6 +64,9 @@ public class FurniturePlacer : MonoBehaviour
         relocation = false;
     }
 
+    /// <summary>
+    /// remove existing object from grid
+    /// </summary>
     public void Remove()
     {
         Destroy(objectToPlace.gameObject);
@@ -65,6 +74,7 @@ public class FurniturePlacer : MonoBehaviour
         grid.ToggleGrid();
         relocation = false;
     }
+
 
     private void Update()
     {
@@ -74,6 +84,10 @@ public class FurniturePlacer : MonoBehaviour
         }
     }
 
+    /// <summary>
+    /// handel player input
+    /// </summary>
+    /// <returns></returns>
     private async Task InputHandler()
     {
         if (Input.GetMouseButtonUp(0))
@@ -105,6 +119,10 @@ public class FurniturePlacer : MonoBehaviour
         }
     }
 
+    /// <summary>
+    /// get mouse position on grid
+    /// </summary>
+    /// <returns></returns>
     private Vector2Int MouseGridPos()
     {
         Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);

@@ -36,6 +36,9 @@ public class RoomBuilder : MonoBehaviour
         Building();
     }
 
+    /// <summary>
+    /// handle player input
+    /// </summary>
     private void Building()
     {
         if (isBuilding)
@@ -185,6 +188,9 @@ public class RoomBuilder : MonoBehaviour
         uiControl.EndEditingRoom();
     }
 
+    /// <summary>
+    /// cancel last edit
+    /// </summary>
     public void CancelEditing()
     {
         if(!roomBP.PassRequirements(out bool noCells))
@@ -198,6 +204,9 @@ public class RoomBuilder : MonoBehaviour
         Debug.Log("CancelEditing");
     }
 
+    /// <summary>
+    /// enter building door mode
+    /// </summary>
     private void StartBuildingDoor()
     {
         buildingDoor = true;
@@ -205,6 +214,9 @@ public class RoomBuilder : MonoBehaviour
         uiControl.StartBuildingDoor();
     }
 
+    /// <summary>
+    /// exit building door mode
+    /// </summary>
     private void EndBuildingDoor()
     {
         buildingDoor = false;
@@ -212,6 +224,10 @@ public class RoomBuilder : MonoBehaviour
         uiControl.StopBuildingDoor();
     }
 
+    /// <summary>
+    /// get object that is now under mouse
+    /// </summary>
+    /// <returns></returns>
     private Transform GetObjectUnderMouse()
     {
         Debug.Log("Getting object under mouse");
@@ -224,6 +240,9 @@ public class RoomBuilder : MonoBehaviour
         return null;
     }
 
+    /// <summary>
+    /// remove whole room
+    /// </summary>
     public void RemoveRoom()
     {
         grid.ToggleGrid();
@@ -232,6 +251,9 @@ public class RoomBuilder : MonoBehaviour
         Destroy(room.gameObject);
     }
 
+    /// <summary>
+    /// change mode to building door or exit this mode
+    /// </summary>
     public void ToggleBuildingDoor()
     {
         if(isBuilding)

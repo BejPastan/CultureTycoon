@@ -33,18 +33,26 @@ public class FurnitureData : MonoBehaviour
         grid = FindObjectOfType<Grid>();
     }
 
+    /// <summary>
+    /// start moving object on grid
+    /// </summary>
+    /// <param name="temporaryMaterial"></param>
     public void StartMoving(Material temporaryMaterial)
     {
         building = true;
         if(roomToPlace != null)
         {
-            roomToPlace.SetNewFurniture(null);
+            roomToPlace.RemoveFurniture(this);
         }
         materials = meshRenderer.materials;
         Debug.Log("temporaryMaterial: " + temporaryMaterial.name);
         meshRenderer.materials = new Material[1] { temporaryMaterial };
     }
 
+    /// <summary>
+    /// place objct on selected place on grid
+    /// </summary>
+    /// <returns></returns>
     public Room Place()
     {
         meshRenderer.materials = materials;
@@ -53,6 +61,10 @@ public class FurnitureData : MonoBehaviour
         return roomToPlace;
     }
 
+    /// <summary>
+    /// rotate object
+    /// </summary>
+    /// <param name="rotationNumber">number of rotation of 90 degres</param>
     public void Rotate(int rotationNumber)
     {
         this.rotationNumber += rotationNumber;
@@ -69,6 +81,10 @@ public class FurnitureData : MonoBehaviour
         SetBounds(transform.position);
     }
 
+    /// <summary>
+    /// move object to given grid id
+    /// </summary>
+    /// <param name="gridId">new position to move</param>
     public void SetOnGrid(Vector2Int gridId)
     {
         Vector3 newPos = grid.GetWorldPosition(gridId);
@@ -83,6 +99,10 @@ public class FurnitureData : MonoBehaviour
         //here i must check if there is a apropate type of room
     }
 
+    /// <summary>
+    /// check if object can be placed on selected position
+    /// </summary>
+    /// <returns></returns>
     public async Task CheckConditions()
     {
         canBuild = false;
@@ -128,6 +148,11 @@ public class FurnitureData : MonoBehaviour
         }      
     }
 
+    /// <summary>
+    /// set local position of bounds of object
+    /// </summary>
+    /// <param name="position"></param>
+    /// <returns></returns>
     private async Task SetBounds(Vector3 position)
     {
         await Task.Delay(25);//yeeee this work but I'm not happy with this solution. Why this is here? Well... I need to wait for until colider rotate too.
@@ -139,16 +164,25 @@ public class FurnitureData : MonoBehaviour
         endPos = grid.GetRealGridId(newCenter + collider.bounds.extents);
     }
 
+    /// <summary>
+    /// disable colider of object
+    /// </summary>
     public void DisableCollider()
     {
         GetComponent<Collider>().enabled = false;
     }
 
+    /// <summary>
+    /// enable colider of object
+    /// </summary>
     public void EnableCollider()
     {
         GetComponent<Collider>().enabled = true;
     }
 
+    /// <summary>
+    /// Initialize moving object
+    /// </summary>
     private void OnMouseDown()
     {
         if(!building)

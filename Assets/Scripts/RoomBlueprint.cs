@@ -86,6 +86,9 @@ public class RoomBlueprint : ScriptableObject
         //optionaly check if there are any parts that are empty and remove them
     }
 
+    /// <summary>
+    /// remove whole room and all its parts
+    /// </summary>
     public void RemoveAll()
     {
         for(int roomIndex = 0; roomIndex < parts.Length; roomIndex++)
@@ -158,6 +161,9 @@ public class RoomBlueprint : ScriptableObject
         roomCenter = grid.GetWorldPosition(parts[0].GetGridId(parts[0].GetSize()/2)) ;
     }
 
+    /// <summary>
+    /// enable collision on all cells
+    /// </summary>
     public void EnableCollision()
     {
         foreach (RoomPart part in parts)
@@ -166,6 +172,9 @@ public class RoomBlueprint : ScriptableObject
         }
     }
 
+    /// <summary>
+    /// disable collision on all cells
+    /// </summary>
     public void DisableCollision()
     {
         foreach (RoomPart part in parts)
@@ -174,6 +183,11 @@ public class RoomBlueprint : ScriptableObject
         }
     }
 
+    /// <summary>
+    /// build doors on selected place
+    /// </summary>
+    /// <param name="position">grid id to buuld door</param>
+    /// <param name="wallRotation">orientation of wall on which build door</param>
     public void SetDoors(Vector2Int position,Quaternion wallRotation)
     {
         RoomCell cell;
@@ -388,6 +402,11 @@ public class RoomBlueprint : ScriptableObject
         }
     }
 
+    /// <summary>
+    /// return cell on selected gridId
+    /// </summary>
+    /// <param name="gridId"></param>
+    /// <returns></returns>
     private RoomCell GetCell(Vector2Int gridId)
     {
         foreach (RoomPart part in parts)
