@@ -20,6 +20,7 @@ public class Room : MonoBehaviour
         actualState.ConfirmBlueprint(out cells, out Vector3 roomCenter);
         uiController.transform.position = new Vector3(roomCenter.x, uiController.transform.position.y, roomCenter.z);
         uiController.EndEditing();
+        EnableFurnitureCollider();
     }
 
     public void CancelEditing(ref RoomBlueprint actualState)
@@ -31,12 +32,14 @@ public class Room : MonoBehaviour
         }
         actualState.Cancel();
         roomBlueprint = actualState;
+        EnableFurnitureCollider();
     }
 
     public RoomBlueprint StartEdit()
     {
         uiController.StartEditing();
         roomBlueprint.DisableCollision();
+        DisableFurnitureCollider();
         return roomBlueprint;
     }
 
@@ -49,7 +52,6 @@ public class Room : MonoBehaviour
     {
         if (roomBlueprint.parts[0].GetCellByGridId(gridId) != null)
         { 
-            Debug.Log("IsOnThisGrid");
             return true; 
         }
         return false;
@@ -106,5 +108,41 @@ public class Room : MonoBehaviour
     {
         Array.Resize(ref furnitureData, furnitureData.Length + 1);
         furnitureData[furnitureData.Length - 1] = newFurniture;
+    }
+
+    public void RemoveFurniture(ref FurnitureData furniture)
+    {
+        bool find = false;
+        for(int i = 0; i < furnitureData.Length; i++)
+        {
+            if (furnitureData[i] == furniture || find)
+            {
+                find = true;
+                try
+                {
+                    furnitureData[i] = furnitureData[i + 1];
+                }catch(IndexOutOfRangeException)
+                {
+                    Array.Resize(ref furnitureData, furnitureData.Length - 1);
+                    return;
+                }
+            }
+        }
+    }
+
+    private void DisableFurnitureCollider()
+    {
+        foreach(FurnitureData furniture in furnitureData)
+        {
+            furniture.DisableCollider();
+        }
+    }
+
+    private void EnableFurnitureCollider()
+    {
+        foreach(FurnitureData furniture in furnitureData)
+        {
+            furniture.EnableCollider();
+        }
     }
 }

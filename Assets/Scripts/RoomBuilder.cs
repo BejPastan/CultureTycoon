@@ -195,7 +195,6 @@ public class RoomBuilder : MonoBehaviour
         isBuilding = false;
         room.CancelEditing(ref roomBP);
         uiControl.EndEditingRoom();
-        grid.ToggleGrid();
         Debug.Log("CancelEditing");
     }
 

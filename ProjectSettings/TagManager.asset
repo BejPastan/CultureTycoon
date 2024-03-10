@@ -8,6 +8,7 @@ TagManager:
   - Floor
   - Wall
   - Ground
+  - Furniture
   layers:
   - Default
   - TransparentFX

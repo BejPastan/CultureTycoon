@@ -1,16 +1,17 @@
 using System.Collections;
 using System.Collections.Generic;
+using System.Threading.Tasks;
 using Unity.VisualScripting;
 using UnityEngine;
 
 public class FurniturePlacer : MonoBehaviour
 {
     bool isPlacing = false;
-    bool canPlace = false;
     [SerializeField] FurnitureData objectToPlace;
     [SerializeField] Grid grid;
     Vector2Int mouseGridPos;
     [SerializeField] Material defaultMaterial;
+    bool relocation = false;
 
     //rotating object
 
@@ -27,7 +28,17 @@ public class FurniturePlacer : MonoBehaviour
         objectToPlace.StartMoving(defaultMaterial);
         isPlacing = true;
         grid.ToggleGrid();
+        relocation = false;
+    }
 
+    public void StartPlacing(FurnitureData furniture)
+    {
+        Debug.Log("StartPlacing");
+        objectToPlace = furniture;
+        objectToPlace.StartMoving(defaultMaterial);
+        isPlacing = true;
+        grid.ToggleGrid();
+        relocation = true;
     }
 
     public void Place()
@@ -36,6 +47,7 @@ public class FurniturePlacer : MonoBehaviour
         grid.ToggleGrid();
         objectToPlace.Place();
         objectToPlace = null;
+        relocation = false;
     }
 
     public void Cancel()
@@ -43,6 +55,15 @@ public class FurniturePlacer : MonoBehaviour
         Destroy(objectToPlace.gameObject);
         isPlacing = false;
         grid.ToggleGrid();
+        relocation = false;
+    }
+
+    public void Remove()
+    {
+        Destroy(objectToPlace.gameObject);
+        isPlacing = false;
+        grid.ToggleGrid();
+        relocation = false;
     }
 
     private void Update()
@@ -53,33 +74,36 @@ public class FurniturePlacer : MonoBehaviour
         }
     }
 
-    private void InputHandler()
+    private async Task InputHandler()
     {
-        if (Input.GetMouseButtonDown(0))
+        if (Input.GetMouseButtonUp(0))
         {
-            if(canPlace)
+            if(objectToPlace.canBuild)
             { Place(); }
             return;
         }
-        if (Input.GetKey(KeyCode.Escape))
+        if (Input.GetKey(KeyCode.Escape) && !relocation)
         {
             Cancel();
+            return;
+        }
+        if (Input.GetKey(KeyCode.Delete) && relocation)
+        {
+            Remove();
             return;
         }
         if (mouseGridPos != MouseGridPos())
         {
             mouseGridPos = MouseGridPos();
             objectToPlace.SetOnGrid(mouseGridPos);
-            canPlace = objectToPlace.CheckConditions();
+            objectToPlace.CheckConditions();
         }
         if (Input.mouseScrollDelta.y != 0)
         {
             objectToPlace.Rotate((int)Input.mouseScrollDelta.y);
-            canPlace = objectToPlace.CheckConditions();
+            objectToPlace.CheckConditions();
         }
     }
-
-
 
     private Vector2Int MouseGridPos()
     {

@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using Unity.VisualScripting;
+using UnityEditor;
 using UnityEngine;
 
 public class FurnitureData : MonoBehaviour
@@ -23,6 +24,9 @@ public class FurnitureData : MonoBehaviour
     Room roomToPlace = null;
     Material[] materials;
     [SerializeField] MeshRenderer meshRenderer;
+    private bool building = true;
+
+    public bool canBuild;
 
     private void Start()
     {
@@ -31,6 +35,11 @@ public class FurnitureData : MonoBehaviour
 
     public void StartMoving(Material temporaryMaterial)
     {
+        building = true;
+        if(roomToPlace != null)
+        {
+            roomToPlace.SetNewFurniture(null);
+        }
         materials = meshRenderer.materials;
         Debug.Log("temporaryMaterial: " + temporaryMaterial.name);
         meshRenderer.materials = new Material[1] { temporaryMaterial };
@@ -40,10 +49,11 @@ public class FurnitureData : MonoBehaviour
     {
         meshRenderer.materials = materials;
         roomToPlace.SetNewFurniture(this);
+        building = false;
         return roomToPlace;
     }
 
-    public async Task Rotate(int rotationNumber)
+    public void Rotate(int rotationNumber)
     {
         this.rotationNumber += rotationNumber;
 
@@ -56,7 +66,6 @@ public class FurnitureData : MonoBehaviour
             this.rotationNumber += 4;
         }
         transform.Rotate(0, 90 * rotationNumber, 0);
-        await Task.Delay(50);//yeeee this work but I'm not happy with this solution. Why this is here? Well... I need to wait for until colider rotate too.
         SetBounds(transform.position);
     }
 
@@ -74,8 +83,11 @@ public class FurnitureData : MonoBehaviour
         //here i must check if there is a apropate type of room
     }
 
-    public bool CheckConditions()
+    public async Task CheckConditions()
     {
+        canBuild = false;
+        await Task.Delay(25);//yeeee this work but I'm not happy with this solution. Why this is here? Well... I need to wait for until colider rotate too.
+        //getting room inside which is now
         Vector2Int gridId = grid.GetGridId(transform.position);
         Room[] rooms = FindObjectsOfType<Room>();
         roomToPlace = null;
@@ -86,27 +98,63 @@ public class FurnitureData : MonoBehaviour
                 roomToPlace = room;
             }
         }
+        
+        //chech if is in right room
         if(roomToPlace == null || roomToPlace.GetRoomType() != destinationType)
         {
             //get shader and change color to red
             meshRenderer.material.SetColor("_AccessColor", Color.red);
-            return false;
+            canBuild = false;
+            return;
         }
         else
         {
+            //get colider and check if is not overlapping with any other object
+            Collider[] overlapedColliders = Physics.OverlapBox(GetComponent<Collider>().bounds.center, GetComponent<Collider>().bounds.extents);
+            foreach (Collider colider in overlapedColliders)
+            {
+                if ((colider.CompareTag("Furniture") && colider.transform != this.transform) || colider.CompareTag("Wall"))
+                {
+                    Debug.Log(colider.name);
+                    meshRenderer.material.SetColor("_AccessColor", Color.red);
+                    canBuild = false;
+                    return;
+                }
+            }
             //here i must chack if colider collide with any other object
             meshRenderer.material.SetColor("_AccessColor", Color.green);
-            return true;
-        }
+            canBuild = true;
+            return;
+        }      
     }
 
-    private void SetBounds(Vector3 position)
+    private async Task SetBounds(Vector3 position)
     {
+        await Task.Delay(25);//yeeee this work but I'm not happy with this solution. Why this is here? Well... I need to wait for until colider rotate too.
         Collider collider = GetComponent<Collider>();
         Vector3 newCenter = position - collider.transform.position;
 
         newCenter += collider.bounds.center;
         startPos = grid.GetRealGridId(newCenter - collider.bounds.extents);
         endPos = grid.GetRealGridId(newCenter + collider.bounds.extents);
+    }
+
+    public void DisableCollider()
+    {
+        GetComponent<Collider>().enabled = false;
+    }
+
+    public void EnableCollider()
+    {
+        GetComponent<Collider>().enabled = true;
+    }
+
+    private void OnMouseDown()
+    {
+        if(!building)
+        {
+            Debug.Log("StartPlacing");
+            FindObjectOfType<FurniturePlacer>().StartPlacing(this);
+        }
     }
 }
