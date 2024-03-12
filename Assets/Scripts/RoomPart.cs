@@ -1,3 +1,4 @@
+using JetBrains.Annotations;
 using System;
 using UnityEngine;
 
@@ -8,6 +9,8 @@ public class RoomPart
     public Grid grid;
     public RoomCell[,] elements;
     public Transform roomObj;
+    public int newCells = 0;
+    private int existingCells = 0;
 
     /// <summary>
     /// Creating new RoomPart instance
@@ -20,6 +23,12 @@ public class RoomPart
         elements = new RoomCell[0, 0];
         this.grid = grid;
         this.roomObj = roomObj;
+    }
+
+    public void EndEdit()
+    {
+        existingCells += newCells;
+        newCells = 0;
     }
 
     /// <summary>
@@ -63,6 +72,10 @@ public class RoomPart
         elements = newElements;
     }
 
+    /// <summary>
+    /// combine two room parts
+    /// </summary>
+    /// <param name="toMerge"></param>
     public void MergeParts(RoomPart toMerge)
     {
         Vector2Int start = toMerge.gridShift;
@@ -79,11 +92,6 @@ public class RoomPart
         if(end.y<gridEnd.y)
         { end.y = gridEnd.y; }
 
-        Debug.Log("bounds of part 1:" +gridShift + " " + gridEnd);
-        Debug.Log("bounds of part 2: " + toMerge.gridShift + " " + toMerge.gridEnd);
-
-        Debug.LogWarning("Merging " + start + " " + end);
-
         Vector2Int size = end - start + Vector2Int.one;
         Debug.Log(size);
 
@@ -96,12 +104,10 @@ public class RoomPart
                 Vector2Int gridId = new Vector2Int(x + start.x, z + start.y);
                 if (toMerge.GetCellByGridId(gridId)!= null)
                 {
-                    Debug.Log("Get element from toMerge part from position :" + gridId);
                     newElements[x, z] = toMerge.GetCellByGridId(gridId);
                 }
                 if(GetCellByGridId(gridId) != null)
                 {
-                    Debug.Log("Get element from original part from position :" + gridId);
                     newElements[x, z] = GetCellByGridId(gridId);
                 }
             }
@@ -110,6 +116,8 @@ public class RoomPart
         elements = newElements;
         gridShift = start;
         gridEnd = end;
+        newCells += toMerge.newCells;
+        existingCells += toMerge.existingCells;
     }
 
     /// <summary>
@@ -137,6 +145,7 @@ public class RoomPart
         //get this RoomPart
         RoomPart refPart = this;
         elements[id.x, id.y] = new RoomCell(floor, GetGridId(id), ref refPart);
+        newCells++;
     }
 
     /// <summary>
@@ -150,6 +159,15 @@ public class RoomPart
             elements[id.x, id.y].RemoveElement();
             elements[id.x, id.y] = null;
             grid.ChangeGridState(GridState.free, GetGridId(id));
+            if(newCells <=0)
+            {
+                existingCells--;
+            }
+            else
+            {
+                newCells--;
+            }
+            
         }
         catch { }
     }

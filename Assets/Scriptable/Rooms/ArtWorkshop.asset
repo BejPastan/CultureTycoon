@@ -18,6 +18,9 @@ MonoBehaviour:
     type: 3}
   doorPref: {fileID: 3614531964076663587, guid: 455bdd358aba18044b29e0003bfd352f,
     type: 3}
+  cellCost: 10
   grid: {fileID: 0}
   doorObj: {fileID: 0}
+  roomObj: {fileID: 0}
+  roomType: 0
   minSurface: 9

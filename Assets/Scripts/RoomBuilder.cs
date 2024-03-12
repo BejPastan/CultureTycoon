@@ -13,8 +13,8 @@ public class RoomBuilder : MonoBehaviour
     Vector2Int startPos;
     Vector2Int endPos;
 
-    [SerializeField]
-    BuilderUI uiControl;
+    [SerializeField] BuilderUI uiControl;
+    [SerializeField] BudgetManager budgetManager;
 
     [SerializeField]
     RoomBlueprint roomBP;
@@ -142,10 +142,9 @@ public class RoomBuilder : MonoBehaviour
     {
         isBuilding = true;
         room = Instantiate(roomPref, Vector3.zero, Quaternion.identity).GetComponent<Room>();
-        room.OnCreate(this);
-
         roomBP = Instantiate(roomBlueprint);
         roomBP.CreateNewBlueprint(ref grid, room.transform);
+        room.OnCreate(this, roomBP);
         grid.ToggleGrid();
         roomBP.DisableCollision();
         uiControl.StartEditingRoom();
@@ -171,6 +170,11 @@ public class RoomBuilder : MonoBehaviour
     /// </summary>
     public void EndEditing()
     {
+        if(!budgetManager.canBuild(roomBP.cellCost * roomBP.CountNewCells()))
+        {
+            Debug.Log("NOT ENOUGH MONEY");
+            return;
+        }
         if(!roomBP.PassRequirements(out bool noCells))
         {
             if(noCells)
@@ -181,6 +185,7 @@ public class RoomBuilder : MonoBehaviour
         }
         buildingDoor = false;
         isBuilding = false;
+        budgetManager.NewExpanse(roomBP.name, roomBP.cellCost, roomBP.CountNewCells());
         room.ConfirmRoom(roomBP);
         roomBP = null;
         grid.ToggleGrid();

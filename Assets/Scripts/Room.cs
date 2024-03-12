@@ -13,8 +13,9 @@ public class Room : MonoBehaviour
     /// Initialization of room
     /// </summary>
     /// <param name="builder"></param>
-    public void OnCreate(RoomBuilder builder)
+    public void OnCreate(RoomBuilder builder, RoomBlueprint blueprint)
     {
+        roomBlueprint = blueprint;
         uiController.SetEditButton(builder, this);
     }
 
@@ -25,7 +26,7 @@ public class Room : MonoBehaviour
     public void ConfirmRoom(RoomBlueprint actualState)
     {
         roomBlueprint = actualState;
-        actualState.ConfirmBlueprint(out cells, out Vector3 roomCenter);
+        actualState.ConfirmBlueprint(out cells, out Vector3 roomCenter, out int newCells);
         uiController.transform.position = new Vector3(roomCenter.x, uiController.transform.position.y, roomCenter.z);
         uiController.EndEditing();
         EnableFurnitureCollider();

@@ -124,7 +124,7 @@ PrefabInstance:
     - target: {fileID: -7635826562936255635, guid: de01e3970a591b242b12786c2e2cf490,
         type: 3}
       propertyPath: m_Materials.Array.size
-      value: 1
+      value: 2
       objectReference: {fileID: 0}
     - target: {fileID: -7635826562936255635, guid: de01e3970a591b242b12786c2e2cf490,
         type: 3}
@@ -136,7 +136,7 @@ PrefabInstance:
         type: 3}
       propertyPath: m_Materials.Array.data[1]
       value: 
-      objectReference: {fileID: -6478536213147159724, guid: de01e3970a591b242b12786c2e2cf490,
+      objectReference: {fileID: -3846018093981099296, guid: de01e3970a591b242b12786c2e2cf490,
         type: 3}
     - target: {fileID: 919132149155446097, guid: de01e3970a591b242b12786c2e2cf490,
         type: 3}
@@ -161,7 +161,7 @@ PrefabInstance:
     - target: {fileID: 8164078558771037576, guid: de01e3970a591b242b12786c2e2cf490,
         type: 3}
       propertyPath: m_Name
-      value: Mesh
+      value: default
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
@@ -179,6 +179,10 @@ PrefabInstance:
         type: 3}
       insertIndex: -1
       addedObject: {fileID: 6443583335455535505}
+    - targetCorrespondingSourceObject: {fileID: 919132149155446097, guid: de01e3970a591b242b12786c2e2cf490,
+        type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 7819687973419582382}
   m_SourcePrefab: {fileID: 100100000, guid: de01e3970a591b242b12786c2e2cf490, type: 3}
 --- !u!23 &5265236735143132441 stripped
 MeshRenderer:
@@ -205,7 +209,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   newName: Small canva
-  buildingCost: 0
+  buildingCost: 15
   quality: 0
   destinationType: 0
   usersLocations:
@@ -218,6 +222,7 @@ MonoBehaviour:
   startPos: {x: 0, y: 0}
   endPos: {x: 0, y: 1}
   meshRenderer: {fileID: 5265236735143132441}
+  canBuild: 0
 --- !u!65 &6443583335455535505
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -239,6 +244,27 @@ BoxCollider:
   serializedVersion: 3
   m_Size: {x: 0.55, y: 1.1, z: 1.1}
   m_Center: {x: 0, y: 1, z: 0.5}
+--- !u!95 &7819687973419582382
+Animator:
+  serializedVersion: 5
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6041738369723484965}
+  m_Enabled: 1
+  m_Avatar: {fileID: 0}
+  m_Controller: {fileID: 0}
+  m_CullingMode: 0
+  m_UpdateMode: 0
+  m_ApplyRootMotion: 0
+  m_LinearVelocityBlending: 0
+  m_StabilizeFeet: 0
+  m_WarningMessage: 
+  m_HasTransformHierarchy: 1
+  m_AllowConstantClipSamplingOptimization: 1
+  m_KeepAnimatorStateOnDisable: 0
+  m_WriteDefaultValuesOnDisable: 0
 --- !u!4 &6382517277925249439 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: -8679921383154817045, guid: de01e3970a591b242b12786c2e2cf490,

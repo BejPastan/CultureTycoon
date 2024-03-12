@@ -11,6 +11,7 @@ public class RoomBlueprint : ScriptableObject
     public GameObject floorPref;
     [SerializeField]
     public GameObject doorPref;
+    [SerializeField] public int cellCost;
     public RoomPart[] parts = new RoomPart[0];
     public Grid grid;
     public Transform doorObj;
@@ -97,6 +98,7 @@ public class RoomBlueprint : ScriptableObject
         }
     }
 
+
     public bool PassRequirements(out bool noCells)
     {
         //count all cells in all parts
@@ -128,6 +130,7 @@ public class RoomBlueprint : ScriptableObject
         }
         return true;
     }
+
     /// <summary>
     /// Resize selected room part and fill with floor and build walls around
     /// </summary>
@@ -148,17 +151,33 @@ public class RoomBlueprint : ScriptableObject
     /// <summary>
     /// Ending editing and returnign all cells
     /// </summary>
-    public void ConfirmBlueprint(out RoomCell[,] cells, out Vector3 roomCenter)
+    public void ConfirmBlueprint(out RoomCell[,] cells, out Vector3 roomCenter, out int newCells)
     {
+        newCells = CountNewCells();
         for(int roomIndex = 1; roomIndex < parts.Length; roomIndex++)
         {
             parts[0].MergeParts(parts[roomIndex]);
         }
+        parts[0].EndEdit();
         Array.Resize(ref parts, 1);
         grid.ChangeGridState(GridState.blueprint, GridState.room, parts[0].gridShift, parts[0].gridEnd);
         cells = parts[0].elements;
         //calculate room center
         roomCenter = grid.GetWorldPosition(parts[0].GetGridId(parts[0].GetSize()/2)) ;
+    }
+
+    /// <summary>
+    /// count cells created in last part
+    /// </summary>
+    /// <returns></returns>
+    public int CountNewCells()
+    {
+        int count = 0;
+        foreach (RoomPart part in parts)
+        {
+            count += part.newCells;
+        }
+        return count;
     }
 
     /// <summary>

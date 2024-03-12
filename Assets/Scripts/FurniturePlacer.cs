@@ -9,6 +9,7 @@ public class FurniturePlacer : MonoBehaviour
     bool isPlacing = false;
     [SerializeField] FurnitureData objectToPlace;
     [SerializeField] Grid grid;
+    [SerializeField] BudgetManager budgetManager;
     Vector2Int mouseGridPos;
     [SerializeField] Material defaultMaterial;
     bool relocation = false;
@@ -46,6 +47,12 @@ public class FurniturePlacer : MonoBehaviour
     /// </summary>
     public void Place()
     {
+        if(!budgetManager.canBuild(objectToPlace.buildingCost))
+        {
+            Debug.Log("Not enough money");//in future change to make prompt on UI
+            return;
+        }
+        budgetManager.NewExpanse(objectToPlace.name, objectToPlace.buildingCost, 1);
         isPlacing = false;
         grid.ToggleGrid();
         objectToPlace.Place();

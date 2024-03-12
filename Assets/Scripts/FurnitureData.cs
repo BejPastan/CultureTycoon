@@ -8,7 +8,7 @@ using UnityEngine;
 public class FurnitureData : MonoBehaviour
 {
     [SerializeField] string newName;
-    [SerializeField] int buildingCost;
+    [SerializeField] public int buildingCost;
     [SerializeField] float quality;
     [SerializeField] RoomType destinationType;
     [SerializeField] Transform[] usersLocations;
