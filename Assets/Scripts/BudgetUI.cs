@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections;
 using System.Collections.Generic;
 using TMPro;
@@ -32,7 +32,8 @@ public class BudgetUI : MonoBehaviour
 
     public void HideEndYearUI()
     {
-        DestroyRanking();
+        DestroyArray(ref rankingParts);
+        DestroyArray(ref expensesParts);
         endYearUI.gameObject.SetActive(false);
     }
 
@@ -71,7 +72,7 @@ public class BudgetUI : MonoBehaviour
 
         for (int i = 0; i < expenses.Length; i++)
         {
-            Vector3 position = new Vector3(0, i * -60, 0);
+            Vector3 position = new Vector3(0, i * 60, 0);
             GameObject expansePart = Instantiate(exensesPref, competitorsUI);
             expansePart.transform.localPosition = position;
             expansePart.GetComponent<ExpensePart>().ShowData(expenses[i].name, expenses[i].amount, expenses[i].cost);
@@ -80,18 +81,13 @@ public class BudgetUI : MonoBehaviour
         }
     }
 
-    private void DestroyExpenses()
+    private void DestroyArray(ref Transform[] arrayToDestroy)
     {
-
-    }
-
-    private void DestroyRanking()
-    {
-        foreach(Transform rankingPart in rankingParts)
+        for (int i = 0; i < arrayToDestroy.Length; i++)
         {
-            Destroy(rankingPart.gameObject);
+            Destroy(arrayToDestroy[i].gameObject);
         }
-        rankingParts = new Transform[0];
+        arrayToDestroy = new Transform[0];
     }
 
     public void BringToFront(Transform transformToTop)
@@ -102,5 +98,29 @@ public class BudgetUI : MonoBehaviour
             child.SetParent(notOnTop);
         }
         transformToTop.SetParent(onTopParent);
+        transformToTop.localPosition = new Vector3(0, 0, 0);
+    }
+
+    private void Update()
+    {
+        if(Input.mouseScrollDelta.y != 0)
+        {
+            Scroll();
+        }
+    }
+
+    private void Scroll()
+    {
+        //nie myślę już, ogarnę to jutro
+        if(Input.mouseScrollDelta.y > 0)
+        {
+            
+                onTopParent.position += new Vector3(0, 10, 0);
+        }
+        else if (Input.mouseScrollDelta.y < 0)
+        {
+            
+                onTopParent.localPosition += new Vector3(0, -10, 0);
+        }
     }
 }
