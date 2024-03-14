@@ -14,6 +14,8 @@ public class BudgetManager : MonoBehaviour
     [SerializeField] int playerResult;
     [SerializeField] Competitor player;
 
+    [SerializeField] int moneyToDivide;
+
     private void Start()
     {
         budgetUI.UpdateMoney(normalMoney);
@@ -24,6 +26,7 @@ public class BudgetManager : MonoBehaviour
         Debug.Log("New expanse: " + name + " " + cost + " " + amount);
         normalMoney -= cost * amount;
         budgetUI.UpdateMoney(normalMoney);
+        rankingDataHolder.SetNewExpense(name, cost, amount);
     }
 
     public bool canBuild(int cost)
@@ -43,11 +46,26 @@ public class BudgetManager : MonoBehaviour
         Competitor[] competitors = rankingDataHolder.GetCompetitors();
         Array.Resize(ref competitors, competitors.Length + 1);
         competitors[competitors.Length - 1] = player;
-        budgetUI.ShowEndYearUI(ref competitors);
+        AssignMoney(ref competitors);
+        budgetUI.ShowEndYearUI(ref competitors, normalMoney, rankingDataHolder.GetExpenses());
+    }
+
+
+    public void AssignMoney(ref Competitor[] competitors)
+    {
+        int resultSum = 0;
+        for(int i = 0; i < competitors.Length; i++)
+        {
+            resultSum += competitors[i].result;
+        }
+
+        moneyToDivide /= resultSum;
+        normalMoney = moneyToDivide*player.result;
     }
 
     public void StartNewYear()
     {
         budgetUI.HideEndYearUI();
+        moneyToDivide *= Mathf.FloorToInt(moneyToDivide*1.1f);
     }
 }

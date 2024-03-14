@@ -3,22 +3,22 @@ using UnityEngine;
 
 public class RankingDataHolder : MonoBehaviour
 {
-    ExpanseData[] expanses = new ExpanseData[0];
+    ExpenseData[] expanses = new ExpenseData[0];
     [SerializeField] Competitor[] competitors;
 
 
     public void SetNewExpense(string name, int cost, int amount)
     {
         Array.Resize(ref expanses, expanses.Length + 1);
-        expanses[expanses.Length - 1] = new ExpanseData(cost, amount, name);
+        expanses[expanses.Length - 1] = new ExpenseData(cost, amount, name);
     }
 
     public void Reset()
     {
-        expanses = new ExpanseData[0];
+        expanses = new ExpenseData[0];
     }
 
-    public ExpanseData[] GetExpenses()
+    public ExpenseData[] GetExpenses()
     {
         return expanses;
     }

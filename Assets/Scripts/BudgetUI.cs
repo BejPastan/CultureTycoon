@@ -7,9 +7,13 @@ using UnityEngine;
 public class BudgetUI : MonoBehaviour
 {
     [SerializeField] Transform endYearUI;
-    [SerializeField] GameObject rankingPartPref;
     [SerializeField] TextMeshProUGUI moneyText;
+    [SerializeField] GameObject rankingPartPref;
     [SerializeField] GameObject exensesPref;
+
+
+    [SerializeField] Transform onTopParent;
+    [SerializeField] Transform notOnTop;
 
     Transform[] rankingParts = new Transform[0];
     Transform[] expensesParts = new Transform[0];
@@ -19,10 +23,11 @@ public class BudgetUI : MonoBehaviour
         moneyText.text ="Money: "+money.ToString();
     }
 
-    public void ShowEndYearUI(ref Competitor[] competitors)
+    public void ShowEndYearUI(ref Competitor[] competitors, int assignedMoney, ExpenseData[] expanses)
     {
         endYearUI.gameObject.SetActive(true);
         BuildRanking(competitors);
+        BuildExpensesSheet(expanses);
     }
 
     public void HideEndYearUI()
@@ -47,10 +52,12 @@ public class BudgetUI : MonoBehaviour
             }
         }
 
+        Transform competitorsUI = GameObject.Find("Competitors").transform;
+
         for(int i = 0; i < competitors.Length; i++)
         {
             Vector3 position = new Vector3(0, i*60, 0);
-            GameObject rankingPart = Instantiate(rankingPartPref, endYearUI);
+            GameObject rankingPart = Instantiate(rankingPartPref, competitorsUI);
             rankingPart.transform.localPosition = position;
             rankingPart.GetComponent<RankingPart>().SetData(competitors[i].name, competitors[i].result);
             Array.Resize(ref rankingParts, rankingParts.Length + 1);
@@ -58,9 +65,19 @@ public class BudgetUI : MonoBehaviour
         }
     }
 
-    private void BuildExpensesSheet(ExpanseData[] expenses)
+    private void BuildExpensesSheet(ExpenseData[] expenses)
     {
+        Transform competitorsUI = GameObject.Find("Expenses").transform;
 
+        for (int i = 0; i < expenses.Length; i++)
+        {
+            Vector3 position = new Vector3(0, i * -60, 0);
+            GameObject expansePart = Instantiate(exensesPref, competitorsUI);
+            expansePart.transform.localPosition = position;
+            expansePart.GetComponent<ExpensePart>().ShowData(expenses[i].name, expenses[i].amount, expenses[i].cost);
+            Array.Resize(ref expensesParts, expensesParts.Length + 1);
+            expensesParts[i] = expansePart.transform;
+        }
     }
 
     private void DestroyExpenses()
@@ -75,5 +92,15 @@ public class BudgetUI : MonoBehaviour
             Destroy(rankingPart.gameObject);
         }
         rankingParts = new Transform[0];
+    }
+
+    public void BringToFront(Transform transformToTop)
+    {
+        //remove all children from parent
+        foreach (Transform child in onTopParent)
+        {
+            child.SetParent(notOnTop);
+        }
+        transformToTop.SetParent(onTopParent);
     }
 }
