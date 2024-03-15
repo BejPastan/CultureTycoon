@@ -1,28 +1,47 @@
+using JetBrains.Annotations;
+using System;
+using Unity.VisualScripting;
 using UnityEngine;
 
+[ExecuteAlways]
+[Serializable]
+[SerializeField]
 public class Grid : MonoBehaviour
 {
     [SerializeField]
-    bool isShowing = true;
+    private bool isShowing = true;
     [SerializeField]
-    public readonly int width = 10;
+    public int width = 10;
     [SerializeField]
-    public readonly int depth = 10;
+    public int depth = 10;
+    [SerializeField]public GridState[,] gridStates;
+
     [SerializeField]
-    public GridState[,] gridStates;
+    public float cellSize = 1;
     [SerializeField]
-    float cellSize = 1;
-    [SerializeField]
-    GameObject cellPref;
-    [SerializeField]
+    public GameObject cellPref;
     GameObject[,] cellsVisual;
     [SerializeField]
     public Vector3 origin;
 
     private void Start()
     {
-        CreateGrid();
+        if(gridStates == null)
+        {
+            LoadGrid();
+        }
     }
+
+    public void LoadGrid()
+    {
+        gridStates = GridSaver.Load();
+    }
+
+    public void SaveGrid()
+    {
+        GridSaver.Save(gridStates);
+    }
+
 
     /// <summary>
     /// Creating
@@ -43,8 +62,14 @@ public class Grid : MonoBehaviour
     /// <summary>
     /// change grid from showing to not showing and vice versa
     /// </summary>
+    [ExecuteAlways]
     public void ToggleGrid()
     {
+        if(gridStates == null)
+        {
+            CreateGrid();
+            Debug.Log("Grid created");
+        }
         if(isShowing)
         {
             isShowing = false;
@@ -60,6 +85,7 @@ public class Grid : MonoBehaviour
     /// <summary>
     /// visualization of grid cells on the scene
     /// </summary>
+    [ExecuteAlways]
     private void ShowGrid()
     {
         cellsVisual = new GameObject[width, depth];
@@ -68,7 +94,10 @@ public class Grid : MonoBehaviour
             for (int j = 0; j < depth; j++)
             {
                 if (gridStates[i, j] == GridState.free)
-                    cellsVisual[i, j] = Instantiate(cellPref, new Vector3(i * cellSize, 0, j * cellSize) + origin, Quaternion.identity);
+                {
+                    cellsVisual[i, j] = Instantiate(cellPref, GetWorldPosition(new Vector2Int(i, j)), Quaternion.identity, transform);
+                    cellsVisual[i, j].name = "GridCell " + i + ", " + j;
+                }
             }
         }
     }
@@ -76,14 +105,32 @@ public class Grid : MonoBehaviour
     /// <summary>
     /// hide visualization of grid cells on the scene
     /// </summary>
+    [ExecuteAlways]
     private void DisableGrid()
     {
+        Debug.Log("Disable");
         for (int i = 0; i < width; i++)
         {
             for (int j = 0; j < depth; j++)
             {
-                if (cellsVisual[i, j] != null)
-                    Destroy(cellsVisual[i, j]);
+                try
+                {
+                    if (cellsVisual[i, j] != null)
+                    {
+                        if (Application.isPlaying)
+                        {
+                            Destroy(cellsVisual[i, j]);
+                        }
+                        else
+                        {
+                            DestroyImmediate(cellsVisual[i, j]);
+                        }
+                    }
+                }catch
+                {
+                    Debug.Log(i + " " + j);
+                }
+                   
             }
         }
         cellsVisual = new GameObject[0, 0];
@@ -163,7 +210,7 @@ public class Grid : MonoBehaviour
     public void ChangeGridState(GridState changeThisState, GridState toThisState)
     {
         ChangeGridState(changeThisState, toThisState, new Vector2Int(0, 0), new Vector2Int(width, depth));
-    }    
+    }
 
     /// <summary>
     /// change state of all cells in selected range
@@ -171,11 +218,12 @@ public class Grid : MonoBehaviour
     /// <param name="toThisState"></param>
     /// <param name="rangeStart"></param>
     /// <param name="rangeEnd"></param>
+    [ExecuteAlways]
     public void ChangeGridState(GridState toThisState, Vector2Int rangeStart, Vector2Int rangeEnd)
     {
-        for (int x = rangeStart.x; x < rangeEnd.x; x++)
+        for (int x = rangeStart.x; x <= rangeEnd.x; x++)
         {
-            for (int z = rangeStart.y; z < rangeEnd.y; z++)
+            for (int z = rangeStart.y; z <= rangeEnd.y; z++)
             {
                 gridStates[x, z] = toThisState;
             }
@@ -193,6 +241,7 @@ public class Grid : MonoBehaviour
     }
 }
 
+[Serializable]
 public enum GridState
 {
     free,

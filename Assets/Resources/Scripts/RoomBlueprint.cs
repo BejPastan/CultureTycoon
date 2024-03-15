@@ -242,7 +242,7 @@ public class RoomBlueprint : ScriptableObject
                 gridId = part.GetGridId(new Vector2Int(x, z));
                 bool isFloor = false;
                 int roomIndex = 0;
-                if (grid.gridStates[gridId.x, gridId.y]==GridState.free)
+                if (grid.gridStates[gridId.x, gridId.y] ==GridState.free)
                 {
                     foreach (RoomPart room in parts)
                     {

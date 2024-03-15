@@ -934,6 +934,7 @@ GameObject:
   - component: {fileID: 334007922}
   - component: {fileID: 334007921}
   - component: {fileID: 334007920}
+  - component: {fileID: 334007925}
   m_Layer: 0
   m_Name: Ground
   m_TagString: Ground
@@ -950,10 +951,12 @@ MonoBehaviour:
   m_GameObject: {fileID: 334007919}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 83043f089b0b38c4a809197fc37e3369, type: 3}
+  m_Script: {fileID: 11500000, guid: a611d382c97d4f04aaafe0cb6c11c94f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   isShowing: 0
+  width: 10
+  depth: 10
   cellSize: 1
   cellPref: {fileID: 9006327065110896051, guid: 168772dfb5b0f3844bb17ac3c25d8607,
     type: 3}
@@ -1040,11 +1043,29 @@ Transform:
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 2, y: 2, z: 2}
+  m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &334007925
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 334007919}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d86434b8b2db4b5489d7e027b8fa1879, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  grid: {fileID: 334007920}
+  run: 0
+  startPos: {x: 0, y: 0}
+  endPos: {x: 0, y: 0}
+  state: 3
+  acceptChanges: 0
 --- !u!1 &386207825
 GameObject:
   m_ObjectHideFlags: 0
