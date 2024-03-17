@@ -438,9 +438,3 @@ public class RoomBlueprint : ScriptableObject
         return null;
     }
 }
-
-public enum RoomType
-{
-    artWorkshop,
-    none
-}
