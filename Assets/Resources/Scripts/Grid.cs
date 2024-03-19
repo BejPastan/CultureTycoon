@@ -1,5 +1,6 @@
 using JetBrains.Annotations;
 using System;
+using Unity.AI.Navigation;
 using Unity.VisualScripting;
 using UnityEngine;
 
@@ -134,6 +135,7 @@ public class Grid : MonoBehaviour
             }
         }
         cellsVisual = new GameObject[0, 0];
+        transform.GetComponent<NavMeshSurface>().BuildNavMesh();
     }
 
     /// <summary>

@@ -55,11 +55,23 @@ public class BudgetUI : MonoBehaviour
 
         Transform competitorsUI = GameObject.Find("Competitors").transform;
 
-        for(int i = 0; i < competitors.Length; i++)
+
+        //change size of the competitorsUI to fit all the elements
+        RectTransform rect = competitorsUI.GetComponent<RectTransform>();
+        if (competitors.Length * 60 > 500)
         {
-            Vector3 position = new Vector3(0, i*60, 0);
+            rect.sizeDelta = new Vector2(rect.sizeDelta.x, competitors.Length * 60 + 60);
+        }
+        else
+        {
+            rect.sizeDelta = new Vector2(rect.sizeDelta.x, 500);
+        }
+
+        for (int i = 0; i < competitors.Length; i++)
+        {
+            Vector3 position = new Vector2(0, (i+1)*-60);
             GameObject rankingPart = Instantiate(rankingPartPref, competitorsUI);
-            rankingPart.transform.localPosition = position;
+            rankingPart.GetComponent<RectTransform>().anchoredPosition = position;
             rankingPart.GetComponent<RankingPart>().SetData(competitors[i].name, competitors[i].result);
             Array.Resize(ref rankingParts, rankingParts.Length + 1);
             rankingParts[i] = rankingPart.transform;
@@ -70,11 +82,22 @@ public class BudgetUI : MonoBehaviour
     {
         Transform competitorsUI = GameObject.Find("Expenses").transform;
 
+        //change size of the competitorsUI to fit all the elements
+        RectTransform rect = competitorsUI.GetComponent<RectTransform>();
+        if (expenses.Length * 60 > 500)
+        {
+            rect.sizeDelta = new Vector2(rect.sizeDelta.x, expenses.Length * 60 + 60);
+        }
+        else
+        {
+            rect.sizeDelta = new Vector2(rect.sizeDelta.x, 500);
+        }
+
         for (int i = 0; i < expenses.Length; i++)
         {
-            Vector3 position = new Vector3(0, i * 60, 0);
+            Vector2 position = new Vector2(0, (i+1) * -60);
             GameObject expansePart = Instantiate(exensesPref, competitorsUI);
-            expansePart.transform.localPosition = position;
+            expansePart.GetComponent<RectTransform>().anchoredPosition = position;
             expansePart.GetComponent<ExpensePart>().ShowData(expenses[i].name, expenses[i].amount, expenses[i].cost);
             Array.Resize(ref expensesParts, expensesParts.Length + 1);
             expensesParts[i] = expansePart.transform;
@@ -111,16 +134,23 @@ public class BudgetUI : MonoBehaviour
 
     private void Scroll()
     {
+        RectTransform child = onTopParent.GetChild(0).GetComponent<RectTransform>();
         //nie myślę już, ogarnę to jutro
-        if(Input.mouseScrollDelta.y > 0)
+        if(Input.mouseScrollDelta.y > 0)//scroll up
         {
-            
-                onTopParent.position += new Vector3(0, 10, 0);
+            if(child.anchoredPosition.y < 0)
+            {
+                child.transform.localPosition += new Vector3(0, 10, 0);
+                Debug.Log("scroll up " + child.anchoredPosition);
+            }
         }
-        else if (Input.mouseScrollDelta.y < 0)
+        else if (Input.mouseScrollDelta.y < 0)//scroll down
         {
-            
-                onTopParent.localPosition += new Vector3(0, -10, 0);
+            if(child.anchoredPosition.y + child.sizeDelta.y - onTopParent.GetComponent<RectTransform>().sizeDelta.y > 0)
+            {
+                child.transform.localPosition += new Vector3(0, -10, 0);
+                Debug.Log("scroll down " + child.anchoredPosition);
+            }
         }
     }
 }

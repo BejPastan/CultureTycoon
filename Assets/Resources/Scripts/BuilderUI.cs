@@ -17,6 +17,24 @@ public class BuilderUI : MonoBehaviour
     [SerializeField]
     Transform newRoomBuildingInfo;
 
+    public void DisableUI()
+    {
+        Button[] buttons = GetComponentsInChildren<Button>();
+        for(int i = 0; i < buttons.Length; i++)
+        {
+            buttons[i].interactable = false;
+        }
+    }
+
+    public void EnableUI()
+    {
+        Button[] buttons = GetComponentsInChildren<Button>();
+        for(int i = 0; i < buttons.Length; i++)
+        {
+            buttons[i].interactable = true;
+        }
+    }
+
     /// <summary>
     /// show apripriate menu for funrnitures or rooms
     /// </summary>

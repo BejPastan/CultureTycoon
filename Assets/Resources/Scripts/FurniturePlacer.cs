@@ -13,6 +13,7 @@ public class FurniturePlacer : MonoBehaviour
     Vector2Int mouseGridPos;
     [SerializeField] Material defaultMaterial;
     bool relocation = false;
+    public bool enabled = true;
 
     /// <summary>
     /// Create new object to place and start placing it
@@ -34,6 +35,10 @@ public class FurniturePlacer : MonoBehaviour
     /// <param name="furniture"></param>
     public void StartPlacing(FurnitureData furniture)
     {
+        if(!enabled)
+        {
+            return;
+        }
         Debug.Log("StartPlacing");
         objectToPlace = furniture;
         objectToPlace.StartMoving(defaultMaterial);
@@ -47,12 +52,15 @@ public class FurniturePlacer : MonoBehaviour
     /// </summary>
     public void Place()
     {
-        if(!budgetManager.canBuild(objectToPlace.buildingCost))
+        if(!relocation)
         {
-            Debug.Log("Not enough money");//in future change to make prompt on UI
-            return;
+            if (!budgetManager.canBuild(objectToPlace.buildingCost))
+            {
+                Debug.Log("Not enough money");//in future change to make prompt on UI
+                return;
+            }
+            budgetManager.NewExpanse(objectToPlace.name, objectToPlace.buildingCost, 1);
         }
-        budgetManager.NewExpanse(objectToPlace.name, objectToPlace.buildingCost, 1);
         isPlacing = false;
         grid.ToggleGrid();
         objectToPlace.Place();
@@ -79,6 +87,10 @@ public class FurniturePlacer : MonoBehaviour
         Destroy(objectToPlace.gameObject);
         isPlacing = false;
         grid.ToggleGrid();
+        if(relocation)
+        {
+            budgetManager.NewExpanse(objectToPlace.name, Mathf.FloorToInt(objectToPlace.buildingCost * 0.25f), -1);
+        }
         relocation = false;
     }
 

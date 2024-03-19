@@ -48,6 +48,16 @@ public class BudgetManager : MonoBehaviour
         competitors[competitors.Length - 1] = player;
         AssignMoney(ref competitors);
         budgetUI.ShowEndYearUI(ref competitors, normalMoney, rankingDataHolder.GetExpenses());
+        //find all RoomUI and call HideUI
+        RoomUI[] roomUI = FindObjectsOfType<RoomUI>();
+        for(int i = 0; i < roomUI.Length; i++)
+        {
+            roomUI[i].HideUI();
+        }
+        FurniturePlacer furniturePlacers = FindObjectOfType<FurniturePlacer>();
+        furniturePlacers.enabled = false;
+        BuilderUI builderUI = FindObjectOfType<BuilderUI>();
+        builderUI.DisableUI();
     }
 
 
@@ -67,5 +77,14 @@ public class BudgetManager : MonoBehaviour
     {
         budgetUI.HideEndYearUI();
         moneyToDivide *= Mathf.FloorToInt(moneyToDivide*1.1f);
+        RoomUI[] roomUI = FindObjectsOfType<RoomUI>();
+        for (int i = 0; i < roomUI.Length; i++)
+        {
+            roomUI[i].ShowUI();
+        }
+        FurniturePlacer furniturePlacers = FindObjectOfType<FurniturePlacer>();
+        furniturePlacers.enabled = true;
+        BuilderUI builderUI = FindObjectOfType<BuilderUI>();
+        builderUI.EnableUI();
     }
 }

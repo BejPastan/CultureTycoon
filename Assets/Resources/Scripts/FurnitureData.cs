@@ -187,7 +187,6 @@ public class FurnitureData : MonoBehaviour
     {
         if(!building)
         {
-            Debug.Log("StartPlacing");
             FindObjectOfType<FurniturePlacer>().StartPlacing(this);
         }
     }

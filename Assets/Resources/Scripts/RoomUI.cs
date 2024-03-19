@@ -38,7 +38,7 @@ public class RoomUI : MonoBehaviour
     /// <summary>
     /// hide room UI
     /// </summary>
-    private void HideUI()
+    public void HideUI()
     {
         editButton.gameObject.SetActive(false);
     }
@@ -47,7 +47,7 @@ public class RoomUI : MonoBehaviour
     /// <summary>
     /// Show room UI
     /// </summary>
-    private void ShowUI()
+    public void ShowUI()
     {
         editButton.gameObject.SetActive(true);
     }

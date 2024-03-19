@@ -1,6 +1,9 @@
 public enum RoomType
 {
     artWorkshop,
+    Workshop,
+    scienceLab,
+    scene,
     none
 }
 
