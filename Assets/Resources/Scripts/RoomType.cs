@@ -4,6 +4,7 @@ public enum RoomType
     Workshop,
     scienceLab,
     scene,
+    playground,
     none
 }
 
@@ -13,5 +14,6 @@ public enum NeedsType
     DIY,
     science,
     music,
-    play
+    play,
+    none
 }

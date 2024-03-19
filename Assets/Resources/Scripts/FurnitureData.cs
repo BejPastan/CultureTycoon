@@ -10,8 +10,9 @@ public class FurnitureData : MonoBehaviour
     [SerializeField] string newName;
     [SerializeField] public int buildingCost;
     [SerializeField] float quality;
-    [SerializeField] RoomType destinationType;
+    [SerializeField] public RoomType destinationType;
     [SerializeField] Transform[] usersLocations;
+    private int[] occupaiedLocationsID;
     [SerializeField] int usagePrice;//actual not active
     [SerializeField] int maintenanceCost;//actual not active
     [SerializeField] int rotationNumber;
@@ -190,4 +191,23 @@ public class FurnitureData : MonoBehaviour
             FindObjectOfType<FurniturePlacer>().StartPlacing(this);
         }
     }
+
+    /// <summary>
+    /// Check if this furniture have empty space for new NPC and it's not building now
+    /// </summary>
+    /// <returns></returns>
+    public bool CanBeUsed()
+    {
+        if(!building)
+        {
+            //check if there is any empty space for NPC
+            if(occupaiedLocationsID.Length < usersLocations.Length)
+            {
+                return true;
+            }
+        }
+        return false;
+    }
+
+
 }

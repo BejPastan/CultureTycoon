@@ -5,6 +5,7 @@ using UnityEngine;
 public class NPCManager : MonoBehaviour
 {
     [SerializeField] List<NPC> npcs;
+    [SerializeField] Vector3 spawnPoint;
 
     public void AddNPC(NPC npc)
     {
@@ -18,7 +19,7 @@ public class NPCManager : MonoBehaviour
         if (!npc.active)
         {
             //instantiate the NPC
-            GameObject npcObject = Instantiate(Resources.Load<GameObject>(npc.prefPath));
+            GameObject npcObject = Instantiate(Resources.Load<GameObject>(npc.prefPath), spawnPoint, Quaternion.identity);
             //get the NPC component
             NPC npcComponent = npcObject.GetComponent<NPC>();
             //set the values of the NPC
@@ -28,8 +29,14 @@ public class NPCManager : MonoBehaviour
         }
         else
         {
-            //if the NPC is active, try again
-            InstantiateNPC();
+            foreach (NPC n in npcs)
+            {
+                if (!n.active)
+                {
+                    InstantiateNPC();
+                    return;
+                }
+            }
         }
     }
 

@@ -49,4 +49,5 @@ public struct Needs
 {
     public NeedsType type;
     public int value;
+    public int toFill;
 }
