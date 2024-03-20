@@ -5,7 +5,30 @@ using UnityEngine;
 public class NPCManager : MonoBehaviour
 {
     [SerializeField] List<NPC> npcs;
-    [SerializeField] Vector3 spawnPoint;
+    [SerializeField] public Vector3 spawnPoint;
+    [SerializeField] int NPCCount;
+    [SerializeField] NPCCreator creator;
+
+    //calc new number of NPCs
+    public void SetNewNPCNumber(int happinesSum)
+    {
+        //check for each NPC if have avarageHappines lower then 75 and greater then 90
+        for(int i = 0; i < npcs.Count; i++)
+        {
+            if (npcs[i].avarageHappines == 0)
+            { return; }
+            if (npcs[i].avarageHappines < 75)
+            {
+                //remove the NPC from the list
+                npcs.RemoveAt(i);
+            }
+            else if (npcs[i].avarageHappines > 90)
+            {
+                creator.CreateNPC();
+            }
+        }
+    }
+
 
     public void AddNPC(NPC npc)
     {

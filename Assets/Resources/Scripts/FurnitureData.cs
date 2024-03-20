@@ -17,6 +17,7 @@ public class FurnitureData : MonoBehaviour
     private int[] occupaiedLocationsID;
     [SerializeField] int usagePrice;//actual not active
     [SerializeField] int maintenanceCost;//actual not active
+    [SerializeField] public float usageTime;
     [SerializeField] int rotationNumber;
     [SerializeField] Grid grid;
     [SerializeField] Vector2Int roomCenter;

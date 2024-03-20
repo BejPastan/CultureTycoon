@@ -36,7 +36,7 @@ public class NPCCreator : MonoBehaviour
         //get a random story
         NPCStory randomStory = story[Random.Range(0, story.Length)];
         //set the values of the NPC
-        npcComponent.SetValues(name, age, freeTime, randomStory, path);
+        npcComponent.SetValues(name, age, freeTime, randomStory, path, manager.spawnPoint);
         manager.AddNPC(npcComponent);
         //this change in future
         manager.InstantiateNPC();

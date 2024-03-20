@@ -17,10 +17,16 @@ public class NPC : MonoBehaviour
     public string prefPath;
     public NavMeshAgent agent;
 
+
+    public float avarageHappines;
+    public int numberOfVisits;
+
+
     private FurnitureData[] furnitures;
     public Dictionary<NeedsType, RoomType> furnitureForNeeds = new Dictionary<NeedsType, RoomType>();
+    public Vector3 exit;
 
-    public void SetValues(string name, int age, float freeTime, NPCStory story, string path)
+    public void SetValues(string name, int age, float freeTime, NPCStory story, string path, Vector3 exit)
     {
         Debug.Log("Set values");
         this.name = name;
@@ -29,6 +35,7 @@ public class NPC : MonoBehaviour
         this.freeTime = freeTime;
         this.story = story;
         prefPath = path;
+        this.exit = exit;
     }
 
     public void PasteComponent(NPC original)
@@ -112,8 +119,26 @@ public class NPC : MonoBehaviour
 
     private async void MoveToNext()
     {
-        //wait to end of frame
+        if(furnitures.Length == 0)
+        {
+            MoveToExit();
+            return;
+        }
         agent.SetDestination(furnitures[0].transform.position);
+    }
+
+    public void MoveToExit()
+    {
+        agent.SetDestination(exit);
+        //calc happines
+        float happines = 0;
+        for (int i = 0; i < needs.Length; i++)
+        {
+            happines += needs[i].toFill / needs[i].value;
+        }
+        happines*=100;
+        avarageHappines = (avarageHappines * numberOfVisits + happines) / (numberOfVisits + 1);
+        numberOfVisits++;
     }
 
     private void OnTriggerEnter(Collider other)
@@ -152,12 +177,19 @@ public class NPC : MonoBehaviour
             }
             Debug.Log("set needs id");
             //start getting needs points
-            while (freeTimeLeft > 0 && needs[needsId].toFill > 0)
+            float timeOnFuriture = furnitures[0].usageTime;
+            while (freeTimeLeft > 0 && needs[needsId].toFill > 0 && timeOnFuriture>0)
             {
                 await Task.Delay(500);
                 needs[needsId].toFill -= quality;
                 freeTimeLeft -= 0.5f;
+                timeOnFuriture -= 0.5f;
                 Debug.Log("Get needs points");
+                if(freeTimeLeft <= 0)
+                {
+                    MoveToExit();
+                    return;
+                }
             }
             //set default animation
             GetComponent<Animator>().runtimeAnimatorController = defaultAnimation;
