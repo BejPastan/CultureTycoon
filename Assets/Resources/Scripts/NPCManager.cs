@@ -12,7 +12,7 @@ public class NPCManager : MonoBehaviour
         npcs.Add(npc);
     }
 
-    private void InstantiateNPC()
+    public void InstantiateNPC()
     {
         //get random NPC that is not active from the list
         NPC npc = npcs[Random.Range(0, npcs.Count)];
@@ -20,15 +20,13 @@ public class NPCManager : MonoBehaviour
         {
             //instantiate the NPC
             GameObject npcObject = Instantiate(Resources.Load<GameObject>(npc.prefPath), spawnPoint, Quaternion.identity);
-            //get the NPC component
-            NPC npcComponent = npcObject.GetComponent<NPC>();
-            //set the values of the NPC
-            npcComponent.SetValues(npc.name, npc.age, npc.freeTime, npc.story, npc.prefPath);
-            //set the NPC as active
-            npc.active = true;
+            npcObject.AddComponent<NPC>().PasteComponent(npc);
+            npc = npcObject.GetComponent<NPC>();
+            npc.StartNPC();
         }
         else
         {
+            Debug.Log("NPC is active");
             foreach (NPC n in npcs)
             {
                 if (!n.active)

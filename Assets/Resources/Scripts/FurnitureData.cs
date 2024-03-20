@@ -1,8 +1,10 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using Unity.VisualScripting;
 using UnityEditor;
+using UnityEditor.Animations;
 using UnityEngine;
 
 public class FurnitureData : MonoBehaviour
@@ -19,6 +21,7 @@ public class FurnitureData : MonoBehaviour
     [SerializeField] Grid grid;
     [SerializeField] Vector2Int roomCenter;
     [SerializeField] Vector2Int startPos;
+    [SerializeField] AnimatorController animationForNPC;
     public Vector2Int GetStartPos() { return startPos+roomCenter; }
     [SerializeField] Vector2Int endPos;
     public Vector2Int GetEndPos() { return endPos+roomCenter; }
@@ -31,6 +34,7 @@ public class FurnitureData : MonoBehaviour
 
     private void Start()
     {
+        occupaiedLocationsID = new int[0];
         grid = FindObjectOfType<Grid>();
     }
 
@@ -209,5 +213,34 @@ public class FurnitureData : MonoBehaviour
         return false;
     }
 
+    public bool UseFurniture(out AnimatorController animator, out RoomType furnitureType,out float quality, out Vector3 usingSLot)
+    {
+        Debug.Log("Anything?");
+        //check is there any empty space for NPC
+        Debug.Log("ocuppied space: " + (occupaiedLocationsID.Length));
+        if (occupaiedLocationsID.Length < usersLocations.Length)
+        {
+            Debug.Log("Furniture is not occupied");
+            animator = animationForNPC;
+            furnitureType = destinationType;
+            quality = this.quality;
 
+            //in future i need to change this to get empty place by id
+            usingSLot = usersLocations[occupaiedLocationsID.Length].position;
+            Array.Resize(ref occupaiedLocationsID, occupaiedLocationsID.Length + 1);
+
+            //here i need to start using animation
+            return true;
+
+        }
+        else
+        {
+            Debug.Log("Furniture is occupied");
+            animator = null;
+            furnitureType = RoomType.none;
+            quality = 0;
+            usingSLot = Vector3.zero;
+            return false;
+        }
+    }
 }

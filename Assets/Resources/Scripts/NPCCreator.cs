@@ -32,15 +32,14 @@ public class NPCCreator : MonoBehaviour
         path = path.Replace(".prefab", "");
         Debug.Log(path);
         //load the prefab from the path
-        GameObject prefab = Resources.Load<GameObject>(path);
-        //instantiate the prefab
-        GameObject npc = Instantiate(prefab);
-        //get the NPC component
-        NPC npcComponent = npc.GetComponent<NPC>();
+        NPC npcComponent = new NPC();
         //get a random story
         NPCStory randomStory = story[Random.Range(0, story.Length)];
         //set the values of the NPC
         npcComponent.SetValues(name, age, freeTime, randomStory, path);
+        manager.AddNPC(npcComponent);
+        //this change in future
+        manager.InstantiateNPC();
     }
 }
 
@@ -49,5 +48,5 @@ public struct Needs
 {
     public NeedsType type;
     public int value;
-    public int toFill;
+    public float toFill;
 }
