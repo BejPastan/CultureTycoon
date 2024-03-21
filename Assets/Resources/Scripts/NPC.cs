@@ -224,4 +224,20 @@ public class NPC : MonoBehaviour
         Array.Resize(ref furnitures, furnitures.Length - 1);
         MoveToNext();
     }
+
+    private void OnMouseDown()
+    {
+        Debug.Log("Click");
+        if (active)
+        {
+            Debug.Log("Active");
+            FindObjectOfType<NPCui>().ShowNPC(this);
+            //show ui
+        }
+    }
+
+    public void GetValues(out Needs[] needs)
+    {
+        needs = this.needs;
+    }
 }
