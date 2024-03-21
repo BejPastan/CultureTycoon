@@ -8,6 +8,7 @@ public class Timer : MonoBehaviour
     [SerializeField] private int year;
     [SerializeField] TimerUI timerUI;
     [SerializeField] BudgetManager budgetManager;
+    [SerializeField] NPCManager npcManager;
 
     private void Start()
     {
@@ -40,12 +41,15 @@ public class Timer : MonoBehaviour
     {
         //change timespeed to 0
         budgetManager.YearEnd();
+        npcManager.EndSpawning();
         Time.timeScale = 0;
     }
 
     public void StartNewYear()
     {
         Time.timeScale = 1;
+        npcManager.SetNewNPCNumber();
+        npcManager.StartSpawning();
     }
 }
 

@@ -216,6 +216,7 @@ MonoBehaviour:
   - {fileID: 4367715990770579585}
   usagePrice: 0
   maintenanceCost: 0
+  usageTime: 10
   rotationNumber: 0
   grid: {fileID: 0}
   roomCenter: {x: 0, y: 0}

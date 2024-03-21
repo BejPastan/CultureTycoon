@@ -5,9 +5,9 @@ using UnityEngine;
 
 public class NPCCreator : MonoBehaviour
 {
-    [SerializeField] float freeTime;
-    [SerializeField] string name;
-    [SerializeField] int age;
+    [SerializeField] float[] freeTime;
+    [SerializeField] string[] name;
+    [SerializeField] int[] age;
     [SerializeField] NPCStory[] story;
     [SerializeField] NPCManager manager;
     [SerializeField] int maxSum = 300;
@@ -32,14 +32,12 @@ public class NPCCreator : MonoBehaviour
         path = path.Replace(".prefab", "");
         Debug.Log(path);
         //load the prefab from the path
-        NPC npcComponent = new NPC();
+        NPCScriptable npcComponent = new NPCScriptable();
         //get a random story
         NPCStory randomStory = story[Random.Range(0, story.Length)];
         //set the values of the NPC
-        npcComponent.SetValues(name, age, freeTime, randomStory, path, manager.spawnPoint);
+        npcComponent.SetValues(name[Random.Range(0, name.Length)], age[Random.Range(0, age.Length)], freeTime[Random.Range(0, freeTime.Length)], randomStory, path, manager.spawnPoint);
         manager.AddNPC(npcComponent);
-        //this change in future
-        manager.InstantiateNPC();
     }
 }
 

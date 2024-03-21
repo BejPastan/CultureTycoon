@@ -11,7 +11,6 @@ public class BudgetManager : MonoBehaviour
     BudgetUI budgetUI;
     [SerializeField]
     RankingDataHolder rankingDataHolder;
-    [SerializeField] int playerResult;
     [SerializeField] Competitor player;
 
     [SerializeField] int moneyToDivide;
@@ -38,11 +37,9 @@ public class BudgetManager : MonoBehaviour
         return false;
     }
 
-    //make this method available for editor
-    [ContextMenu("YearEnd")]
     public void YearEnd()
     {
-        player.result = playerResult;
+        player.result = FindObjectOfType<NPCManager>().GetHappines();
         Competitor[] competitors = rankingDataHolder.GetCompetitors();
         Array.Resize(ref competitors, competitors.Length + 1);
         competitors[competitors.Length - 1] = player;

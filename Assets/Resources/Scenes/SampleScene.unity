@@ -244,12 +244,12 @@ PrefabInstance:
     - target: {fileID: 5532067279511387890, guid: a4c75082f0ec73544bfc2f825d43e605,
         type: 3}
       propertyPath: m_AnchorMax.x
-      value: 0
+      value: 0.33333334
       objectReference: {fileID: 0}
     - target: {fileID: 5532067279511387890, guid: a4c75082f0ec73544bfc2f825d43e605,
         type: 3}
       propertyPath: m_AnchorMax.y
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
@@ -1607,11 +1607,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 667cddb5ae16c4c418ff31e7b2eb17af, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  day: 30
-  month: 11
+  day: 1
+  month: 0
   year: 0
   timerUI: {fileID: 398954182}
   budgetManager: {fileID: 1295558722}
+  npcManager: {fileID: 594434564}
 --- !u!114 &398954182
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -2120,8 +2121,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 1, y: 0}
   m_AnchorMax: {x: 1, y: 1}
-  m_AnchoredPosition: {x: 439, y: 0}
-  m_SizeDelta: {x: 400, y: 485}
+  m_AnchoredPosition: {x: -30, y: 0}
+  m_SizeDelta: {x: 400, y: -60}
   m_Pivot: {x: 1, y: 0.5}
 --- !u!1 &594434562
 GameObject:
@@ -2153,10 +2154,17 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 7b7c432ecc2d72a4d9e19aab300b1515, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  freeTime: 0
-  name: 
-  age: 0
-  story: []
+  freeTime:
+  - 30
+  - 20
+  - 45
+  name:
+  - test 1
+  - test 2
+  - test 3
+  age: 0a0000000f00000014000000
+  story:
+  - {fileID: 11400000, guid: 5d15afe5970034b4899c78dcf16ee833, type: 2}
   manager: {fileID: 594434564}
   maxSum: 300
   minSum: 200
@@ -2174,8 +2182,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   npcs: []
   spawnPoint: {x: 0, y: 0, z: 0}
-  NPCCount: 0
-  creator: {fileID: 0}
+  NPCCount: 2
+  creator: {fileID: 594434563}
 --- !u!4 &594434565
 Transform:
   m_ObjectHideFlags: 0
@@ -3680,12 +3688,12 @@ PrefabInstance:
     - target: {fileID: 5532067279511387890, guid: a4c75082f0ec73544bfc2f825d43e605,
         type: 3}
       propertyPath: m_AnchorMax.x
-      value: 0
+      value: 0.33333334
       objectReference: {fileID: 0}
     - target: {fileID: 5532067279511387890, guid: a4c75082f0ec73544bfc2f825d43e605,
         type: 3}
       propertyPath: m_AnchorMax.y
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
@@ -3977,7 +3985,6 @@ MonoBehaviour:
   normalMoney: 500
   budgetUI: {fileID: 1295558723}
   rankingDataHolder: {fileID: 1295558724}
-  playerResult: 10
   player: {fileID: 11400000, guid: 950134d20dd025f47acb146a956d9b68, type: 2}
   moneyToDivide: 2000
 --- !u!114 &1295558723
@@ -4505,12 +4512,12 @@ PrefabInstance:
     - target: {fileID: 5532067279511387890, guid: a4c75082f0ec73544bfc2f825d43e605,
         type: 3}
       propertyPath: m_AnchorMax.x
-      value: 0
+      value: 0.33333334
       objectReference: {fileID: 0}
     - target: {fileID: 5532067279511387890, guid: a4c75082f0ec73544bfc2f825d43e605,
         type: 3}
       propertyPath: m_AnchorMax.y
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
@@ -4644,12 +4651,12 @@ PrefabInstance:
     - target: {fileID: 5532067279511387890, guid: a4c75082f0ec73544bfc2f825d43e605,
         type: 3}
       propertyPath: m_AnchorMax.x
-      value: 0
+      value: 0.33333334
       objectReference: {fileID: 0}
     - target: {fileID: 5532067279511387890, guid: a4c75082f0ec73544bfc2f825d43e605,
         type: 3}
       propertyPath: m_AnchorMax.y
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
@@ -5001,7 +5008,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &1813647527
 RectTransform:
   m_ObjectHideFlags: 0
@@ -5017,10 +5024,10 @@ RectTransform:
   - {fileID: 525419767}
   m_Father: {fileID: 767040397}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0.5, y: 0.5}
-  m_AnchorMax: {x: 0.5, y: 0.5}
+  m_AnchorMin: {x: 0, y: 0}
+  m_AnchorMax: {x: 1, y: 1}
   m_AnchoredPosition: {x: 0, y: 0}
-  m_SizeDelta: {x: 100, y: 100}
+  m_SizeDelta: {x: 0, y: 0}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1813647528
 MonoBehaviour:
@@ -6043,12 +6050,12 @@ PrefabInstance:
     - target: {fileID: 5532067279511387890, guid: a4c75082f0ec73544bfc2f825d43e605,
         type: 3}
       propertyPath: m_AnchorMax.x
-      value: 0
+      value: 0.33333334
       objectReference: {fileID: 0}
     - target: {fileID: 5532067279511387890, guid: a4c75082f0ec73544bfc2f825d43e605,
         type: 3}
       propertyPath: m_AnchorMax.y
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []

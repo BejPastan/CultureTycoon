@@ -214,7 +214,7 @@ public class FurnitureData : MonoBehaviour
         return false;
     }
 
-    public bool UseFurniture(out AnimatorController animator, out RoomType furnitureType,out float quality, out Vector3 usingSLot)
+    public bool UseFurniture(out AnimatorController animator, out RoomType furnitureType,out float quality, out Vector3 usingSlot)
     {
         Debug.Log("Anything?");
         //check is there any empty space for NPC
@@ -227,7 +227,7 @@ public class FurnitureData : MonoBehaviour
             quality = this.quality;
 
             //in future i need to change this to get empty place by id
-            usingSLot = usersLocations[occupaiedLocationsID.Length].position;
+            usingSlot = usersLocations[occupaiedLocationsID.Length].position;
             Array.Resize(ref occupaiedLocationsID, occupaiedLocationsID.Length + 1);
 
             //here i need to start using animation
@@ -240,8 +240,27 @@ public class FurnitureData : MonoBehaviour
             animator = null;
             furnitureType = RoomType.none;
             quality = 0;
-            usingSLot = Vector3.zero;
+            usingSlot = Vector3.zero;
             return false;
+        }
+    }
+
+    public void LeaveFurniture(Vector3 slotPos)
+    {
+        //find id of slot
+        int id = 0;
+        for(int i = 0; i < usersLocations.Length; i++)
+        {
+            if (usersLocations[i].position == slotPos)
+            {
+                id = i;
+                break;
+            }
+        }
+        //remove id from list
+        for(int i = id; i < occupaiedLocationsID.Length-1; i++)
+        {
+            occupaiedLocationsID[i] = occupaiedLocationsID[i + 1];
         }
     }
 }

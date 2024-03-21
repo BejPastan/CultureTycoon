@@ -10,7 +10,7 @@ public class NPCui : MonoBehaviour
     [SerializeField] private TextMeshProUGUI name;
     [SerializeField] private TextMeshProUGUI age;
     [SerializeField] private NeedsUI[] needsUI;
-    private NPC npc;
+    private NPCScriptable npc;
 
     [System.Serializable]
     public struct NeedsUI
@@ -19,7 +19,7 @@ public class NPCui : MonoBehaviour
         public TextMeshProUGUI fillText;
     }
 
-    public void ShowNPC(NPC npc)
+    public void ShowNPC(NPCScriptable npc)
     {
         StopCoroutine(UpdateValues());
         npcUI.gameObject.SetActive(true);
