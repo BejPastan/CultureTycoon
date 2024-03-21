@@ -34,9 +34,9 @@ public class NPCCreator : MonoBehaviour
 
         NPCScriptable npcComponent = ScriptableObject.CreateInstance<NPCScriptable>();
         //get a random story
-        NPCStory randomStory = story[Random.Range(0, story.Length)];
+        NPCStory randomStory = Instantiate(story[Random.Range(0, story.Length)]);
         //set the values of the NPC
-        npcComponent.SetValues(name[Random.Range(0, name.Length)], age[Random.Range(0, age.Length)], freeTime[Random.Range(0, freeTime.Length)], randomStory, path, manager.spawnPoint);
+        npcComponent.SetValues(name[Random.Range(0, name.Length)], age[Random.Range(0, age.Length)], freeTime[Random.Range(0, freeTime.Length)], randomStory, path, manager.transform.position);
         manager.AddNPC(npcComponent);
     }
 }

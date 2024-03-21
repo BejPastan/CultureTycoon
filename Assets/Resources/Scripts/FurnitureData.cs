@@ -14,15 +14,19 @@ public class FurnitureData : MonoBehaviour
     [SerializeField] float quality;
     [SerializeField] public RoomType destinationType;
     [SerializeField] Transform[] usersLocations;
-    private int[] occupaiedLocationsID;
+    private bool[] occupaiedLocationsID;
     [SerializeField] int usagePrice;//actual not active
     [SerializeField] int maintenanceCost;//actual not active
     [SerializeField] public float usageTime;
-    [SerializeField] int rotationNumber;
+    [SerializeField] AnimatorController animationForNPC;
+    [SerializeField] Animator furnitureAnimator;
+
+    [Header("BUILDIGNB")]
+    int rotationNumber;
     [SerializeField] Grid grid;
     [SerializeField] Vector2Int roomCenter;
     [SerializeField] Vector2Int startPos;
-    [SerializeField] AnimatorController animationForNPC;
+    [SerializeField] 
     public Vector2Int GetStartPos() { return startPos+roomCenter; }
     [SerializeField] Vector2Int endPos;
     public Vector2Int GetEndPos() { return endPos+roomCenter; }
@@ -30,12 +34,15 @@ public class FurnitureData : MonoBehaviour
     Material[] materials;
     [SerializeField] MeshRenderer meshRenderer;
     private bool building = true;
-
     public bool canBuild;
 
     private void Start()
     {
-        occupaiedLocationsID = new int[0];
+        occupaiedLocationsID = new bool[usersLocations.Length];
+        for(int i = 0; i < usersLocations.Length; i++)
+        {
+            occupaiedLocationsID[i] = false;
+        }
         grid = FindObjectOfType<Grid>();
     }
 
@@ -141,7 +148,6 @@ public class FurnitureData : MonoBehaviour
             {
                 if ((colider.CompareTag("Furniture") && colider.transform != this.transform) || colider.CompareTag("Wall"))
                 {
-                    Debug.Log(colider.name);
                     meshRenderer.material.SetColor("_AccessColor", Color.red);
                     canBuild = false;
                     return;
@@ -201,81 +207,37 @@ public class FurnitureData : MonoBehaviour
     /// Check if this furniture have empty space for new NPC and it's not building now
     /// </summary>
     /// <returns></returns>
-    public bool CanBeUsed(out Vector3 slotPos)
+    public bool CanBeUsed(out Vector3 slotPos, out int slotId)
     {
-        bool freeslot;
         slotPos = Vector3.zero;
+        slotId = -1;
         if(!building)
         {
-            for(int i = 0; i<usersLocations.Length; i++)
+            for(int i = 0; i< usersLocations.Length; i++)
             {
-                freeslot = true;
-                for(int j = 0; j<occupaiedLocationsID.Length; j++)
-                {
-                    if(i == occupaiedLocationsID[j])
-                    {
-                        freeslot = false;
-                        break;
-                    }
-                }
-                if(freeslot)
+                if (!occupaiedLocationsID[i])
                 {
                     slotPos = usersLocations[i].position;
+                    slotId = i;
+                    occupaiedLocationsID[i] = true;
                     return true;
                 }
-
             }
         }
         return false;
     }
 
-    public bool UseFurniture(out AnimatorController animator, out RoomType furnitureType,out float quality, out Vector3 usingSlot)
+    public void UseFurniture(out AnimatorController animator, out RoomType furnitureType,out float quality)
     {
-        Debug.Log("Anything?");
-        //check is there any empty space for NPC
-        Debug.Log("ocuppied space: " + (occupaiedLocationsID.Length));
-        if (occupaiedLocationsID.Length < usersLocations.Length)
-        {
-            Debug.Log("Furniture is not occupied");
-            animator = animationForNPC;
-            furnitureType = destinationType;
-            quality = this.quality;
-
-            //in future i need to change this to get empty place by id
-            usingSlot = usersLocations[occupaiedLocationsID.Length].position;
-            Array.Resize(ref occupaiedLocationsID, occupaiedLocationsID.Length + 1);
-
-            //here i need to start using animation
-            return true;
-
-        }
-        else
-        {
-            Debug.Log("Furniture is occupied");
-            animator = null;
-            furnitureType = RoomType.none;
-            quality = 0;
-            usingSlot = Vector3.zero;
-            return false;
-        }
+        furnitureAnimator.SetBool("painting", true);
+        animator = animationForNPC;
+        furnitureType = destinationType;
+        quality = this.quality;
     }
 
-    public void LeaveFurniture(Vector3 slotPos)
+    public void LeaveFurniture(int slot)
     {
-        //find id of slot
-        int id = 0;
-        for(int i = 0; i < usersLocations.Length; i++)
-        {
-            if (usersLocations[i].position == slotPos)
-            {
-                id = i;
-                break;
-            }
-        }
-        //remove id from list
-        for(int i = id; i < occupaiedLocationsID.Length-1; i++)
-        {
-            occupaiedLocationsID[i] = occupaiedLocationsID[i + 1];
-        }
+        furnitureAnimator.SetBool("painting", false);
+        occupaiedLocationsID[slot] = false;
     }
 }

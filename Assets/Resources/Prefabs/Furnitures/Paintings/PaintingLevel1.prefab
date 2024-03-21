@@ -210,18 +210,18 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   newName: Small canva
   buildingCost: 15
-  quality: 5
+  quality: 2
   destinationType: 0
   usersLocations:
   - {fileID: 4367715990770579585}
   usagePrice: 0
   maintenanceCost: 0
   usageTime: 10
-  rotationNumber: 0
+  animationForNPC: {fileID: 9100000, guid: 8898d95db8d364844b8dca00bccd0089, type: 2}
+  furnitureAnimator: {fileID: 7819687973419582382}
   grid: {fileID: 0}
   roomCenter: {x: 0, y: 0}
   startPos: {x: 0, y: 0}
-  animationForNPC: {fileID: 9100000, guid: 8898d95db8d364844b8dca00bccd0089, type: 2}
   endPos: {x: 0, y: 1}
   meshRenderer: {fileID: 5265236735143132441}
   canBuild: 0
@@ -256,7 +256,7 @@ Animator:
   m_GameObject: {fileID: 6041738369723484965}
   m_Enabled: 1
   m_Avatar: {fileID: 0}
-  m_Controller: {fileID: 0}
+  m_Controller: {fileID: 9100000, guid: e1078a90aa565b7449ebff1f78892d13, type: 2}
   m_CullingMode: 0
   m_UpdateMode: 0
   m_ApplyRootMotion: 0

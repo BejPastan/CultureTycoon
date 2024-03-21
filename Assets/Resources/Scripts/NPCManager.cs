@@ -22,7 +22,7 @@ public class NPCManager : MonoBehaviour
 
     public async Task StartSpawning()
     {
-        await Task.Delay(1000);
+        await Task.Delay(10000);
         StartCoroutine(Spawn());
     }
 
@@ -36,7 +36,7 @@ public class NPCManager : MonoBehaviour
     {
         while (true)
         {
-            yield return new WaitForSeconds(1);
+            yield return new WaitForSeconds(10);
             SelectNPC();
         }
     }
@@ -107,5 +107,14 @@ public class NPCManager : MonoBehaviour
     {
         npcToDestroy.scriptable.active = false;
         Destroy(npcToDestroy.gameObject);
+    }
+
+    private void OnTriggerEnter(Collider other)
+    {
+        Debug.Log("Trigger");
+        if(other.CompareTag("NPC"))
+        {
+            other.GetComponent<NPC>().RemoveNPC();
+        }
     }
 }

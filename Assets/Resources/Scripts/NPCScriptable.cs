@@ -1,10 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
-using UnityEditor.Animations;
 using UnityEngine;
-using UnityEngine.AI;
-using static NPCui;
 
 public class NPCScriptable : ScriptableObject
 {
@@ -17,11 +14,14 @@ public class NPCScriptable : ScriptableObject
     public NPCStory story;
     public string prefPath;
 
+    int slot;
+
     public float avarageHappines;
     public int numberOfVisits;
 
 
     private FurnitureData[] furnitures;
+    
     public FurnitureData DestinationFurniture()
     {
         if(furnitures.Length > 0)
@@ -52,32 +52,21 @@ public class NPCScriptable : ScriptableObject
     public Vector3 GetDestination()
     {
         if (furnitures.Length > 0)
-            if(furnitures[0].CanBeUsed(out Vector3 slot))
+            if(furnitures[0].CanBeUsed(out Vector3 slot, out int slotId))
             {
+                this.slot = slotId;
                 return slot;
             }
         MoveToExit();
         return exit;
     }
 
-    public void PasteComponent(NPCScriptable original)
-    {
-        name = original.name;
-        age = original.age;
-        needs = original.needs;
-        freeTime = original.freeTime;
-        story = original.story;
-        prefPath = original.prefPath;
-    }
-
     public async void StartNPC()
     {
         active = true;
-        Debug.Log(needs.Length);
         for (int i = 0; i < needs.Length; i++)
         {
             needs[i].toFill = needs[i].value;
-            Debug.Log(needs[i].type + " " + needs[i].value);
         }
         freeTimeLeft = freeTime;
 
@@ -184,6 +173,7 @@ public class NPCScriptable : ScriptableObject
     public void EndUsing()
     {
         //remove furniture from the array
+        furnitures[0].LeaveFurniture(slot);
         for (int i = 0; i < furnitures.Length - 1; i++)
         {
             furnitures[i] = furnitures[i + 1];

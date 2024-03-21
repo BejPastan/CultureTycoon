@@ -9,6 +9,7 @@ TagManager:
   - Wall
   - Ground
   - Furniture
+  - NPC
   layers:
   - Default
   - TransparentFX
