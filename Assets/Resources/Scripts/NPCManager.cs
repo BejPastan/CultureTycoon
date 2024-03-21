@@ -36,8 +36,8 @@ public class NPCManager : MonoBehaviour
     {
         while (true)
         {
-            yield return new WaitForSeconds(30/NPCCount);
-            InstantiateNPC();
+            yield return new WaitForSeconds(1);
+            SelectNPC();
         }
     }
 
@@ -83,35 +83,29 @@ public class NPCManager : MonoBehaviour
         npcs.Add(npc);
     }
 
-    public void InstantiateNPC()
+    public void InstaniateNPC(NPCScriptable npcData)
     {
-        //get random NPC that is not active from the list
-        NPCScriptable npc = npcs[Random.Range(0, npcs.Count)];
-        if (!npc.active)
+        GameObject npcObject = Instantiate(Resources.Load<GameObject>(npcData.prefPath), spawnPoint, Quaternion.identity);
+        NPC npc = npcObject.GetComponent<NPC>();
+        npc.scriptable = npcData;
+        npc.StartNPC();
+    }
+
+    public void SelectNPC()
+    {
+        for(int i = 0; i < npcs.Count; i++)
         {
-            //instantiate the NPC
-            GameObject npcObject = Instantiate(Resources.Load<GameObject>(npc.prefPath), spawnPoint, Quaternion.identity);
-            npcObject.AddComponent<NPCScriptable>().PasteComponent(npc);
-            npc = npcObject.GetComponent<NPCScriptable>();
-            npc.StartNPC();
-        }
-        else
-        {
-            Debug.Log("NPC is active");
-            foreach (NPCScriptable n in npcs)
+            if (!npcs[i].active)
             {
-                if (!n.active)
-                {
-                    InstantiateNPC();
-                    return;
-                }
+                InstaniateNPC(npcs[i]);
+                return;
             }
         }
     }
 
-    public void DestroyNPC(NPCScriptable npcToDestroy)
+    public void DestroyNPC(NPC npcToDestroy)
     {
-        npcToDestroy.active = false;
+        npcToDestroy.scriptable.active = false;
         Destroy(npcToDestroy.gameObject);
     }
 }

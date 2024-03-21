@@ -4,6 +4,7 @@ using System.Threading.Tasks;
 using UnityEditor.Animations;
 using UnityEngine;
 using UnityEngine.AI;
+using static NPCui;
 
 public class NPCScriptable : ScriptableObject
 {
@@ -15,19 +16,29 @@ public class NPCScriptable : ScriptableObject
     public float freeTimeLeft;
     public NPCStory story;
     public string prefPath;
-    public NavMeshAgent agent;
-
 
     public float avarageHappines;
     public int numberOfVisits;
 
 
     private FurnitureData[] furnitures;
+    public FurnitureData DestinationFurniture()
+    {
+        if(furnitures.Length > 0)
+            return furnitures[0];
+        return null;
+    }
+
     public Dictionary<NeedsType, RoomType> furnitureForNeeds = new Dictionary<NeedsType, RoomType>();
     public Vector3 exit;
 
     public void SetValues(string name, int age, float freeTime, NPCStory story, string path, Vector3 exit)
     {
+        furnitureForNeeds.Add(NeedsType.art, RoomType.artWorkshop);
+        furnitureForNeeds.Add(NeedsType.DIY, RoomType.Workshop);
+        furnitureForNeeds.Add(NeedsType.music, RoomType.scene);
+        furnitureForNeeds.Add(NeedsType.play, RoomType.playground);
+        furnitureForNeeds.Add(NeedsType.science, RoomType.scienceLab);
         Debug.Log("Set values");
         this.name = name;
         this.age = age;
@@ -36,6 +47,17 @@ public class NPCScriptable : ScriptableObject
         this.story = story;
         prefPath = path;
         this.exit = exit;
+    }
+
+    public Vector3 GetDestination()
+    {
+        if (furnitures.Length > 0)
+            if(furnitures[0].CanBeUsed(out Vector3 slot))
+            {
+                return slot;
+            }
+        MoveToExit();
+        return exit;
     }
 
     public void PasteComponent(NPCScriptable original)
@@ -50,17 +72,7 @@ public class NPCScriptable : ScriptableObject
 
     public async void StartNPC()
     {
-        agent = gameObject.GetComponent<NavMeshAgent>();
-        
         active = true;
-        Debug.Log("Awake");
-        furnitureForNeeds.Add(NeedsType.art, RoomType.artWorkshop);
-        furnitureForNeeds.Add(NeedsType.DIY, RoomType.Workshop);
-        furnitureForNeeds.Add(NeedsType.music, RoomType.scene);
-        furnitureForNeeds.Add(NeedsType.play, RoomType.playground);
-        furnitureForNeeds.Add(NeedsType.science, RoomType.scienceLab);
-        Debug.Log("Set furniture for needs");
-
         Debug.Log(needs.Length);
         for (int i = 0; i < needs.Length; i++)
         {
@@ -71,7 +83,6 @@ public class NPCScriptable : ScriptableObject
 
         furnitures = FindObjectsOfType<FurnitureData>();
         SortFurnitures();
-        MoveToNext();
     }
 
     private void SortFurnitures()
@@ -117,20 +128,9 @@ public class NPCScriptable : ScriptableObject
         }
     }
 
-    private async void MoveToNext()
-    {
-        if(furnitures.Length == 0)
-        {
-            MoveToExit();
-            return;
-        }
-        agent.SetDestination(furnitures[0].transform.position);
-    }
-
     public void MoveToExit()
     {
         Debug.Log("Move to exit");
-        agent.SetDestination(exit);
         //calc happines
         float happines = 0;
         for (int i = 0; i < needs.Length; i++)
@@ -142,64 +142,31 @@ public class NPCScriptable : ScriptableObject
         numberOfVisits++;
     }
 
-    private void OnTriggerEnter(Collider other)
+    public async Task UseFurniture(float quality, RoomType furnitureType)
     {
-        if(other.GetComponent<FurnitureData>() != null)
-            if (other.GetComponent<FurnitureData>() == furnitures[0])
-            {
-                //stop moving
-                agent.SetDestination(transform.position);
-                UseFurniture();
-            }
-    }
-
-    private async Task UseFurniture()
-    {
-        Debug.Log("Start using furniture");
-        //here must get animation
-        if(furnitures[0].UseFurniture(out AnimatorController animatior, out RoomType furnitureType, out float quality, out Vector3 usingSlot))
+        int needsId = 0;
+        for (int i = 0; i < needs.Length; i++)
         {
-            agent.SetDestination(usingSlot);
-            Debug.Log("Get data from furniture");
-            //get animator controller from NPC transform
-            AnimatorController defaultAnimation = GetComponent<Animator>().runtimeAnimatorController as AnimatorController;
-            //set new animation
-            GetComponent<Animator>().runtimeAnimatorController = animatior;
-            Debug.Log("Set data to NPC");
-            //get needs type from furniture type
-            int needsId = 0;
-            for (int i = 0; i < needs.Length; i++)
+            if (furnitureForNeeds[needs[i].type] == furnitureType)
             {
-                if (furnitureForNeeds[needs[i].type] == furnitureType)
-                {
-                    needsId = i;
-                    break;
-                }
+                needsId = i;
+                break;
             }
-            Debug.Log("set needs id");
-            //start getting needs points
-            float timeOnFuriture = furnitures[0].usageTime;
-            while (freeTimeLeft > 0 && needs[needsId].toFill > 0 && timeOnFuriture>0)
-            {
-                await Task.Delay(500);
-                needs[needsId].toFill -= quality;
-                freeTimeLeft -= 0.5f;
-                timeOnFuriture -= 0.5f;
-                Debug.Log("Get needs points");
-                if(freeTimeLeft <= 0)
-                {
-                    MoveToExit();
-                    return;
-                }
-            }
-            //set default animation
-            GetComponent<Animator>().runtimeAnimatorController = defaultAnimation;
-            EndUsing();
         }
-        else
+
+        float timeOnFuriture = furnitures[0].usageTime;
+        while (freeTimeLeft > 0 && needs[needsId].toFill > 0 && timeOnFuriture > 0)
         {
-            Debug.Log("Furniture is occupied");
-            Occupied();
+            await Task.Delay(500);
+            needs[needsId].toFill -= quality;
+            freeTimeLeft -= 0.5f;
+            timeOnFuriture -= 0.5f;
+            Debug.Log("Get needs points");
+            if (freeTimeLeft <= 0)
+            {
+                MoveToExit();
+                return;
+            }
         }
     }
 
@@ -212,29 +179,16 @@ public class NPCScriptable : ScriptableObject
             furnitures[i] = furnitures[i + 1];
         }
         furnitures[furnitures.Length - 1] = temp;
-        MoveToNext();
     }
 
     public void EndUsing()
     {
-        furnitures[0].LeaveFurniture(agent.destination);
         //remove furniture from the array
         for (int i = 0; i < furnitures.Length - 1; i++)
         {
             furnitures[i] = furnitures[i + 1];
         }
         Array.Resize(ref furnitures, furnitures.Length - 1);
-        MoveToNext();
-    }
-
-    private void OnMouseDown()
-    {
-        Debug.Log("Click");
-        if (active)
-        {
-            Debug.Log("Active");
-            FindObjectOfType<NPCui>().ShowNPC(this);
-        }
     }
 
     public void GetValues(out Needs[] needs)

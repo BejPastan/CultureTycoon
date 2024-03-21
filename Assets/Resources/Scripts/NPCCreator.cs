@@ -31,8 +31,8 @@ public class NPCCreator : MonoBehaviour
         path = path.Replace("Assets/Resources/", "");
         path = path.Replace(".prefab", "");
         Debug.Log(path);
-        //load the prefab from the path
-        NPCScriptable npcComponent = new NPCScriptable();
+
+        NPCScriptable npcComponent = ScriptableObject.CreateInstance<NPCScriptable>();
         //get a random story
         NPCStory randomStory = story[Random.Range(0, story.Length)];
         //set the values of the NPC

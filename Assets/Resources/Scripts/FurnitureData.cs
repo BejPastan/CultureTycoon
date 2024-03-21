@@ -10,7 +10,7 @@ using UnityEngine;
 public class FurnitureData : MonoBehaviour
 {
     [SerializeField] string newName;
-    [SerializeField] public int buildingCost;
+    public int buildingCost;
     [SerializeField] float quality;
     [SerializeField] public RoomType destinationType;
     [SerializeField] Transform[] usersLocations;
@@ -201,14 +201,29 @@ public class FurnitureData : MonoBehaviour
     /// Check if this furniture have empty space for new NPC and it's not building now
     /// </summary>
     /// <returns></returns>
-    public bool CanBeUsed()
+    public bool CanBeUsed(out Vector3 slotPos)
     {
+        bool freeslot;
+        slotPos = Vector3.zero;
         if(!building)
         {
-            //check if there is any empty space for NPC
-            if(occupaiedLocationsID.Length < usersLocations.Length)
+            for(int i = 0; i<usersLocations.Length; i++)
             {
-                return true;
+                freeslot = true;
+                for(int j = 0; j<occupaiedLocationsID.Length; j++)
+                {
+                    if(i == occupaiedLocationsID[j])
+                    {
+                        freeslot = false;
+                        break;
+                    }
+                }
+                if(freeslot)
+                {
+                    slotPos = usersLocations[i].position;
+                    return true;
+                }
+
             }
         }
         return false;
