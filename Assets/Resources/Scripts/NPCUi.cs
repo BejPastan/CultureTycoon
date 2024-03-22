@@ -30,7 +30,14 @@ public class NPCui : MonoBehaviour
         npcUI.gameObject.SetActive(true);
         this.npc = npc;
         npcScriptable = npc.scriptable;
+        ShowBasicInfo();
         StartCoroutine(UpdateValues());
+    }
+
+    private void ShowBasicInfo()
+    {
+        name.text = npcScriptable.name;
+        age.text = npcScriptable.age.ToString();
     }
 
     //corutine to update NPCValues
@@ -43,7 +50,7 @@ public class NPCui : MonoBehaviour
                 needsUI[i].slider.value = npcScriptable.needs[i].value - npcScriptable.needs[i].toFill;
                 needsUI[i].fillText.text = (npcScriptable.needs[i].value - npcScriptable.needs[i].toFill) + " / " + npcScriptable.needs[i].value;
             }
-            yield return new WaitForSeconds(1);
+            yield return new WaitForSeconds(0.25f);
         }
     }
 
