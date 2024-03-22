@@ -12,6 +12,8 @@ public class NPC : MonoBehaviour
     public NPCScriptable scriptable;
     public NavMeshAgent agent;
 
+    bool onUI;
+
     public async void StartNPC()
     {
         agent = gameObject.GetComponent<NavMeshAgent>();
@@ -50,13 +52,22 @@ public class NPC : MonoBehaviour
     public void RemoveNPC()
     {
         scriptable.active = false;
+        if (onUI)
+            FindObjectOfType<NPCui>().HideNPC();
+        onUI = false;
         Destroy(gameObject);
     }
 
 
     private void OnMouseDown()
     {
-        FindObjectOfType<NPCui>().ShowNPC(scriptable);
+        FindObjectOfType<NPCui>().ShowNPC(this);
+        onUI = true;
+    }
+
+    public void RemoveFromUI()
+    {
+        onUI = false;
     }
 
     private void OnTriggerEnter(Collider other)

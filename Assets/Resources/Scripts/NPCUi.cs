@@ -10,7 +10,8 @@ public class NPCui : MonoBehaviour
     [SerializeField] private TextMeshProUGUI name;
     [SerializeField] private TextMeshProUGUI age;
     [SerializeField] private NeedsUI[] needsUI;
-    private NPCScriptable npc;
+    private NPC npc;
+    private NPCScriptable npcScriptable;
 
     [System.Serializable]
     public struct NeedsUI
@@ -19,11 +20,16 @@ public class NPCui : MonoBehaviour
         public TextMeshProUGUI fillText;
     }
 
-    public void ShowNPC(NPCScriptable npc)
+    public void ShowNPC(NPC npc)
     {
+        if(this.npc!= null)
+        {
+            this.npc.RemoveFromUI();
+        }
         StopCoroutine(UpdateValues());
         npcUI.gameObject.SetActive(true);
         this.npc = npc;
+        npcScriptable = npc.scriptable;
         StartCoroutine(UpdateValues());
     }
 
@@ -34,8 +40,8 @@ public class NPCui : MonoBehaviour
         {
             for (int i = 0; i < needsUI.Length; i++)
             {
-                needsUI[i].slider.value = npc.needs[i].value - npc.needs[i].toFill;
-                needsUI[i].fillText.text = (npc.needs[i].value - npc.needs[i].toFill) + " / " + npc.needs[i].value;
+                needsUI[i].slider.value = npcScriptable.needs[i].value - npcScriptable.needs[i].toFill;
+                needsUI[i].fillText.text = (npcScriptable.needs[i].value - npcScriptable.needs[i].toFill) + " / " + npcScriptable.needs[i].value;
             }
             yield return new WaitForSeconds(1);
         }
