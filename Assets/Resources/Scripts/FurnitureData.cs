@@ -11,6 +11,7 @@ public class FurnitureData : MonoBehaviour
 {
     [SerializeField] string newName;
     public int buildingCost;
+    [SerializeField] int level;
     [SerializeField] float quality;
     [SerializeField] public RoomType destinationType;
     [SerializeField] Transform[] usersLocations;
@@ -26,7 +27,6 @@ public class FurnitureData : MonoBehaviour
     [SerializeField] Grid grid;
     [SerializeField] Vector2Int roomCenter;
     [SerializeField] Vector2Int startPos;
-    [SerializeField] 
     public Vector2Int GetStartPos() { return startPos+roomCenter; }
     [SerializeField] Vector2Int endPos;
     public Vector2Int GetEndPos() { return endPos+roomCenter; }
@@ -58,8 +58,13 @@ public class FurnitureData : MonoBehaviour
             roomToPlace.RemoveFurniture(this);
         }
         materials = meshRenderer.materials;
-        Debug.Log("temporaryMaterial: " + temporaryMaterial.name);
-        meshRenderer.materials = new Material[1] { temporaryMaterial };
+        //create list of materials with materials length and set all materials to temporaryMaterial
+        Material[] newMaterials = new Material[materials.Length];
+        for (int i = 0; i < materials.Length; i++)
+        {
+            newMaterials[i] = temporaryMaterial;
+        }
+        meshRenderer.materials = newMaterials;
     }
 
     /// <summary>
@@ -136,7 +141,10 @@ public class FurnitureData : MonoBehaviour
         if(roomToPlace == null || roomToPlace.GetRoomType() != destinationType)
         {
             //get shader and change color to red
-            meshRenderer.material.SetColor("_AccessColor", Color.red);
+            foreach (Material material in meshRenderer.materials)
+            {
+                material.SetColor("_AccessColor", Color.red);
+            }
             canBuild = false;
             return;
         }
@@ -148,13 +156,19 @@ public class FurnitureData : MonoBehaviour
             {
                 if ((colider.CompareTag("Furniture") && colider.transform != this.transform) || colider.CompareTag("Wall"))
                 {
-                    meshRenderer.material.SetColor("_AccessColor", Color.red);
+                    foreach (Material material in meshRenderer.materials)
+                    {
+                        material.SetColor("_AccessColor", Color.red);
+                    }
                     canBuild = false;
                     return;
                 }
             }
             //here i must chack if colider collide with any other object
-            meshRenderer.material.SetColor("_AccessColor", Color.green);
+            foreach (Material material in meshRenderer.materials)
+            {
+                material.SetColor("_AccessColor", Color.green);
+            }
             canBuild = true;
             return;
         }      

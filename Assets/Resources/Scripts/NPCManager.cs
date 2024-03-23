@@ -78,8 +78,6 @@ public class NPCManager : MonoBehaviour
 
     public void AddNPC(NPCScriptable npc)
     {
-        Debug.Log("Add NPC");
-        Debug.Log(npc.name);
         npcs.Add(npc);
     }
 
@@ -111,7 +109,6 @@ public class NPCManager : MonoBehaviour
 
     private void OnTriggerEnter(Collider other)
     {
-        Debug.Log("Trigger");
         if(other.CompareTag("NPC"))
         {
             other.GetComponent<NPC>().RemoveNPC();

@@ -30,7 +30,6 @@ public class NPCCreator : MonoBehaviour
         path = path.Replace(@"\", "/");
         path = path.Replace("Assets/Resources/", "");
         path = path.Replace(".prefab", "");
-        Debug.Log(path);
 
         NPCScriptable npcComponent = ScriptableObject.CreateInstance<NPCScriptable>();
         //get a random story

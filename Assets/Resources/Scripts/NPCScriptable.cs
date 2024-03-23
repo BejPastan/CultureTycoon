@@ -39,7 +39,6 @@ public class NPCScriptable : ScriptableObject
         furnitureForNeeds.Add(NeedsType.music, RoomType.scene);
         furnitureForNeeds.Add(NeedsType.play, RoomType.playground);
         furnitureForNeeds.Add(NeedsType.science, RoomType.scienceLab);
-        Debug.Log("Set values");
         this.name = name;
         this.age = age;
         needs = story.GetNeeds();
@@ -119,7 +118,6 @@ public class NPCScriptable : ScriptableObject
 
     public void MoveToExit()
     {
-        Debug.Log("Move to exit");
         //calc happines
         float happines = 0;
         for (int i = 0; i < needs.Length; i++)
