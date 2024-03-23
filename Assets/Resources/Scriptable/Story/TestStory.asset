@@ -12,21 +12,28 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 9a341efe466cdcc469cf038a1e27e142, type: 3}
   m_Name: TestStory
   m_EditorClassIdentifier: 
-  storyFragments:
-  - story: 
+  storyToUnlocked:
+  - story: "Pomimo tego \u017Ce zawsze interesowa\u0142em si\u0119 nauk\u0105, marzy\u0142em
+      o zostaniu malarzem"
     conditions:
     - completed: 0
       type: 0
-      value: 0
-      numberOfPasses: 0
+      numberOfPasses: 2
+    unlockedFurnitures: []
+  unlockedStory: []
   needs:
   - type: 0
     value: 10
+    toFill: 0
   - type: 1
     value: 30
+    toFill: 0
   - type: 2
     value: 90
+    toFill: 0
   - type: 3
     value: 10
+    toFill: 0
   - type: 4
     value: 20
+    toFill: 0

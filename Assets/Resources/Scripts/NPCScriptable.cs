@@ -8,7 +8,7 @@ public class NPCScriptable : ScriptableObject
     public bool active = false;
     public string name;
     public int age;
-    public Needs[] needs;
+    //public Needs[] needs;
     public float freeTime;
     public float freeTimeLeft;
     public NPCStory story;
@@ -41,7 +41,7 @@ public class NPCScriptable : ScriptableObject
         furnitureForNeeds.Add(NeedsType.science, RoomType.scienceLab);
         this.name = name;
         this.age = age;
-        needs = story.GetNeeds();
+        //needs = story.GetNeeds();
         this.freeTime = freeTime;
         this.story = story;
         prefPath = path;
@@ -63,9 +63,9 @@ public class NPCScriptable : ScriptableObject
     public async void StartNPC()
     {
         active = true;
-        for (int i = 0; i < needs.Length; i++)
+        for (int i = 0; i < story.needs.Length; i++)
         {
-            needs[i].toFill = needs[i].value;
+            story.needs[i].toFill = story.needs[i].value;
         }
         freeTimeLeft = freeTime;
 
@@ -77,22 +77,22 @@ public class NPCScriptable : ScriptableObject
     {
         Debug.Log("Sort furnitures");
         //sort needs by value
-        for (int i = 0; i < needs.Length; i++)
+        for (int i = 0; i < story.needs.Length; i++)
         {
-            for (int j = i + 1; j < needs.Length; j++)
+            for (int j = i + 1; j < story.needs.Length; j++)
             {
-                if (needs[i].toFill > needs[j].toFill)
+                if (story.needs[i].toFill > story.needs[j].toFill)
                 {
-                    Needs temp = needs[i];
-                    needs[i] = needs[j];
-                    needs[j] = temp;
+                    Needs temp = story.needs[i];
+                    story.needs[i] = story.needs[j];
+                    story.needs[j] = temp;
                 }
             }
         }
 
         int apropriatePos = 0;
         //sort furniture to fit needs using dictionary
-        for (int i = 0; i < needs.Length; i++)
+        for (int i = 0; i < story.needs.Length; i++)
         {
             for(int j = 0; j < furnitures.Length; j++)
             {
@@ -104,7 +104,7 @@ public class NPCScriptable : ScriptableObject
                     }
                     Array.Resize(ref furnitures, furnitures.Length - 1);
                 }
-                if (furnitures[j].destinationType == furnitureForNeeds[needs[i].type])
+                if (furnitures[j].destinationType == furnitureForNeeds[story.needs[i].type])
                 {
                     FurnitureData temp = furnitures[apropriatePos];
                     furnitures[apropriatePos] = furnitures[j];
@@ -120,9 +120,9 @@ public class NPCScriptable : ScriptableObject
     {
         //calc happines
         float happines = 0;
-        for (int i = 0; i < needs.Length; i++)
+        for (int i = 0; i < story.needs.Length; i++)
         {
-            happines += needs[i].toFill / needs[i].value;
+            happines += story.needs[i].toFill / story.needs[i].value;
         }
         happines*=20;
         avarageHappines = (avarageHappines * numberOfVisits + happines) / (numberOfVisits + 1);
@@ -132,9 +132,9 @@ public class NPCScriptable : ScriptableObject
     public async Task UseFurniture(float quality, RoomType furnitureType)
     {
         int needsId = 0;
-        for (int i = 0; i < needs.Length; i++)
+        for (int i = 0; i < story.needs.Length; i++)
         {
-            if (furnitureForNeeds[needs[i].type] == furnitureType)
+            if (furnitureForNeeds[story.needs[i].type] == furnitureType)
             {
                 needsId = i;
                 break;
@@ -142,10 +142,10 @@ public class NPCScriptable : ScriptableObject
         }
 
         float timeOnFuriture = furnitures[0].usageTime;
-        while (freeTimeLeft > 0 && needs[needsId].toFill > 0 && timeOnFuriture > 0)
+        while (freeTimeLeft > 0 && story.needs[needsId].toFill > 0 && timeOnFuriture > 0)
         {
             await Task.Delay(500);
-            needs[needsId].toFill -= quality;
+            story.needs[needsId].toFill -= quality;
             freeTimeLeft -= 0.5f;
             timeOnFuriture -= 0.5f;
             Debug.Log("Get needs points");
@@ -181,6 +181,6 @@ public class NPCScriptable : ScriptableObject
 
     public void GetValues(out Needs[] needs)
     {
-        needs = this.needs;
+        needs = story.needs;
     }
 }
