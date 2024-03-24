@@ -229,7 +229,7 @@ MonoBehaviour:
   newName: Drawing Table
   buildingCost: 100
   level: 1
-  quality: 5
+  quality: 1
   destinationType: 0
   usersLocations:
   - {fileID: 7374634829454162116}
@@ -237,7 +237,7 @@ MonoBehaviour:
   usagePrice: 0
   maintenanceCost: 0
   usageTime: 10
-  animationForNPC: {fileID: 0}
+  animationForNPC: {fileID: 9100000, guid: 8898d95db8d364844b8dca00bccd0089, type: 2}
   furnitureAnimator: {fileID: 5653710922645568620}
   grid: {fileID: 0}
   roomCenter: {x: 0, y: 0}

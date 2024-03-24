@@ -190,7 +190,7 @@ MonoBehaviour:
   newName: ArtStation
   buildingCost: 300
   level: 3
-  quality: 15
+  quality: 3
   destinationType: 0
   usersLocations:
   - {fileID: 5700018948312152480}

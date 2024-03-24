@@ -19,7 +19,8 @@ MonoBehaviour:
     - completed: 0
       type: 0
       numberOfPasses: 1
-    unlockedFurnitures: []
+    unlockedFurnitures:
+    - {fileID: 3567839843765022413, guid: 071a5fc7744e1a3428177c6c7d793617, type: 3}
   unlockedStory: []
   needs:
   - type: 0
