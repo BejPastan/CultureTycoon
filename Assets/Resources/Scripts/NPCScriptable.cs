@@ -19,7 +19,6 @@ public class NPCScriptable : ScriptableObject
     public float avarageHappines;
     public int numberOfVisits;
 
-
     private FurnitureData[] furnitures;
     
     public FurnitureData DestinationFurniture()
@@ -56,7 +55,9 @@ public class NPCScriptable : ScriptableObject
                 this.slot = slotId;
                 return slot;
             }
-        MoveToExit();
+        CalcHappines();
+        CheckStory();
+        Debug.Log("Move to exit");
         return exit;
     }
 
@@ -116,7 +117,7 @@ public class NPCScriptable : ScriptableObject
         }
     }
 
-    public void MoveToExit()
+    public void CalcHappines()
     {
         //calc happines
         float happines = 0;
@@ -127,6 +128,11 @@ public class NPCScriptable : ScriptableObject
         happines*=20;
         avarageHappines = (avarageHappines * numberOfVisits + happines) / (numberOfVisits + 1);
         numberOfVisits++;
+    }
+
+    private void CheckStory()
+    {
+        story.CheckCompletion();
     }
 
     public async Task UseFurniture(float quality, RoomType furnitureType)
@@ -151,7 +157,7 @@ public class NPCScriptable : ScriptableObject
             Debug.Log("Get needs points");
             if (freeTimeLeft <= 0)
             {
-                MoveToExit();
+                CalcHappines();
                 return;
             }
         }

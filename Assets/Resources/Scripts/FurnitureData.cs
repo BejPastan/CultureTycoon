@@ -36,6 +36,8 @@ public class FurnitureData : MonoBehaviour
     private bool building = true;
     public bool canBuild;
 
+    private bool used = false;
+
     private void Start()
     {
         occupaiedLocationsID = new bool[usersLocations.Length];
@@ -211,7 +213,7 @@ public class FurnitureData : MonoBehaviour
     /// </summary>
     private void OnMouseDown()
     {
-        if(!building)
+        if(!building && !used)
         {
             FindObjectOfType<FurniturePlacer>().StartPlacing(this);
         }
@@ -243,6 +245,7 @@ public class FurnitureData : MonoBehaviour
 
     public void UseFurniture(out AnimatorController animator, out RoomType furnitureType,out float quality)
     {
+        used = true;
         furnitureAnimator.SetBool("painting", true);
         animator = animationForNPC;
         furnitureType = destinationType;
@@ -251,6 +254,7 @@ public class FurnitureData : MonoBehaviour
 
     public void LeaveFurniture(int slot)
     {
+        used = false;
         furnitureAnimator.SetBool("painting", false);
         occupaiedLocationsID[slot] = false;
     }

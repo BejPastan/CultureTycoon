@@ -18,7 +18,7 @@ MonoBehaviour:
     conditions:
     - completed: 0
       type: 0
-      numberOfPasses: 2
+      numberOfPasses: 1
     unlockedFurnitures: []
   unlockedStory: []
   needs:

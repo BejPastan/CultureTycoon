@@ -8,6 +8,7 @@ public class NPC : MonoBehaviour
 {
     public NPCScriptable scriptable;
     public NavMeshAgent agent;
+    private Vector3 destination;
 
     bool onUI;
 
@@ -22,13 +23,18 @@ public class NPC : MonoBehaviour
     {
         if (scriptable.DestinationFurniture() != null)
         {
+            
             //here there is no more furniture to use
         }
-        agent.SetDestination(scriptable.GetDestination());
+        destination = scriptable.GetDestination();
+        Debug.Log("Move to " + destination);
+        agent.SetDestination(destination);
+        agent.isStopped = false;
     }
 
     private async Task UseFurniture()
     {
+        transform.position = destination;
         //here must get animation
         scriptable.DestinationFurniture().UseFurniture(out AnimatorController animatior, out RoomType furnitureType, out float quality);
         //get animator controller from NPC transform
@@ -72,8 +78,9 @@ public class NPC : MonoBehaviour
         if (other.GetComponent<FurnitureData>() != null)
             if (other.GetComponent<FurnitureData>() == scriptable.DestinationFurniture())
             {
+
                 //stop moving
-                agent.SetDestination(transform.position);
+                agent.Stop();
                 UseFurniture();
             }
     }

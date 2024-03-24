@@ -10,6 +10,8 @@ public class NPCui : MonoBehaviour
     [SerializeField] private TextMeshProUGUI name;
     [SerializeField] private TextMeshProUGUI age;
     [SerializeField] private NeedsUI[] needsUI;
+    [SerializeField] private RectTransform storyUI;
+    [SerializeField] private GameObject storyPref;
     private NPC npc;
     private NPCScriptable npcScriptable;
 
@@ -31,6 +33,7 @@ public class NPCui : MonoBehaviour
         this.npc = npc;
         npcScriptable = npc.scriptable;
         ShowBasicInfo();
+        ShowStory();
         StartCoroutine(UpdateValues());
     }
 
@@ -51,6 +54,34 @@ public class NPCui : MonoBehaviour
                 needsUI[i].fillText.text = (npcScriptable.story.needs[i].value - npcScriptable.story.needs[i].toFill) + " / " + npcScriptable.story.needs[i].value;
             }
             yield return new WaitForSeconds(0.25f);
+        }
+    }
+
+    private void ShowStory()
+    {
+        StoryFragment[] completedStory = npcScriptable.story.GetCompletedStory();
+
+        for (int i = 0; i < completedStory.Length; i++)
+        {
+            RectTransform story = Instantiate(storyPref, storyUI).GetComponent<RectTransform>();
+            Vector2 pos = new Vector2(0, -i * 120 +10);
+            story.anchoredPosition = pos;
+            story.GetComponentInChildren<TextMeshProUGUI>().text = completedStory[i].story;
+        }
+        storyUI.sizeDelta = new Vector2(0, completedStory.Length * 120 +10);
+        storyUI.anchoredPosition = new Vector2(0, 0);
+    }
+
+    private void OnMouseOver()
+    {
+        //handle scrolling
+        if(Input.mouseScrollDelta.y > 0)
+        {
+            storyUI.position += new Vector3(0, 10, 0);
+        }
+        else if(Input.mouseScrollDelta.y < 0)
+        {
+            storyUI.position += new Vector3(0, -10, 0);
         }
     }
 

@@ -9,22 +9,10 @@ public class NPCStory : ScriptableObject
     [SerializeField] List<StoryFragment> storyToUnlocked;
     [SerializeField] public List<StoryFragment> unlockedStory;
     [SerializeField] public Needs[] needs;
-    //needs getter
-    public Needs[] GetNeeds()
-    {
-        return needs;
-    }
 
     public StoryFragment[] GetCompletedStory()
     {
-        StoryFragment[] completedStory = new StoryFragment[0];
-        for(int i = 0; i<storyToUnlocked.Count; i++)
-        {
-            Array.Resize(ref completedStory, completedStory.Length + 1);
-            completedStory[completedStory.Length - 1] = storyToUnlocked[i];
-        }
-
-        return completedStory;
+        return unlockedStory.ToArray();
     }
 
     public void CheckCompletion()
@@ -51,28 +39,25 @@ public struct StoryFragment
 
     public bool CheckCompletion(Needs[] needs)
     {
+        bool completed = true;
         foreach(StoryCondition condition in conditions)
         {
             foreach(Needs need in needs)
             {
                 if(need.type == condition.type)
                 {
+                    Debug.Log("Check " + need.type + " " + need.toFill);
                     if(need.toFill <=0)
                     {
-                        condition.PassComplete();
+                        if(!condition.PassComplete())
+                        {
+                            completed = false;
+                        }
                     }
                 }
             }
         }
-
-        foreach(StoryCondition condition in conditions)
-        {
-            if(!condition.completed)
-            {
-                return false;
-            }
-        }
-        return true;
+        return completed;
     }
 }
 
@@ -84,12 +69,14 @@ public struct StoryCondition
     [SerializeField] public int numberOfPasses;
     [SerializeField] public static int neededPasses;
 
-    public void PassComplete()
+    public bool PassComplete()
     {
         numberOfPasses++;
         if(numberOfPasses >= neededPasses)
         {
             completed = true;
+            
         }
+        return completed;
     }
 }
