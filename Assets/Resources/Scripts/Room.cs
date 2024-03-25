@@ -9,6 +9,11 @@ public class Room : MonoBehaviour
     [SerializeField] RoomUI uiController;
     [SerializeField] FurnitureData[] furnitureData = new FurnitureData[0];
 
+    private void OnDestroy()
+    {
+        roomBlueprint.RemoveAll();
+    }
+
     /// <summary>
     /// Initialization of room
     /// </summary>

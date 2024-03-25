@@ -253,6 +253,7 @@ public class RoomBuilder : MonoBehaviour
         grid.ToggleGrid();
         isBuilding = false;
         uiControl.EndEditingRoom();
+        //here i need to change state of grid to free
         Destroy(room.gameObject);
     }
 

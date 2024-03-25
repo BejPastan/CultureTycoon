@@ -35,6 +35,7 @@ public class NPC : MonoBehaviour
     private async Task UseFurniture()
     {
         transform.position = destination;
+        transform.LookAt(scriptable.DestinationFurniture().transform.position);
         //here must get animation
         scriptable.DestinationFurniture().UseFurniture(out AnimatorController animatior, out RoomType furnitureType, out float quality);
         //get animator controller from NPC transform

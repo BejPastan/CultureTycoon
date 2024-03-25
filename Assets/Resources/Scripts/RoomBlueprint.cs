@@ -35,6 +35,7 @@ public class RoomBlueprint : ScriptableObject
         for(int roomIndex = 1; roomIndex < parts.Length; roomIndex++)
         {
             ClearPart(ref parts[roomIndex]);
+            Debug.Log("Part " + roomIndex + " cleared");
         }
         SetWalls(ref parts[0], 0);
     }
@@ -387,12 +388,11 @@ public class RoomBlueprint : ScriptableObject
             for (int z = 0; z < size.y; z++)
             {
                 gridId = part.GetGridId(new Vector2Int(x, z));
-                part.RemoveElement(new Vector2Int(x,z));
                 if(part.GetCellFromId(x, z) != null)
                 {
                     grid.ChangeGridState(GridState.free, gridId);
                 }
-                
+                part.RemoveElement(new Vector2Int(x, z));
             }
         }
     }
