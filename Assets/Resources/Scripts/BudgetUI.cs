@@ -124,9 +124,17 @@ public class BudgetUI : MonoBehaviour
         transformToTop.localPosition = new Vector3(0, 0, 0);
     }
 
-    private void Update()
+    //private void Update()
+    //{
+    //    if(Input.mouseScrollDelta.y != 0)
+    //    {
+    //        Scroll();
+    //    }
+    //}
+
+    private void OnMouseOver()
     {
-        if(Input.mouseScrollDelta.y != 0)
+        if (Input.mouseScrollDelta.y != 0)
         {
             Scroll();
         }

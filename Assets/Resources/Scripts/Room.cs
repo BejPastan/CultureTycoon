@@ -51,6 +51,7 @@ public class Room : MonoBehaviour
         actualState.Cancel();
         roomBlueprint = actualState;
         EnableFurnitureCollider();
+        uiController.EndEditing();
     }
 
     /// <summary>

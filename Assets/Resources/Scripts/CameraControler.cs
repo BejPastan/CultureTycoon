@@ -1,12 +1,18 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
+using System;
 
 public class CameraControler : MonoBehaviour
 {
+    public static CameraControler instance;
+    private void Awake()
+    {
+        instance = this;
+    }
+
+    [SerializeField] Transform cameraObject;
+    [SerializeField][Range(1, 15)] float mouseSensitivity = 1f;
     [SerializeField] float speed = 10f;
     [SerializeField] float rotationSpeed = 50f;
-    [SerializeField] Transform cameraObject;
     [SerializeField] KeyCode leftRotate;
     [SerializeField] KeyCode rightRotate;
     [SerializeField] KeyCode upRotate;
@@ -17,7 +23,11 @@ public class CameraControler : MonoBehaviour
     [SerializeField] bool invertMouseY = false;
     int invert = -1;
     int invertMouse = -1;
-    [SerializeField][Range(1, 15)]  float mouseSensitivity = 1f;
+
+    [SerializeField] KeyCode zoomOut;
+    [SerializeField] KeyCode zoomIn;
+    [SerializeField] float zoomSpeed = 10f;
+    [SerializeField] float zoomMin = 1f;
 
     private void Start()
     {
@@ -42,7 +52,7 @@ public class CameraControler : MonoBehaviour
         Vector2 rotate = Vector2.zero;
 
         //if mouse clicked get input from mouse
-        if (Input.GetMouseButton(0))
+        if (Input.GetMouseButton(1))
         {
             rotate.x = Input.GetAxis("Mouse X") * mouseSensitivity;
             rotate.y = Input.GetAxis("Mouse Y") * invertMouse * mouseSensitivity;
@@ -50,25 +60,34 @@ public class CameraControler : MonoBehaviour
 
         if (Input.GetKey(leftRotate))
         {
-            Debug.Log("Left");
             rotate.x += -1;
         }
         if (Input.GetKey(rightRotate))
         {
-            Debug.Log("right");
             rotate.x += 1;
         }
         if (Input.GetKey(upRotate))
         {
-            Debug.Log("up");
             rotate.y += 1 * invert;
         }
         if (Input.GetKey(downRotate))
         {
-            Debug.Log("down");
             rotate.y += -1 * invert;
         }
         RotateCamera(rotate);
+
+        float zoom = 0;
+        zoom = Input.mouseScrollDelta.y;
+        if(Input.GetKey(zoomOut))
+        {
+            zoom += 1;
+        }
+        if (Input.GetKey(zoomIn))
+        {
+            zoom -= 1;
+        }
+        if(zoom != 0)
+        Zoom(zoom);
     }
 
     private void RotateCamera(Vector2 angel)
@@ -83,12 +102,37 @@ public class CameraControler : MonoBehaviour
         }
         xAngel = Mathf.Clamp(xAngel + angel.y * rotationSpeed * Time.unscaledDeltaTime, xMinAngel, xMaxAngel);
         cameraObject.localEulerAngles = new Vector3(xAngel, 0, 0);
+        //call event
+        //get rotation of camera in angles
+        Vector3 rotation = new Vector3(xAngel, transform.eulerAngles.y, 0);
+        onCameraRotation?.Invoke(rotation);
     }
+
+
+    public delegate void CameraRotation(Vector3 rotation);
+    public static event CameraRotation onCameraRotation;
+
+
 
     private void MoveCamera(Vector2 distance)
     {
         transform.position += (transform.forward * distance.y + transform.right * distance.x)*speed * Time.unscaledDeltaTime;
     }
 
-
+    private void Zoom(float distance)
+    {
+        Vector3 dist = (distance * zoomSpeed * Time.unscaledDeltaTime * cameraObject.forward);
+        //check if the camera is not going to be closer than the limit
+        if ((transform.position +dist).y < zoomMin)
+        {
+            Debug.Log("Camera is too close");
+            float y = zoomMin - transform.position.y;
+            float proportion  = y / dist.y;
+            Debug.Log("dist: " + dist);
+            Debug.Log("proportion: " + proportion);
+            Debug.Log("dist * proportion: " + dist * proportion);
+            distance *= proportion;
+        }
+        transform.position += cameraObject.forward * distance * zoomSpeed * Time.unscaledDeltaTime;
+    }
 }

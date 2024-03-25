@@ -6,6 +6,22 @@ public class RoomUI : MonoBehaviour
     [SerializeField]
     Transform editButton;
 
+
+    private void Start()
+    {
+        CameraControler.onCameraRotation += RotateToCamera;
+    }
+
+    private void OnDestroy()
+    {
+        CameraControler.onCameraRotation -= RotateToCamera;
+    }
+
+    private void RotateToCamera(Vector3 rotation)
+    {
+        transform.rotation = Quaternion.Euler(rotation.x, rotation.y, 0);
+    }
+
     /// <summary>
     /// Change room UI to editing mode
     /// </summary>
