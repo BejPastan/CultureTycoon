@@ -35,7 +35,7 @@ public class RoomBlueprint : ScriptableObject
         for(int roomIndex = 1; roomIndex < parts.Length; roomIndex++)
         {
             ClearPart(ref parts[roomIndex]);
-            Debug.Log("Part " + roomIndex + " cleared");
+            //Debug.Log("Part " + roomIndex + " cleared");
         }
         SetWalls(ref parts[0], 0);
     }
@@ -47,7 +47,7 @@ public class RoomBlueprint : ScriptableObject
     {
         Array.Resize(ref parts, parts.Length + 1);
         parts[parts.Length - 1] = new RoomPart(ref grid, ref roomObj);
-        Debug.Log("New part created");
+        //Debug.Log("New part created");
     }
 
     /// <summary>
@@ -380,7 +380,7 @@ public class RoomBlueprint : ScriptableObject
     /// <param name="part"></param>
     private void ClearPart(ref RoomPart part)
     {
-        Debug.Log("Clearing part");
+        //Debug.Log("Clearing part");
         Vector2Int size = part.GetSize();
         Vector2Int gridId;
         for (int x = 0; x < size.x; x++)

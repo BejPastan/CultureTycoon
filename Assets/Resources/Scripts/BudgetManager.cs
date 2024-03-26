@@ -22,7 +22,7 @@ public class BudgetManager : MonoBehaviour
 
     public void NewExpanse(string name, int cost, int amount)
     {
-        Debug.Log("New expanse: " + name + " " + cost + " " + amount);
+        //Debug.Log("New expanse: " + name + " " + cost + " " + amount);
         normalMoney -= cost * amount;
         budgetUI.UpdateMoney(normalMoney);
         rankingDataHolder.SetNewExpense(name, cost, amount);

@@ -109,7 +109,7 @@ public class Grid : MonoBehaviour
     [ExecuteAlways]
     private void DisableGrid()
     {
-        Debug.Log("Disable");
+        //Debug.Log("Disable");
         for (int i = 0; i < width; i++)
         {
             for (int j = 0; j < depth; j++)
@@ -129,7 +129,7 @@ public class Grid : MonoBehaviour
                     }
                 }catch
                 {
-                    Debug.Log(i + " " + j);
+                    //Debug.Log(i + " " + j);
                 }
                    
             }

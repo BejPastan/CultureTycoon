@@ -18,9 +18,24 @@ MonoBehaviour:
     conditions:
     - completed: 0
       type: 0
-      numberOfPasses: 1
+      numberOfPasses: 0
+      neededPasses: 1
     unlockedFurnitures:
     - {fileID: 3567839843765022413, guid: 071a5fc7744e1a3428177c6c7d793617, type: 3}
+  - story: historia 1
+    conditions:
+    - completed: 0
+      type: 0
+      numberOfPasses: 0
+      neededPasses: 2
+    unlockedFurnitures: []
+  - story: Historia 3
+    conditions:
+    - completed: 0
+      type: 0
+      numberOfPasses: 0
+      neededPasses: 3
+    unlockedFurnitures: []
   unlockedStory: []
   needs:
   - type: 0

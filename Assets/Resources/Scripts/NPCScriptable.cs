@@ -154,7 +154,7 @@ public class NPCScriptable : ScriptableObject
             story.needs[needsId].toFill -= quality;
             freeTimeLeft -= 0.5f;
             timeOnFuriture -= 0.5f;
-            Debug.Log("Get needs points");
+            //Debug.Log("Get needs points");
             if (freeTimeLeft <= 0)
             {
                 CalcHappines();

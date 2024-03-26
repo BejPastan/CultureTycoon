@@ -43,7 +43,7 @@ public class NPCStory : ScriptableObject
 }
 
 [System.Serializable]
-public struct StoryFragment
+public partial class StoryFragment
 {
     //public bool completed;
     public string story;
@@ -52,21 +52,21 @@ public struct StoryFragment
 
     public bool CheckCompletion(Needs[] needs, out GameObject[] unlocked)
     {
-        bool completed = true;
-        unlocked = unlockedFurnitures;
+        Debug.Log($"CheckCompletion for {story}");
+        bool completed = false;
+        unlocked = null;
         foreach(StoryCondition condition in conditions)
         {
             foreach(Needs need in needs)
             {
                 if(need.type == condition.type)
                 {
-                    Debug.Log("Check " + need.type + " " + need.toFill);
                     if(need.toFill <=0)
                     {
-                        if(!condition.PassComplete())
+                        if(condition.PassComplete())
                         {
-                            completed = false;
-                            unlocked = null;
+                            completed = true;
+                            unlocked = unlockedFurnitures;
                         }
                     }
                 }
@@ -77,20 +77,23 @@ public struct StoryFragment
 }
 
 [System.Serializable]
-public struct StoryCondition
+public partial class StoryCondition
 {
-    [SerializeField] public bool completed;
+    [SerializeField] bool completed;
     [SerializeField] public NeedsType type;
-    [SerializeField] public int numberOfPasses;
-    [SerializeField] public static int neededPasses;
+    [SerializeField] int numberOfPasses;
+    [SerializeField] int neededPasses;
 
     public bool PassComplete()
     {
+        Debug.Log($"PassComplete check");
+        //to many times check if pass after one turn
         numberOfPasses++;
+        Debug.Log($"check: {numberOfPasses}");
         if(numberOfPasses >= neededPasses)
         {
+            Debug.Log($"PassComplete needed Passes: {neededPasses} Number of Passes:{numberOfPasses}");
             completed = true;
-            
         }
         return completed;
     }

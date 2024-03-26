@@ -48,7 +48,7 @@ public class RoomBuilder : MonoBehaviour
                 if (Input.GetMouseButtonDown(0))
                 {
                     Transform wall = GetObjectUnderMouse();
-                    Debug.Log(wall);
+                    //Debug.Log(wall);
                     if (wall != null && wall.CompareTag("Wall"))
                     {
                         roomBP.SetDoors(GetMousePosition(), wall.rotation);
@@ -236,7 +236,7 @@ public class RoomBuilder : MonoBehaviour
     /// <returns></returns>
     private Transform GetObjectUnderMouse()
     {
-        Debug.Log("Getting object under mouse");
+        //Debug.Log("Getting object under mouse");
         Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
         RaycastHit hit;
         if (Physics.Raycast(ray, out hit))

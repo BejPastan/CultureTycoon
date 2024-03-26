@@ -46,7 +46,7 @@ public class RoomUI : MonoBehaviour
     public void SetEditButton(RoomBuilder builder, Room room)
     {
         EndEditing();
-        Debug.Log(editButton.GetComponent<Button>());
+        //Debug.Log(editButton.GetComponent<Button>());
         editButton.GetComponent<Button>().onClick.AddListener( delegate { builder.StartEditing(room); } );
         StartEditing();
     }

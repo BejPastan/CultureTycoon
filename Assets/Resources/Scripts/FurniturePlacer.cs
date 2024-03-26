@@ -21,12 +21,14 @@ public class FurniturePlacer : MonoBehaviour
     /// <param name="objectPref"></param>
     public void StartPlacing(GameObject objectPref)
     {
-        Debug.Log("StartPlacing");
+        //Debug.Log("StartPlacing");
         objectToPlace = Instantiate(objectPref).GetComponent<FurnitureData>();
         objectToPlace.StartMoving(defaultMaterial);
         isPlacing = true;
         grid.ToggleGrid();
         relocation = false;
+
+        FindObjectOfType<CameraControler>().DisableZoom();
     }
 
     /// <summary>
@@ -39,12 +41,14 @@ public class FurniturePlacer : MonoBehaviour
         {
             return;
         }
-        Debug.Log("StartPlacing");
+        //Debug.Log("StartPlacing");
         objectToPlace = furniture;
         objectToPlace.StartMoving(defaultMaterial);
         isPlacing = true;
         grid.ToggleGrid();
         relocation = true;
+
+        FindObjectOfType<CameraControler>().DisableZoom();
     }
 
     /// <summary>
@@ -56,7 +60,7 @@ public class FurniturePlacer : MonoBehaviour
         {
             if (!budgetManager.canBuild(objectToPlace.buildingCost))
             {
-                Debug.Log("Not enough money");//in future change to make prompt on UI
+                //Debug.Log("Not enough money");//in future change to make prompt on UI
                 return;
             }
             budgetManager.NewExpanse(objectToPlace.name, objectToPlace.buildingCost, 1);
@@ -66,6 +70,7 @@ public class FurniturePlacer : MonoBehaviour
         objectToPlace.Place();
         objectToPlace = null;
         relocation = false;
+        FindObjectOfType<CameraControler>().EnableZoom();
     }
 
     /// <summary>
@@ -77,6 +82,7 @@ public class FurniturePlacer : MonoBehaviour
         isPlacing = false;
         grid.ToggleGrid();
         relocation = false;
+        FindObjectOfType<CameraControler>().EnableZoom();
     }
 
     /// <summary>
@@ -92,6 +98,8 @@ public class FurniturePlacer : MonoBehaviour
             budgetManager.NewExpanse(objectToPlace.name, Mathf.FloorToInt(objectToPlace.buildingCost * 0.25f), -1);
         }
         relocation = false;
+        
+        FindObjectOfType<CameraControler>().EnableZoom();
     }
 
 

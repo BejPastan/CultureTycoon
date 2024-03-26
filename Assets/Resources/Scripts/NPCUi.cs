@@ -64,7 +64,7 @@ public class NPCui : MonoBehaviour
         for (int i = 0; i < completedStory.Length; i++)
         {
             RectTransform story = Instantiate(storyPref, storyUI).GetComponent<RectTransform>();
-            Vector2 pos = new Vector2(0, -i * 120 +10);
+            Vector2 pos = new Vector2(0, -i * 120 -20);
             story.anchoredPosition = pos;
             story.GetComponentInChildren<TextMeshProUGUI>().text = completedStory[i].story;
         }

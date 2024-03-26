@@ -29,6 +29,8 @@ public class CameraControler : MonoBehaviour
     [SerializeField] float zoomSpeed = 10f;
     [SerializeField] float zoomMin = 1f;
 
+    bool canZoom = true;
+
     private void Start()
     {
         if (invertY)
@@ -76,18 +78,22 @@ public class CameraControler : MonoBehaviour
         }
         RotateCamera(rotate);
 
-        float zoom = 0;
-        zoom = Input.mouseScrollDelta.y;
-        if(Input.GetKey(zoomOut))
+        //if is not over UI
+        if (!UnityEngine.EventSystems.EventSystem.current.IsPointerOverGameObject() && (canZoom || Input.GetKey(KeyCode.LeftAlt)))
         {
-            zoom += 1;
+            float zoom = 0;
+            zoom = Input.mouseScrollDelta.y;
+            if (Input.GetKey(zoomOut))
+            {
+                zoom += 1;
+            }
+            if (Input.GetKey(zoomIn))
+            {
+                zoom -= 1;
+            }
+            if (zoom != 0)
+                Zoom(zoom);
         }
-        if (Input.GetKey(zoomIn))
-        {
-            zoom -= 1;
-        }
-        if(zoom != 0)
-        Zoom(zoom);
     }
 
     private void RotateCamera(Vector2 angel)
@@ -134,5 +140,15 @@ public class CameraControler : MonoBehaviour
             distance *= proportion;
         }
         transform.position += cameraObject.forward * distance * zoomSpeed * Time.unscaledDeltaTime;
+    }
+
+    public void EnableZoom()
+    {
+        canZoom = true;
+    }
+
+    public void DisableZoom()
+    {
+        canZoom = false;
     }
 }

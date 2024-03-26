@@ -47,7 +47,7 @@ public class EquipmentMenuUI : MonoBehaviour
             Vector3 pos = new Vector3(0, i * 40, 0);
             button.GetComponent<RectTransform>().anchoredPosition = pos;
             //add onclick event
-            Debug.Log("i = " + i);
+            //Debug.Log("i = " + i);
             GameObject furnitureToPlace = furnitures[i];
             button.GetComponent<Button>().onClick.AddListener(delegate { furniturePlacer.StartPlacing(furnitureToPlace); });
             button.GetComponentInChildren<TextMeshProUGUI>().text = furnitures[i].name;
