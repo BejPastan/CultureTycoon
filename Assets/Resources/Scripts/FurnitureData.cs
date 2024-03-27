@@ -9,15 +9,15 @@ using UnityEngine;
 
 public class FurnitureData : MonoBehaviour
 {
-    [SerializeField] string newName;
+    [SerializeField] public string newName;
     public int buildingCost;
     [SerializeField] int level;
-    [SerializeField] float quality;
+    [SerializeField] public float quality;
     [SerializeField] public RoomType destinationType;
     [SerializeField] Transform[] usersLocations;
     private bool[] occupaiedLocationsID;
     [SerializeField] int usagePrice;//actual not active
-    [SerializeField] int maintenanceCost;//actual not active
+    [SerializeField] public int maintenanceCost;//actual not active
     [SerializeField] public float usageTime;
     [SerializeField] AnimatorController animationForNPC;
     [SerializeField] Animator furnitureAnimator;

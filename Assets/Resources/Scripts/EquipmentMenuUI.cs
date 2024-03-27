@@ -44,7 +44,7 @@ public class EquipmentMenuUI : MonoBehaviour
         for(int i = 0; i<furnitures.Count; i++)
         {
             GameObject button = Instantiate(buttonPref, transform);
-            Vector3 pos = new Vector3(0, i * 40, 0);
+            Vector3 pos = new Vector3(0, i * 100, 0);
             button.GetComponent<RectTransform>().anchoredPosition = pos;
             //add onclick event
             //Debug.Log("i = " + i);
@@ -52,6 +52,14 @@ public class EquipmentMenuUI : MonoBehaviour
             button.GetComponent<Button>().onClick.AddListener(delegate { furniturePlacer.StartPlacing(furnitureToPlace); });
             button.GetComponentInChildren<TextMeshProUGUI>().text = furnitures[i].name;
             //in future add more info from furniture data
+            button.transform.Find("Name").GetComponent<TextMeshProUGUI>().text = furnitures[i].GetComponent<FurnitureData>().newName;
+            //set price
+            button.transform.Find("Price").GetComponent<TextMeshProUGUI>().text = furnitures[i].GetComponent<FurnitureData>().buildingCost.ToString();
+            //set quality
+            button.transform.Find("Quality").GetComponent<TextMeshProUGUI>().text = furnitures[i].GetComponent<FurnitureData>().quality.ToString();
+            //set maintenance cost
+            button.transform.Find("Cost").GetComponent<TextMeshProUGUI>().text = furnitures[i].GetComponent<FurnitureData>().maintenanceCost.ToString();
+        
         }
     }
 }

@@ -10,9 +10,12 @@ public class CameraControler : MonoBehaviour
     }
 
     [SerializeField] Transform cameraObject;
+    [Header("SEttings")]
     [SerializeField][Range(1, 15)] float mouseSensitivity = 1f;
     [SerializeField] float speed = 10f;
     [SerializeField] float rotationSpeed = 50f;
+
+    [Header("Rotation")]
     [SerializeField] KeyCode leftRotate;
     [SerializeField] KeyCode rightRotate;
     [SerializeField] KeyCode upRotate;
@@ -24,10 +27,12 @@ public class CameraControler : MonoBehaviour
     int invert = -1;
     int invertMouse = -1;
 
+    [Header("Zoom")]
     [SerializeField] KeyCode zoomOut;
     [SerializeField] KeyCode zoomIn;
     [SerializeField] float zoomSpeed = 10f;
     [SerializeField] float zoomMin = 1f;
+    [SerializeField] float zoomMax = 10f;
 
     bool canZoom = true;
 
@@ -118,7 +123,10 @@ public class CameraControler : MonoBehaviour
     public delegate void CameraRotation(Vector3 rotation);
     public static event CameraRotation onCameraRotation;
 
-
+    private void OnTriggerEnter(Collider other)
+    {
+        
+    }
 
     private void MoveCamera(Vector2 distance)
     {
@@ -129,7 +137,7 @@ public class CameraControler : MonoBehaviour
     {
         Vector3 dist = (distance * zoomSpeed * Time.unscaledDeltaTime * cameraObject.forward);
         //check if the camera is not going to be closer than the limit
-        if ((transform.position +dist).y < zoomMin)
+        if ((transform.position +dist).y < zoomMin ||(transform.position+dist).y > zoomMax)
         {
             Debug.Log("Camera is too close");
             float y = zoomMin - transform.position.y;
