@@ -76,6 +76,7 @@ public class BudgetUI : MonoBehaviour
             Array.Resize(ref rankingParts, rankingParts.Length + 1);
             rankingParts[i] = rankingPart.transform;
         }
+        BringToFront(competitorsUI);
     }
 
     private void BuildExpensesSheet(ExpenseData[] expenses)
@@ -122,43 +123,38 @@ public class BudgetUI : MonoBehaviour
         }
         transformToTop.SetParent(onTopParent);
         transformToTop.localPosition = new Vector3(0, 0, 0);
+        onTopParent.GetComponent<RectTransform>().sizeDelta = transformToTop.GetComponent<RectTransform>().sizeDelta;
+        onTopParent.GetComponent<RectTransform>().anchoredPosition = new Vector2(0, 0);
     }
 
-    //private void Update()
+
+    //private void OnMouseOver()
     //{
-    //    if(Input.mouseScrollDelta.y != 0)
+    //    if (Input.mouseScrollDelta.y != 0)
     //    {
-    //        Scroll();
+    //        //Scroll();
     //    }
     //}
 
-    private void OnMouseOver()
-    {
-        if (Input.mouseScrollDelta.y != 0)
-        {
-            Scroll();
-        }
-    }
-
-    private void Scroll()
-    {
-        RectTransform child = onTopParent.GetChild(0).GetComponent<RectTransform>();
-        //nie myślę już, ogarnę to jutro
-        if(Input.mouseScrollDelta.y > 0)//scroll up
-        {
-            if(child.anchoredPosition.y < 0)
-            {
-                child.transform.localPosition += new Vector3(0, 10, 0);
-                Debug.Log("scroll up " + child.anchoredPosition);
-            }
-        }
-        else if (Input.mouseScrollDelta.y < 0)//scroll down
-        {
-            if(child.anchoredPosition.y + child.sizeDelta.y - onTopParent.GetComponent<RectTransform>().sizeDelta.y > 0)
-            {
-                child.transform.localPosition += new Vector3(0, -10, 0);
-                Debug.Log("scroll down " + child.anchoredPosition);
-            }
-        }
-    }
+    //private void Scroll()
+    //{
+    //    RectTransform child = onTopParent.GetChild(0).GetComponent<RectTransform>();
+    //    //nie myślę już, ogarnę to jutro
+    //    if(Input.mouseScrollDelta.y > 0)//scroll up
+    //    {
+    //        if(child.anchoredPosition.y < 0)
+    //        {
+    //            child.transform.localPosition += new Vector3(0, 10, 0);
+    //            Debug.Log("scroll up " + child.anchoredPosition);
+    //        }
+    //    }
+    //    else if (Input.mouseScrollDelta.y < 0)//scroll down
+    //    {
+    //        if(child.anchoredPosition.y + child.sizeDelta.y - onTopParent.GetComponent<RectTransform>().sizeDelta.y > 0)
+    //        {
+    //            child.transform.localPosition += new Vector3(0, -10, 0);
+    //            Debug.Log("scroll down " + child.anchoredPosition);
+    //        }
+    //    }
+    //}
 }

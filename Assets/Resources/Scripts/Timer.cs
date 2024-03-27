@@ -25,6 +25,7 @@ public class Timer : MonoBehaviour
             if (day > 30)
             {
                 day = 1;
+                EndMonth();
                 month++;
             }
             if((int)month > 11)
@@ -43,6 +44,11 @@ public class Timer : MonoBehaviour
         budgetManager.YearEnd();
         npcManager.EndSpawning();
         Time.timeScale = 0;
+    }
+
+    private void EndMonth()
+    {
+        budgetManager.EndMonth(month);
     }
 
     public void StartNewYear()

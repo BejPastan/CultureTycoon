@@ -13,11 +13,19 @@ public class BudgetManager : MonoBehaviour
     RankingDataHolder rankingDataHolder;
     [SerializeField] Competitor player;
 
+    int monthlyCost=0;
+
     [SerializeField] int moneyToDivide;
 
     private void Start()
     {
         budgetUI.UpdateMoney(normalMoney);
+    }
+
+    public void ChangeMaitenanceCost(int cost)
+    {
+        Debug.Log("ChangeMaitenanceCost: " + cost);
+        monthlyCost += cost;
     }
 
     public void NewExpanse(string name, int cost, int amount)
@@ -57,6 +65,12 @@ public class BudgetManager : MonoBehaviour
         builderUI.DisableUI();
     }
 
+    public void EndMonth(month month)
+    {
+        Debug.Log("EndMonth");
+        NewExpanse(month.ToString() + " equipment maitenance", monthlyCost, 1);
+        normalMoney -= monthlyCost;
+    }
 
     public void AssignMoney(ref Competitor[] competitors)
     {

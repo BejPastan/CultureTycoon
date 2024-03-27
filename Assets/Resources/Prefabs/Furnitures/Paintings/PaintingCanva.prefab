@@ -216,7 +216,7 @@ MonoBehaviour:
   usersLocations:
   - {fileID: 4367715990770579585}
   usagePrice: 0
-  maintenanceCost: 0
+  maintenanceCost: 30
   usageTime: 10
   animationForNPC: {fileID: 9100000, guid: 8898d95db8d364844b8dca00bccd0089, type: 2}
   furnitureAnimator: {fileID: 7819687973419582382}

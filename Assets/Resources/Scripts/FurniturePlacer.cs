@@ -64,6 +64,7 @@ public class FurniturePlacer : MonoBehaviour
                 return;
             }
             budgetManager.NewExpanse(objectToPlace.name, objectToPlace.buildingCost, 1);
+            budgetManager.ChangeMaitenanceCost(objectToPlace.maintenanceCost);
         }
         isPlacing = false;
         grid.ToggleGrid();
@@ -96,6 +97,7 @@ public class FurniturePlacer : MonoBehaviour
         if(relocation)
         {
             budgetManager.NewExpanse(objectToPlace.name, Mathf.FloorToInt(objectToPlace.buildingCost * 0.25f), -1);
+            budgetManager.ChangeMaitenanceCost(-objectToPlace.maintenanceCost);
         }
         relocation = false;
         
