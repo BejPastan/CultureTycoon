@@ -201,6 +201,7 @@ public class RoomBuilder : MonoBehaviour
         if(!roomBP.PassRequirements(out bool noCells))
         {
             RemoveRoom();
+            return;
         }
         buildingDoor = false;
         isBuilding = false;

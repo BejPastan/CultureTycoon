@@ -1,3 +1,4 @@
+using Unity.VisualScripting;
 using UnityEngine;
 
 public partial class RoomCell
@@ -10,10 +11,17 @@ public partial class RoomCell
     public RoomCell(Transform tile, Vector2Int gridPos, ref RoomPart roomPart)
     {
         this.tile = tile;
-        tile.SetParent(roomPart.roomObj);
+        if(tile!=null)
+            tile.SetParent(roomPart.roomObj);
         this.gridPos = gridPos;
         walls = new Transform[3, 3];
         this.roomPart = roomPart;
+    }
+
+    public RoomCell Clone()
+    {
+        RoomCell clone = new RoomCell(tile = null, gridPos, ref roomPart);;
+        return clone;
     }
 
     /// <summary>

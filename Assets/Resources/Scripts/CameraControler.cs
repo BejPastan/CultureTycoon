@@ -59,7 +59,7 @@ public class CameraControler : MonoBehaviour
         Vector2 rotate = Vector2.zero;
 
         //if mouse clicked get input from mouse
-        if (Input.GetMouseButton(1))
+        if (Input.GetMouseButton(2))
         {
             rotate.x = Input.GetAxis("Mouse X") * mouseSensitivity;
             rotate.y = Input.GetAxis("Mouse Y") * invertMouse * mouseSensitivity;
@@ -122,11 +122,6 @@ public class CameraControler : MonoBehaviour
 
     public delegate void CameraRotation(Vector3 rotation);
     public static event CameraRotation onCameraRotation;
-
-    private void OnTriggerEnter(Collider other)
-    {
-        
-    }
 
     private void MoveCamera(Vector2 distance)
     {

@@ -5,6 +5,7 @@ public class Room : MonoBehaviour
 {
     RoomCell[,] cells;
     RoomBlueprint roomBlueprint;
+    [SerializeField] RoomBlueprint lastState = null;
     [SerializeField] Transform elementsParent;
     [SerializeField] RoomUI uiController;
     [SerializeField] FurnitureData[] furnitureData = new FurnitureData[0];
@@ -20,7 +21,7 @@ public class Room : MonoBehaviour
     /// <param name="builder"></param>
     public void OnCreate(RoomBuilder builder, RoomBlueprint blueprint)
     {
-        roomBlueprint = blueprint;
+        roomBlueprint = blueprint;//this is ebcause I need it to erasing parts of room
         uiController.SetEditButton(builder, this);
     }
 
@@ -30,11 +31,17 @@ public class Room : MonoBehaviour
     /// <param name="actualState"></param>
     public void ConfirmRoom(RoomBlueprint actualState)
     {
-        roomBlueprint = actualState;
         actualState.ConfirmBlueprint(out cells, out Vector3 roomCenter, out int newCells);
         uiController.transform.position = new Vector3(roomCenter.x, uiController.transform.position.y, roomCenter.z);
         uiController.EndEditing();
         EnableFurnitureCollider();
+
+
+
+
+        roomBlueprint = actualState;
+        //make new Instance of actualState
+        lastState = actualState.Clone();
     }
 
     /// <summary>
@@ -43,13 +50,30 @@ public class Room : MonoBehaviour
     /// <param name="actualState"></param>
     public void CancelEditing(ref RoomBlueprint actualState)
     {
-        if(roomBlueprint == null)
+
+
+
+
+
+
+
+        actualState.RemoveAll();
+        if (lastState == null)
         {
-            actualState.RemoveAll();
             return;
         }
-        actualState.Cancel();
-        roomBlueprint = actualState;
+//        actualState.Cancel();
+        lastState.Rebuild();
+        roomBlueprint = lastState;
+
+
+
+
+
+
+
+
+
         EnableFurnitureCollider();
         uiController.EndEditing();
     }

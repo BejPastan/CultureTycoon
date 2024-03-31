@@ -1,9 +1,13 @@
 using JetBrains.Annotations;
 using System;
+using Unity.VisualScripting;
 using UnityEngine;
 
+[Serializable]
+[IncludeInSettings(true)]
 public class RoomPart
 {
+
     public Vector2Int gridShift;
     public Vector2Int gridEnd;
     public Grid grid;
@@ -23,6 +27,28 @@ public class RoomPart
         elements = new RoomCell[0, 0];
         this.grid = grid;
         this.roomObj = roomObj;
+    }
+
+    public RoomPart Clone()
+    {
+        RoomPart clone = new RoomPart(ref grid, ref roomObj);
+        clone.gridShift = gridShift;
+        clone.gridEnd = gridEnd;
+        //make clone of elements
+        clone.elements = new RoomCell[elements.GetLength(0), elements.GetLength(1)];
+        for (int x = 0; x < elements.GetLength(0); x++)
+        {
+            for (int z = 0; z < elements.GetLength(1); z++)
+            {
+                if (elements[x, z] != null)
+                {
+                    clone.elements[x, z] = elements[x, z].Clone();
+                }
+            }
+        }
+        clone.newCells = 0;
+        clone.existingCells = existingCells;
+        return clone;
     }
 
     public void EndEdit()
@@ -328,5 +354,31 @@ public class RoomPart
     {
         Vector2Int size = new Vector2Int(elements.GetLength(0), elements.GetLength(1));
         return size;
+    }
+
+
+
+
+
+
+
+
+
+
+
+
+
+    public void RebuildFloors(ref GameObject tilePref)
+    {
+        for(int x = 0; x< elements.GetLength(0); x++)
+        {
+            for(int z = 0; z< elements.GetLength(1); z++)
+            {
+                if (elements[x,z] != null)
+                {
+                    CreateFloor(GetGridId(new Vector2Int(x, z)), ref tilePref);
+                }
+            }
+        }
     }
 }

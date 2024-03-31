@@ -1,8 +1,11 @@
 using System;
+using Unity.VisualScripting;
 using UnityEngine;
 
 //make this available in editor
 [CreateAssetMenu(fileName = "RoomBlueprint", menuName = "RoomBlueprint", order = 1)]
+[Serializable]
+[IncludeInSettings(true)]
 public class RoomBlueprint : ScriptableObject
 {
     [SerializeField]
@@ -21,6 +24,16 @@ public class RoomBlueprint : ScriptableObject
 
     [SerializeField] public int minSurface;
     
+    public RoomBlueprint Clone()
+    {
+        RoomBlueprint clone = Instantiate(this);
+        for(int i = 0; i < parts.Length; i++)
+        {
+            clone.parts[i] = parts[i].Clone();
+        }
+        return clone;
+    }
+
     /// <summary>
     /// Creating New Blueprint
     /// </summary> 
@@ -98,6 +111,32 @@ public class RoomBlueprint : ScriptableObject
             ClearPart(ref parts[roomIndex]);
         }
     }
+
+
+
+
+
+
+
+    public void Rebuild()
+    {
+        Debug.Log("Rebuilding");
+        for (int roomIndex = 0; roomIndex < parts.Length; roomIndex++)
+        {
+            //so here I have a problem that clone have exactly the same parts that original, and when I change one of them it changes in both
+            Debug.Log("Rebuilding part " + roomIndex);
+            parts[roomIndex].RebuildFloors(ref floorPref);
+            SetWalls(ref parts[roomIndex], roomIndex);
+        }
+        //need to add here adding doors
+    }
+
+
+
+
+
+
+
 
 
     public bool PassRequirements(out bool noCells)
