@@ -23,6 +23,9 @@ public class RoomBlueprint : ScriptableObject
     public RoomType RoomType { get => roomType; }
 
     [SerializeField] public int minSurface;
+
+    [SerializeField] Vector2Int doorPos;
+    [SerializeField] Quaternion doorRotation;
     
     public RoomBlueprint Clone()
     {
@@ -31,6 +34,7 @@ public class RoomBlueprint : ScriptableObject
         {
             clone.parts[i] = parts[i].Clone();
         }
+        clone.doorObj = null;
         return clone;
     }
 
@@ -129,6 +133,7 @@ public class RoomBlueprint : ScriptableObject
             SetWalls(ref parts[roomIndex], roomIndex);
         }
         //need to add here adding doors
+        SetDoors(doorPos, doorRotation);
     }
 
 
@@ -245,10 +250,11 @@ public class RoomBlueprint : ScriptableObject
     /// <summary>
     /// build doors on selected place
     /// </summary>
-    /// <param name="position">grid id to buuld door</param>
+    /// <param name="position">grid id to build door</param>
     /// <param name="wallRotation">orientation of wall on which build door</param>
     public void SetDoors(Vector2Int position,Quaternion wallRotation)
     {
+        Debug.Log("Setting door");
         RoomCell cell;
         if(doorObj != null)
         {
@@ -259,12 +265,16 @@ public class RoomBlueprint : ScriptableObject
             }
         }
         cell = GetCell(position);
+        Debug.Log("Cell: " + cell);
+        Debug.Log("Position: " + position);
         if(cell != null)
         {
+            Debug.Log("Cell found");
             cell.ChangeWallObject(doorPref, cell.CalcWallId(wallRotation));
             doorObj = cell.GetWallByLocalPos(cell.CalcWallId(wallRotation)).transform;
         }
-   
+        doorPos = position;
+        doorRotation = wallRotation;
     }
 
     /// <summary>

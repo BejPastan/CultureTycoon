@@ -11,7 +11,7 @@ public class RoomPart
     public Vector2Int gridShift;
     public Vector2Int gridEnd;
     public Grid grid;
-    public RoomCell[,] elements;
+    [SerializeField] public RoomCell[,] elements;
     public Transform roomObj;
     public int newCells = 0;
     private int existingCells = 0;
@@ -42,7 +42,7 @@ public class RoomPart
             {
                 if (elements[x, z] != null)
                 {
-                    clone.elements[x, z] = elements[x, z].Clone();
+                    clone.elements[x, z] = elements[x, z].Clone(ref  clone);
                 }
             }
         }
@@ -161,7 +161,7 @@ public class RoomPart
     /// <summary>
     /// Build floor in selected cell from prefab
     /// </summary>
-    /// <param name="id"></param>
+    /// <param name="id">local Id, not  Grid Id</param>
     /// <param name="pref"></param>
     public void CreateFloor(Vector2Int id, ref GameObject pref)
     {
@@ -170,6 +170,8 @@ public class RoomPart
         Transform floor = GameObject.Instantiate(pref, pos, Quaternion.identity).transform;
         //get this RoomPart
         RoomPart refPart = this;
+        Debug.Log("Create floor in " + id);
+        Debug.Log(elements[id.x, id.y]);
         elements[id.x, id.y] = new RoomCell(floor, GetGridId(id), ref refPart);
         newCells++;
     }
@@ -376,7 +378,8 @@ public class RoomPart
             {
                 if (elements[x,z] != null)
                 {
-                    CreateFloor(GetGridId(new Vector2Int(x, z)), ref tilePref);
+                    CreateFloor(new Vector2Int(x, z), ref tilePref);
+                    grid.ChangeGridState(GridState.room, GetGridId(new Vector2Int(x, z)));
                 }
             }
         }

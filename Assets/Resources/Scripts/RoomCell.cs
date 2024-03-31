@@ -3,7 +3,7 @@ using UnityEngine;
 
 public partial class RoomCell
 {
-    public Transform tile;
+    [SerializeField] public Transform tile;
     Transform[,] walls;
     Vector2Int gridPos;
     RoomPart roomPart;
@@ -18,9 +18,9 @@ public partial class RoomCell
         this.roomPart = roomPart;
     }
 
-    public RoomCell Clone()
+    public RoomCell Clone(ref RoomPart clonePart)
     {
-        RoomCell clone = new RoomCell(tile = null, gridPos, ref roomPart);;
+        RoomCell clone = new RoomCell(null, gridPos, ref clonePart);;
         return clone;
     }
 
@@ -145,6 +145,7 @@ public partial class RoomCell
         Quaternion rotation = walls[wallId.x, wallId.y].rotation;
         GameObject.Destroy(walls[wallId.x, wallId.y].gameObject);
         walls[wallId.x, wallId.y] = GameObject.Instantiate(wallPref, roomPart.grid.GetWorldPosition(gridPos), rotation).transform;
+
     }
 
     /// <summary>

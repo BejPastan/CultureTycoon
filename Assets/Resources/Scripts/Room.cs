@@ -4,7 +4,7 @@ using UnityEngine;
 public class Room : MonoBehaviour
 {
     RoomCell[,] cells;
-    RoomBlueprint roomBlueprint;
+    [SerializeField] RoomBlueprint roomBlueprint;
     [SerializeField] RoomBlueprint lastState = null;
     [SerializeField] Transform elementsParent;
     [SerializeField] RoomUI uiController;
@@ -31,7 +31,8 @@ public class Room : MonoBehaviour
     /// <param name="actualState"></param>
     public void ConfirmRoom(RoomBlueprint actualState)
     {
-        actualState.ConfirmBlueprint(out cells, out Vector3 roomCenter, out int newCells);
+        roomBlueprint = actualState;
+        roomBlueprint.ConfirmBlueprint(out cells, out Vector3 roomCenter, out int newCells);
         uiController.transform.position = new Vector3(roomCenter.x, uiController.transform.position.y, roomCenter.z);
         uiController.EndEditing();
         EnableFurnitureCollider();
@@ -39,9 +40,9 @@ public class Room : MonoBehaviour
 
 
 
-        roomBlueprint = actualState;
+
         //make new Instance of actualState
-        lastState = actualState.Clone();
+        lastState = roomBlueprint.Clone();
     }
 
     /// <summary>
@@ -57,15 +58,14 @@ public class Room : MonoBehaviour
 
 
 
-        actualState.RemoveAll();
+        roomBlueprint.RemoveAll();
         if (lastState == null)
         {
             return;
         }
-//        actualState.Cancel();
-        lastState.Rebuild();
-        roomBlueprint = lastState;
 
+        roomBlueprint = lastState.Clone();
+        roomBlueprint.Rebuild();
 
 
 
@@ -84,6 +84,7 @@ public class Room : MonoBehaviour
     /// <returns></returns>
     public RoomBlueprint StartEdit()
     {
+
         uiController.StartEditing();
         roomBlueprint.DisableCollision();
         DisableFurnitureCollider();
