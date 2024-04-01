@@ -358,18 +358,6 @@ public class RoomPart
         return size;
     }
 
-
-
-
-
-
-
-
-
-
-
-
-
     public void RebuildFloors(ref GameObject tilePref)
     {
         for(int x = 0; x< elements.GetLength(0); x++)

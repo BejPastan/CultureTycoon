@@ -33,13 +33,10 @@ public class Room : MonoBehaviour
     {
         roomBlueprint = actualState;
         roomBlueprint.ConfirmBlueprint(out cells, out Vector3 roomCenter, out int newCells);
+        roomBlueprint.EnableCollision();
         uiController.transform.position = new Vector3(roomCenter.x, uiController.transform.position.y, roomCenter.z);
         uiController.EndEditing();
         EnableFurnitureCollider();
-
-
-
-
 
         //make new Instance of actualState
         lastState = roomBlueprint.Clone();
@@ -52,12 +49,6 @@ public class Room : MonoBehaviour
     public void CancelEditing(ref RoomBlueprint actualState)
     {
 
-
-
-
-
-
-
         roomBlueprint.RemoveAll();
         if (lastState == null)
         {
@@ -66,14 +57,7 @@ public class Room : MonoBehaviour
 
         roomBlueprint = lastState.Clone();
         roomBlueprint.Rebuild();
-
-
-
-
-
-
-
-
+        roomBlueprint.EnableCollision();
         EnableFurnitureCollider();
         uiController.EndEditing();
     }
@@ -205,6 +189,7 @@ public class Room : MonoBehaviour
     /// </summary>
     private void DisableFurnitureCollider()
     {
+        Debug.Log("DisableFurnitureCollider");
         foreach(FurnitureData furniture in furnitureData)
         {
             furniture.DisableCollider();

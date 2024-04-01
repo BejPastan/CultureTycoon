@@ -53,6 +53,7 @@ public class NPCui : MonoBehaviour
                 needsUI[i].slider.value = npcScriptable.story.needs[i].value - npcScriptable.story.needs[i].toFill;
                 needsUI[i].fillText.text = (npcScriptable.story.needs[i].value - npcScriptable.story.needs[i].toFill) + " / " + npcScriptable.story.needs[i].value;
             }
+            ShowStory();
             yield return new WaitForSeconds(0.25f);
         }
     }

@@ -28,7 +28,7 @@ public class FurniturePlacer : MonoBehaviour
         grid.ToggleGrid();
         relocation = false;
 
-        FindObjectOfType<CameraControler>().DisableZoom();
+        HideUI();
     }
 
     /// <summary>
@@ -48,7 +48,7 @@ public class FurniturePlacer : MonoBehaviour
         grid.ToggleGrid();
         relocation = true;
 
-        FindObjectOfType<CameraControler>().DisableZoom();
+        HideUI();
     }
 
     /// <summary>
@@ -71,7 +71,12 @@ public class FurniturePlacer : MonoBehaviour
         objectToPlace.Place();
         objectToPlace = null;
         relocation = false;
+
         FindObjectOfType<CameraControler>().EnableZoom();
+        foreach (var rooms in FindObjectsOfType<RoomUI>())
+        {
+            rooms.ShowUI();
+        }
     }
 
     /// <summary>
@@ -83,7 +88,7 @@ public class FurniturePlacer : MonoBehaviour
         isPlacing = false;
         grid.ToggleGrid();
         relocation = false;
-        FindObjectOfType<CameraControler>().EnableZoom();
+        ShowUI();
     }
 
     /// <summary>
@@ -101,9 +106,26 @@ public class FurniturePlacer : MonoBehaviour
         }
         relocation = false;
         
-        FindObjectOfType<CameraControler>().EnableZoom();
+        ShowUI();
     }
 
+    private void HideUI()
+    {
+        FindObjectOfType<CameraControler>().DisableZoom();
+        foreach (var rooms in FindObjectsOfType<RoomUI>())
+        {
+            rooms.HideUI();
+        }
+    }
+
+    private void ShowUI()
+    {
+        FindObjectOfType<CameraControler>().EnableZoom();
+        foreach (var rooms in FindObjectsOfType<RoomUI>())
+        {
+            rooms.ShowUI();
+        }
+    }
 
     private void Update()
     {

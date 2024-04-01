@@ -132,14 +132,16 @@ public class CameraControler : MonoBehaviour
     {
         Vector3 dist = (distance * zoomSpeed * Time.unscaledDeltaTime * cameraObject.forward);
         //check if the camera is not going to be closer than the limit
-        if ((transform.position +dist).y < zoomMin ||(transform.position+dist).y > zoomMax)
+        if ((transform.position +dist).y < zoomMin)
         {
-            Debug.Log("Camera is too close");
             float y = zoomMin - transform.position.y;
             float proportion  = y / dist.y;
-            Debug.Log("dist: " + dist);
-            Debug.Log("proportion: " + proportion);
-            Debug.Log("dist * proportion: " + dist * proportion);
+            distance *= proportion;
+        }
+        if ((transform.position + dist).y > zoomMax)
+        {
+            float y = zoomMax - transform.position.y;
+            float proportion = y / dist.y;
             distance *= proportion;
         }
         transform.position += cameraObject.forward * distance * zoomSpeed * Time.unscaledDeltaTime;

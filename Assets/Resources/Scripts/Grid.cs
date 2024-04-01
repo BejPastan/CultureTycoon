@@ -135,7 +135,9 @@ public class Grid : MonoBehaviour
             }
         }
         cellsVisual = new GameObject[0, 0];
+        Debug.Log("Building NavMesh");
         transform.GetComponent<NavMeshSurface>().BuildNavMesh();
+        Debug.Log("NavMesh built");
     }
 
     /// <summary>

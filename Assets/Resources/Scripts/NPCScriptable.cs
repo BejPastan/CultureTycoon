@@ -49,6 +49,7 @@ public class NPCScriptable : ScriptableObject
 
     public Vector3 GetDestination()
     {
+        SortFurnitures();
         if (furnitures.Length > 0)
             if(furnitures[0].CanBeUsed(out Vector3 slot, out int slotId))
             {
@@ -92,18 +93,20 @@ public class NPCScriptable : ScriptableObject
         }
 
         int apropriatePos = 0;
-        //sort furniture to fit needs using dictionary
+
         for (int i = 0; i < story.needs.Length; i++)
         {
             for(int j = 0; j < furnitures.Length; j++)
             {
-                if (furnitures[j]==null)
+                if (furnitures[j]==null || (furnitures[j].destinationType == furnitureForNeeds[story.needs[i].type] && story.needs[i].toFill<=0))
                 {
                     for (int k = j; k < furnitures.Length-1; k++)
                     {
                         furnitures[k] = furnitures[k + 1];
                     }
                     Array.Resize(ref furnitures, furnitures.Length - 1);
+                    j--;
+                    continue;
                 }
                 if (furnitures[j].destinationType == furnitureForNeeds[story.needs[i].type])
                 {
