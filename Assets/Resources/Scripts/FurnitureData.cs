@@ -46,6 +46,10 @@ public class FurnitureData : MonoBehaviour
             occupaiedLocationsID[i] = false;
         }
         grid = FindObjectOfType<Grid>();
+        if(furnitureAnimator == null)
+        {
+            furnitureAnimator = GetComponent<Animator>();
+        }
     }
 
     /// <summary>
@@ -148,12 +152,16 @@ public class FurnitureData : MonoBehaviour
                 material.SetColor("_AccessColor", Color.red);
             }
             canBuild = false;
+            Debug.Log("Wrong room");
             return;
         }
         else
         {
+            Debug.Log("Right room");
             //get colider and check if is not overlapping with any other object
             Collider[] overlapedColliders = Physics.OverlapBox(GetComponent<Collider>().bounds.center, GetComponent<Collider>().bounds.extents);
+            Debug.Log(overlapedColliders.Length);
+            //here i must chack if colider collide with any other object
             foreach (Collider colider in overlapedColliders)
             {
                 if ((colider.CompareTag("Furniture") && colider.transform != this.transform) || colider.CompareTag("Wall"))
@@ -163,15 +171,17 @@ public class FurnitureData : MonoBehaviour
                         material.SetColor("_AccessColor", Color.red);
                     }
                     canBuild = false;
+                    Debug.Log("Overlaping");
                     return;
                 }
             }
-            //here i must chack if colider collide with any other object
+            Debug.Log("Not overlaping");
             foreach (Material material in meshRenderer.materials)
             {
                 material.SetColor("_AccessColor", Color.green);
             }
             canBuild = true;
+            Debug.Log("Can build");
             return;
         }      
     }
@@ -245,17 +255,20 @@ public class FurnitureData : MonoBehaviour
 
     public void UseFurniture(out AnimatorController animator, out RoomType furnitureType,out float quality)
     {
+        Debug.Log("start geting data");
         used = true;
-        furnitureAnimator.SetBool("painting", true);
+        furnitureAnimator.SetBool("use", true);
+        Debug.Log("Set bool for furniture animaor");
         animator = animationForNPC;
         furnitureType = destinationType;
         quality = this.quality;
+        Debug.Log("get all data");
     }
 
     public void LeaveFurniture(int slot)
     {
         used = false;
-        furnitureAnimator.SetBool("painting", false);
+        furnitureAnimator.SetBool("use", false);
         occupaiedLocationsID[slot] = false;
     }
 }

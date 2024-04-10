@@ -31,7 +31,7 @@ public class NPCui : MonoBehaviour
         StopCoroutine(UpdateValues());
         npcUI.gameObject.SetActive(true);
         this.npc = npc;
-        npcScriptable = npc.scriptable;
+        npcScriptable = npc.npcScriptable;
         ShowBasicInfo();
         ShowStory();
         StartCoroutine(UpdateValues());
@@ -71,20 +71,25 @@ public class NPCui : MonoBehaviour
         }
         storyUI.sizeDelta = new Vector2(0, completedStory.Length * 120 +10);
         storyUI.anchoredPosition = new Vector2(0, 0);
+
+        for(int i = 0; i < needsUI.Length; i++)
+        {
+            needsUI[i].slider.maxValue = npcScriptable.story.needs[i].value;
+        }
     }
 
-    private void OnMouseOver()
-    {
-        //handle scrolling
-        if(Input.mouseScrollDelta.y > 0)
-        {
-            storyUI.position += new Vector3(0, 10, 0);
-        }
-        else if(Input.mouseScrollDelta.y < 0)
-        {
-            storyUI.position += new Vector3(0, -10, 0);
-        }
-    }
+    //private void OnMouseOver()
+    //{
+    //    //handle scrolling
+    //    if(Input.mouseScrollDelta.y > 0)
+    //    {
+    //        storyUI.position += new Vector3(0, 10, 0);
+    //    }
+    //    else if(Input.mouseScrollDelta.y < 0)
+    //    {
+    //        storyUI.position += new Vector3(0, -10, 0);
+    //    }
+    //}
 
     public void HideNPC()
     {

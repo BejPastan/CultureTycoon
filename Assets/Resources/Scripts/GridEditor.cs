@@ -15,8 +15,10 @@ public class GridEditor : MonoBehaviour
 
     private void OnValidate()
     {
+        Debug.Log("before delay");
         UnityEditor.EditorApplication.delayCall += () =>
         {
+            Debug.Log("in delay");
             if (run)
             {
                 if (enterEditMode)
@@ -45,6 +47,7 @@ public class GridEditor : MonoBehaviour
                 }
             }
         };
+        Debug.Log("afterDelay");
     }
 
     private void UpdateGrid()
@@ -52,7 +55,6 @@ public class GridEditor : MonoBehaviour
         grid.ChangeGridState(state, startPos, endPos);
         grid.ToggleGrid();
         grid.ToggleGrid();
-        Debug.Log("Grid updated");
         startPos = new Vector2Int(0, 0);
         endPos = new Vector2Int(0, 0);
         acceptChanges = false;

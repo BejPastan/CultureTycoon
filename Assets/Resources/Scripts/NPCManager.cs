@@ -85,7 +85,7 @@ public class NPCManager : MonoBehaviour
     {
         GameObject npcObject = Instantiate(Resources.Load<GameObject>(npcData.prefPath), spawnPoint, Quaternion.identity);
         NPC npc = npcObject.GetComponent<NPC>();
-        npc.scriptable = npcData;
+        npc.npcScriptable = npcData;
         npc.StartNPC();
     }
 
@@ -103,7 +103,7 @@ public class NPCManager : MonoBehaviour
 
     public void DestroyNPC(NPC npcToDestroy)
     {
-        npcToDestroy.scriptable.active = false;
+        npcToDestroy.npcScriptable.active = false;
         Destroy(npcToDestroy.gameObject);
     }
 

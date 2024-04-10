@@ -1,0 +1,29 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 913e45a3212c5a94fa0f4c285b0a5e8f, type: 3}
+  m_Name: GamesRoom
+  m_EditorClassIdentifier: 
+  wallPref: {fileID: 3023362912714016702, guid: 2e7d3d0f181222241b1f05bb38f79ab8,
+    type: 3}
+  floorPref: {fileID: 1129830018858127135, guid: 53759107c64718f4c948356f90f79980,
+    type: 3}
+  doorPref: {fileID: 3614531964076663587, guid: 455bdd358aba18044b29e0003bfd352f,
+    type: 3}
+  cellCost: 10
+  parts: []
+  grid: {fileID: 0}
+  doorObj: {fileID: 0}
+  roomObj: {fileID: 0}
+  roomType: 4
+  minSurface: 12
+  doorPos: {x: 0, y: 0}
+  doorRotation: {x: 0, y: 0, z: 0, w: 0}

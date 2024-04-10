@@ -2,31 +2,34 @@ using System.Threading.Tasks;
 using UnityEditor.Animations;
 using UnityEngine;
 using UnityEngine.AI;
-using static NPCui;
 
 public class NPC : MonoBehaviour
 {
-    public NPCScriptable scriptable;
+    public NPCScriptable npcScriptable;
     public NavMeshAgent agent;
     private Vector3 destination;
+
+    private Animator animator;
 
     bool onUI;
 
     public async void StartNPC()
     {
         agent = gameObject.GetComponent<NavMeshAgent>();
-        scriptable.StartNPC();
+        animator = gameObject.GetComponent<Animator>();
+        npcScriptable.StartNPC();
         MoveToNext();
     }
 
     private async void MoveToNext()
     {
-        if (scriptable.DestinationFurniture() != null)
+        if (npcScriptable.DestinationFurniture() != null)
         {
             
             //here there is no more furniture to use
         }
-        destination = scriptable.GetDestination();
+        destination = npcScriptable.GetDestination();
+        animator.SetBool("walking", true);
         Debug.Log("Move to " + destination);
         agent.SetDestination(destination);
         agent.isStopped = false;
@@ -34,28 +37,30 @@ public class NPC : MonoBehaviour
 
     private async Task UseFurniture()
     {
+        animator.SetBool("walking", false);
         transform.position = destination;
-        transform.LookAt(scriptable.DestinationFurniture().transform.position);
+        transform.LookAt(npcScriptable.DestinationFurniture().transform.position);
         //here must get animation
-        scriptable.DestinationFurniture().UseFurniture(out AnimatorController animatior, out RoomType furnitureType, out float quality);
+        npcScriptable.DestinationFurniture().UseFurniture(out AnimatorController animatorController, out RoomType furnitureType, out float quality);
+        Debug.Log($"Start using furniture");
         //get animator controller from NPC transform
-        AnimatorController defaultAnimation = GetComponent<Animator>().runtimeAnimatorController as AnimatorController;
+        AnimatorController defaultAnimation = animator.runtimeAnimatorController as AnimatorController;
         //set new animation
-        GetComponent<Animator>().runtimeAnimatorController = animatior;
+        animator.runtimeAnimatorController = animatorController;
 
         //start getting needs points
-        await scriptable.UseFurniture(quality, furnitureType);
+        await npcScriptable.UseFurniture(quality, furnitureType);
 
         //set default animation
-        GetComponent<Animator>().runtimeAnimatorController = defaultAnimation;
+        animator.runtimeAnimatorController = defaultAnimation;
 
-        scriptable.EndUsing();
+        npcScriptable.EndUsing();
         MoveToNext();
     }
 
     public void RemoveNPC()
     {
-        scriptable.active = false;
+        npcScriptable.active = false;
         if (onUI)
             FindObjectOfType<NPCui>().HideNPC();
         onUI = false;
@@ -77,9 +82,8 @@ public class NPC : MonoBehaviour
     private void OnTriggerEnter(Collider other)
     {
         if (other.GetComponent<FurnitureData>() != null)
-            if (other.GetComponent<FurnitureData>() == scriptable.DestinationFurniture())
+            if (other.GetComponent<FurnitureData>() == npcScriptable.DestinationFurniture())
             {
-
                 //stop moving
                 agent.Stop();
                 UseFurniture();

@@ -56,6 +56,7 @@ public class FurniturePlacer : MonoBehaviour
     /// </summary>
     public void Place()
     {
+        Debug.Log("Place");
         if(!relocation)
         {
             if (!budgetManager.canBuild(objectToPlace.buildingCost))

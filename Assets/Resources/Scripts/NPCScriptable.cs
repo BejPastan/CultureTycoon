@@ -77,19 +77,31 @@ public class NPCScriptable : ScriptableObject
 
     private void SortFurnitures()
     {
-        Debug.Log("Sort furnitures");
         //sort needs by value
+        int[] valuesOrder = new int[story.needs.Length];
+
+        for(int i =0; i < story.needs.Length; i++)
+        {
+            valuesOrder[i] = i;
+        }
+
+        //here I need to change sorting, I can't just sort them, I must make some sort of dictionary to make them 
         for (int i = 0; i < story.needs.Length; i++)
         {
             for (int j = i + 1; j < story.needs.Length; j++)
             {
-                if (story.needs[i].toFill > story.needs[j].toFill)
+                if (story.needs[valuesOrder[j]].toFill > story.needs[valuesOrder[i]].toFill)
                 {
-                    Needs temp = story.needs[i];
-                    story.needs[i] = story.needs[j];
-                    story.needs[j] = temp;
+                    int temp = valuesOrder[i];
+                    valuesOrder[i] = valuesOrder[j];
+                    valuesOrder[j] = temp;
                 }
             }
+        }
+
+        foreach (int i in valuesOrder)
+        {
+            Debug.Log($"value order {i}");
         }
 
         int apropriatePos = 0;
@@ -98,8 +110,9 @@ public class NPCScriptable : ScriptableObject
         {
             for(int j = 0; j < furnitures.Length; j++)
             {
-                if (furnitures[j]==null || (furnitures[j].destinationType == furnitureForNeeds[story.needs[i].type] && story.needs[i].toFill<=0))
+                if (furnitures[j]==null || (furnitures[j].destinationType == furnitureForNeeds[story.needs[valuesOrder[i]].type] && story.needs[valuesOrder[i]].toFill<=0))
                 {
+                    Debug.Log("Removing not needed furnitures");
                     for (int k = j; k < furnitures.Length-1; k++)
                     {
                         furnitures[k] = furnitures[k + 1];
@@ -108,13 +121,13 @@ public class NPCScriptable : ScriptableObject
                     j--;
                     continue;
                 }
-                if (furnitures[j].destinationType == furnitureForNeeds[story.needs[i].type])
+                if (furnitures[j].destinationType == furnitureForNeeds[story.needs[valuesOrder[i]].type])
                 {
+                    Debug.Log($"apropriatePos: {apropriatePos}, furniture length: {furnitures.Length}, j iterator: {j}, i iterator {i}, needs typ: {story.needs[valuesOrder[i]].type}, furniture type: {furnitures[j].destinationType}");
                     FurnitureData temp = furnitures[apropriatePos];
                     furnitures[apropriatePos] = furnitures[j];
                     furnitures[j] = temp;
                     apropriatePos++;
-                    break;
                 }
             }
         }

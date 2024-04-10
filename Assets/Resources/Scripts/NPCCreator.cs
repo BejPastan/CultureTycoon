@@ -44,6 +44,9 @@ public class NPCCreator : MonoBehaviour
 public struct Needs
 {
     public NeedsType type;
+    /// <summary>
+    /// max value
+    /// </summary>
     public int value;
     public float toFill;
 }
