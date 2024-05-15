@@ -13,42 +13,42 @@ public class GridEditor : MonoBehaviour
     [SerializeField] GridState state;
     [SerializeField] bool acceptChanges = false;
 
-    private void OnValidate()
-    {
-        Debug.Log("before delay");
-        UnityEditor.EditorApplication.delayCall += () =>
-        {
-            Debug.Log("in delay");
-            if (run)
-            {
-                if (enterEditMode)
-                {
-                    if (acceptChanges)
-                    {
-                        UpdateGrid();
-                        return;
-                    }
-                    return;
-                }
-                else
-                {
-                    grid.LoadGrid();
-                    grid.ToggleGrid();
-                    enterEditMode = true;
-                }
-            }
-            if (!run)
-            {
-                if (enterEditMode)
-                {
-                    grid.ToggleGrid();
-                    enterEditMode = false;
-                    grid.SaveGrid();
-                }
-            }
-        };
-        Debug.Log("afterDelay");
-    }
+    //private void OnValidate()
+    //{
+    //    Debug.Log("before delay");
+    //    UnityEditor.EditorApplication.delayCall += () =>
+    //    {
+    //        Debug.Log("in delay");
+    //        if (run)
+    //        {
+    //            if (enterEditMode)
+    //            {
+    //                if (acceptChanges)
+    //                {
+    //                    UpdateGrid();
+    //                    return;
+    //                }
+    //                return;
+    //            }
+    //            else
+    //            {
+    //                grid.LoadGrid();
+    //                grid.ToggleGrid();
+    //                enterEditMode = true;
+    //            }
+    //        }
+    //        if (!run)
+    //        {
+    //            if (enterEditMode)
+    //            {
+    //                grid.ToggleGrid();
+    //                enterEditMode = false;
+    //                grid.SaveGrid();
+    //            }
+    //        }
+    //    };
+    //    Debug.Log("afterDelay");
+    //}
 
     private void UpdateGrid()
     {

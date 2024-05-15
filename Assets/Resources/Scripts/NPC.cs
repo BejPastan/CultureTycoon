@@ -1,5 +1,5 @@
 using System.Threading.Tasks;
-using UnityEditor.Animations;
+//using UnityEditor.Animations;
 using UnityEngine;
 using UnityEngine.AI;
 
@@ -41,10 +41,10 @@ public class NPC : MonoBehaviour
         transform.position = destination;
         transform.LookAt(npcScriptable.DestinationFurniture().transform.position);
         //here must get animation
-        npcScriptable.DestinationFurniture().UseFurniture(out AnimatorController animatorController, out RoomType furnitureType, out float quality);
+        npcScriptable.DestinationFurniture().UseFurniture(out RuntimeAnimatorController animatorController, out RoomType furnitureType, out float quality);
         Debug.Log($"Start using furniture");
         //get animator controller from NPC transform
-        AnimatorController defaultAnimation = animator.runtimeAnimatorController as AnimatorController;
+        RuntimeAnimatorController defaultAnimation = animator.runtimeAnimatorController as RuntimeAnimatorController;
         //set new animation
         animator.runtimeAnimatorController = animatorController;
 

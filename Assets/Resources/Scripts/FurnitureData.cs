@@ -1,10 +1,5 @@
-using System;
-using System.Collections;
-using System.Collections.Generic;
 using System.Threading.Tasks;
-using Unity.VisualScripting;
-using UnityEditor;
-using UnityEditor.Animations;
+//using UnityEditor.Animations;
 using UnityEngine;
 
 public class FurnitureData : MonoBehaviour
@@ -19,7 +14,7 @@ public class FurnitureData : MonoBehaviour
     [SerializeField] int usagePrice;//actual not active
     [SerializeField] public int maintenanceCost;//actual not active
     [SerializeField] public float usageTime;
-    [SerializeField] AnimatorController animationForNPC;
+    [SerializeField] RuntimeAnimatorController animationForNPC;
     [SerializeField] Animator furnitureAnimator;
 
     [Header("BUILDIGNB")]
@@ -253,7 +248,7 @@ public class FurnitureData : MonoBehaviour
         return false;
     }
 
-    public void UseFurniture(out AnimatorController animator, out RoomType furnitureType,out float quality)
+    public void UseFurniture(out RuntimeAnimatorController animator, out RoomType furnitureType,out float quality)
     {
         Debug.Log("start geting data");
         used = true;

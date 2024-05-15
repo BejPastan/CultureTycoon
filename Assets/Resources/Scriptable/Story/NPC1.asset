@@ -10,7 +10,7 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 9a341efe466cdcc469cf038a1e27e142, type: 3}
-  m_Name: TestStory
+  m_Name: NPC1
   m_EditorClassIdentifier: 
   storyToUnlocked:
   - story: "Pomimo tego \u017Ce zawsze interesowa\u0142em si\u0119 nauk\u0105, marzy\u0142em
